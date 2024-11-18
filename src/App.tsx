@@ -1,10 +1,9 @@
-import Layout from "./components/common/Layout"
+
+import Routes from './routes'
 
 
 const App = () => {
-  return (
-  <Layout/>
-  )
+  return <Routes />;
 }
 
 export default App

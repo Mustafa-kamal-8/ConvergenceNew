@@ -1,21 +1,25 @@
-import logo from "../../assets/Untitled.jpg";
+import logo from "../../assets/ASDMLOGO.png";
 const Header = ({ isSidebarCollapsed }: { isSidebarCollapsed: boolean }) => {
   return (
     <div
-      className={`bg-white shadow-xl transition-all duration-300 w-full fixed top-0  ${
-        isSidebarCollapsed ? "ml-20" : "ml-64"
+      className={`bg-white  transition-all duration-300 w-full border ${
+        isSidebarCollapsed ? "" : ""
       }`}
     >
-      <div className="p-4">
+      <div className="">
         <div className="font-bold text-white text-lg flex ">
-          <img className="h-16 w-16" src={logo} alt="" />
-          <span className="ml-4 text-blue-600 font-bold">
+          <img className="h-24 w-28" src={logo} alt="" />
+          <div className=" flex flex-col">
+          <span className=" text-blue-600 font-bold justify-center mt-2 text-lg">
             ASSAM SKILL DEVELOPMENT MISSION
           </span>
-        </div>
       
+          <span className=" text-gray-700 justify-center text-sm">
+            GOVERNMENT OF ASSAM
+          </span>
+          </div>
+        </div>
       </div>
-     
     </div>
   );
 };

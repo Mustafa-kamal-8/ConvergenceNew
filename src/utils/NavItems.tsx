@@ -25,16 +25,16 @@ interface NavItem {
 export const NavItems: NavItem[] = [
   {
     name: "Dashboard",
-    link: "/dashboard",
+    link: "/Dashboard",
     icon: Home,
   },
   {
-    name: "Tasks",
-    link: "/tasks",
+    name: "Scheme",
+    link: "",
     icon: ClipboardList,
     subItems: [
-      { name: "Manual", link: "/manual" },
-      { name: "Bulk Upload", link: "/bulkupload" },
+      { name: "Manual", link: "/SchemeForm" },
+      { name: "Bulk Upload", link: "/SchemeExcel" },
     ],
   },
   {
