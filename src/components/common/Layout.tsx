@@ -14,7 +14,7 @@ const Layout = () => {
     <div className="flex overflow-hidden  ">
       <Sidebar isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
       <div className=" w-full h-screen overflow-auto ">
-      <Header isSidebarCollapsed={isSidebarCollapsed} />
+      <Header isSidebarCollapsed={isSidebarCollapsed}  toggleSidebar={toggleSidebar}/>
         <main className="">
           <Outlet />
         </main>
