@@ -4,6 +4,9 @@ import { Modal, Box, Typography, Button } from '@mui/material';
 import useModalStore from '../../services/state/useModelStore';
 import Scheme from './Modals/SchemeModal';
 import BulkUploadModal from './Modals/BulkUploadModal';
+import Traget from './Modals/TargetModal'
+import CourseModal from './Modals/CourseModal';
+import TrainingPartnerModal from './Modals/TrainingPartnerModal';
 import { X } from 'lucide-react';
 
 
@@ -14,6 +17,12 @@ const CustomModal: React.FC = () => {
     switch (modalType) {
       case 0:
         return <Scheme />;
+        case 1:
+          return <Traget />;
+          case 2:
+          return <CourseModal />;
+          case 3:
+            return <TrainingPartnerModal />;
         case 11:
           return <BulkUploadModal bulkName={bulkName} />;
      

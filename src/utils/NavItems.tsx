@@ -31,15 +31,15 @@ export const NavItems: NavItem[] = [
   {
     name: "Scheme",
     link: "/Scheme",
-    icon: ClipboardList,
+    icon: Layers,
     // subItems: [
     //   { name: "Manual", link: "/SchemeForm" },
     //   { name: "Bulk Upload", link: "/SchemeExcel" },
     // ],
   },
   {
-    name: "Courses",
-    link: "/goals",
+    name: "Target",
+    link: "/Target",
     icon: Target,
     // subItems: [
     //   { name: "View Goals", link: "/view-goals" },
@@ -47,8 +47,8 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Training Partners",
-    link: "/library",
+    name: "Course",
+    link: "/Course",
     icon: BookOpen,
     // subItems: [
     //   { name: "E-books", link: "/ebooks" },
@@ -56,8 +56,8 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Training Centeres",
-    link: "/users",
+    name: "Training Partner",
+    link: "/TrainingPartner",
     icon: Users,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },

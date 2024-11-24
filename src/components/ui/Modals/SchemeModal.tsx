@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css'; // Import the styles for the date picker
+import React, { useState } from "react";
+import "react-datepicker/dist/react-datepicker.css"; // Import the styles for the date picker
 
-import Input from '../../ui/Input';
-import Label from '../../ui/Label';
-import Select from '../../ui/Select';
-import Button from '../../ui/SubmitButton';
-import DatePicker from 'react-datepicker'; // Import react-datepicker
+import Input from "../../ui/Input";
+import Label from "../../ui/Label";
+import Select from "../../ui/Select";
+import Button from "../../ui/SubmitButton";
+import DatePicker from "react-datepicker"; // Import react-datepicker
 
 const SchemeModalContent: React.FC = () => {
-  const [selectedSchemeType, setSelectedSchemeType] = useState('');
-  const [selectedFundingType, setSelectedFundingType] = useState('');
-  const [selectedScheme, setSelectedScheme] = useState<string>('new');
+  const [selectedSchemeType, setSelectedSchemeType] = useState("");
+  const [selectedFundingType, setSelectedFundingType] = useState("");
+  const [selectedScheme, setSelectedScheme] = useState<string>("new");
   const [dateOfSanction, setDateOfSanction] = useState<Date | null>(null); // State to store the selected date
 
   const handleDateChange = (date: Date | null) => {
     setDateOfSanction(date); // Update state with the selected date
   };
 
-  const handleSchemeTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSchemeTypeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setSelectedSchemeType(event.target.value);
   };
 
-  const handleFundingTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFundingTypeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setSelectedFundingType(event.target.value);
   };
 
@@ -29,8 +33,8 @@ const SchemeModalContent: React.FC = () => {
     setSelectedScheme(event.target.value); // Update state when a radio button is selected
   };
 
-  const schemeTypes = ['Type 1', 'Type 2', 'Type 3'];
-  const fundingTypes = ['Type A', 'Type B', 'Type C'];
+  const schemeTypes = ["Type 1", "Type 2", "Type 3"];
+  const fundingTypes = ["Type A", "Type B", "Type C"];
 
   return (
     <div className="">
@@ -44,7 +48,7 @@ const SchemeModalContent: React.FC = () => {
                   type="radio"
                   name="scheme"
                   value="new"
-                  checked={selectedScheme === 'new'}
+                  checked={selectedScheme === "new"}
                   onChange={handleSchemeChange}
                   className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 />
@@ -55,7 +59,7 @@ const SchemeModalContent: React.FC = () => {
                   type="radio"
                   name="scheme"
                   value="existing"
-                  checked={selectedScheme === 'existing'}
+                  checked={selectedScheme === "existing"}
                   onChange={handleSchemeChange}
                   className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 />
@@ -64,12 +68,12 @@ const SchemeModalContent: React.FC = () => {
             </div>
           </div>
 
-          {selectedScheme === 'new' ? (
+          {selectedScheme === "new" ? (
             <div>
               <Label text="Scheme Name" />
               <Input type="text" />
             </div>
-          ) : selectedScheme === 'existing' ? (
+          ) : selectedScheme === "existing" ? (
             <div>
               <Label text="Select Scheme" />
               <Select
