@@ -1,63 +1,26 @@
 import { Column } from 'react-table';
 
-interface Candidate {
+interface SchemeData {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
+  Scheme: string;
+  SchemeType: string;
+  SchemeCode: string;
+  FundName: string;
+  FundType: string;
+  FundRatio: string;
+  OrderNumber: string;
+  SantionDate: string;
+  Action: any;
 }
 
-export const candidateColumns: Column<Candidate>[] = [
-  {
-    Header: 'ID',
-    accessor: 'id',
-  },
-  {
-    Header: 'Name',
-    accessor: 'name',
-  },
-  {
-    Header: 'Email',
-    accessor: 'email',
-  },
-  {
-    Header: 'Phone',
-    accessor: 'phone',
-  },
-  {
-    Header: 'Address', // New column
-    accessor: 'address',
-  },
-  {
-    Header: 'Age', // New column
-    accessor: 'age',
-  },
-  {
-    Header: 'Role', // New column
-    accessor: 'role',
-  },
-  {
-    Header: 'Company', // New column
-    accessor: 'company',
-  },
-  {
-    Header: 'Joined Date', // New column
-    accessor: 'joinedDate',
-  },
-  {
-    Header: 'Status', // New column
-    accessor: 'status',
-  },
-  {
-    Header: 'Department', // New column
-    accessor: 'department',
-  },
-  {
-    Header: 'Country', // New column
-    accessor: 'country',
-  },
-  {
-    Header: 'Manager', // New column
-    accessor: 'manager',
-  },
+export const candidateColumns: Column<SchemeData>[] = [
+  { Header: "Scheme", accessor: "Scheme" },
+  { Header: "Scheme Type", accessor: "SchemeType" },
+  { Header: "Scheme Code", accessor: "SchemeCode" },
+  { Header: "Fund Name", accessor: "FundName" },
+  { Header: "Fund Type", accessor: "FundType" },
+  { Header: "Fund Ratio", accessor: "FundRatio" },
+  { Header: "Order Number", accessor: "OrderNumber" },
+  { Header: "Santion Date", accessor: "SantionDate" },
+  { Header: "Action", accessor: "Action" },
 ];

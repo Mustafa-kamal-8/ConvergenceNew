@@ -58,7 +58,7 @@ const Sidebar = ({
       const { top, left } = menuRefs.current[index]!.getBoundingClientRect();
       setSubMenuPosition({
         top: top + window.scrollY, // Position at the top of the parent item
-        left: left + window.scrollX + (isCollapsed ? 64 : 0), // Adjusting left for submenu
+        left: left + window.scrollX + (isCollapsed ? 60 : 0) , // Adjusting left for submenu
       });
     }
   };
@@ -96,7 +96,7 @@ const Sidebar = ({
 
   return (
     <div
-      className={ `flex flex-col h-screen bg-gradient-to-br bg-theme-primary text-white shadow-xl border-xlg-blue-400 ${isCollapsed ? "w-16" : "w-64"} transition-all duration-300` }
+      className={ `flex flex-col h-screen bg-gradient-to-br bg-theme-primary text-white shadow-xl border-xlg-blue-400 ${isCollapsed ? "w-20" : "w-64"} transition-all duration-300` }
     >
       <div className="flex items-center justify flex-shrink-0 py-3 px-2">
         <img className="h-10 w-10 flex-shrink-0" src={ logo } alt="" />
@@ -118,7 +118,9 @@ const Sidebar = ({
               ) && "bg-theme-primary-active"}` }
               onClick={ () => handleMenuClick(item, index) } // Pass index to calculate position
             >
+              <div className="h-6 w-6 overflow-hidden">
               <item.icon className="w-6 h-6" />
+              </div>
               { !isCollapsed && <span className="ml-4 text-sm font-medium">{ item.name }</span> }
               { item.subItems && !isCollapsed && (
                 <span className="ml-auto">
@@ -141,7 +143,7 @@ const Sidebar = ({
                     }
                     : {}
                 }
-                className="fixed hidden group-hover:block bg-theme-primary shadow-lg z-10 left-20"
+                className="fixed hidden group-hover:block bg-theme-primary shadow-lg z-10"
               >
                 { item.subItems.map((subItem, subIndex) => (
                   <div

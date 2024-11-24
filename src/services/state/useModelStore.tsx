@@ -1,18 +1,21 @@
-// src/store/useModalStore.ts
 import { create } from 'zustand';
 
 type ModalState = {
   isOpen: boolean;
-  modalType: string;
-  openModal: (type: string) => void;
+  modalType: number | null;
+  modalTitle: string;
+  bulkName: string;
+  openModal: (type: number, title: string, bulkName: string) => void; // Update type to accept bulkName
   closeModal: () => void;
 };
 
 const useModalStore = create<ModalState>((set) => ({
   isOpen: false,
-  modalType: '',
-  openModal: (type) => set({ isOpen: true, modalType: type }),
-  closeModal: () => set({ isOpen: false, modalType: '' }),
+  modalType: null,
+  modalTitle: '',
+  bulkName: '',
+  openModal: (type: number, title: string , bulkName: string) => set({ isOpen: true, modalType: type, modalTitle: title , bulkName:bulkName}), // Update modalType and modalTitle
+  closeModal: () => set({ isOpen: false, modalType: null, modalTitle: '', bulkName: '' }), // Reset modalTitle and modalType when closing
 }));
 
 export default useModalStore;

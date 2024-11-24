@@ -30,57 +30,104 @@ export const NavItems: NavItem[] = [
   },
   {
     name: "Scheme",
-    link: "",
+    link: "/Scheme",
     icon: ClipboardList,
-    subItems: [
-      { name: "Manual", link: "/SchemeForm" },
-      { name: "Bulk Upload", link: "/SchemeExcel" },
-    ],
+    // subItems: [
+    //   { name: "Manual", link: "/SchemeForm" },
+    //   { name: "Bulk Upload", link: "/SchemeExcel" },
+    // ],
   },
   {
-    name: "Goals",
+    name: "Courses",
     link: "/goals",
     icon: Target,
-    subItems: [
-      { name: "View Goals", link: "/view-goals" },
-      { name: "Add Goals", link: "/add-goals" },
-    ],
+    // subItems: [
+    //   { name: "View Goals", link: "/view-goals" },
+    //   { name: "Add Goals", link: "/add-goals" },
+    // ],
   },
   {
-    name: "Library",
+    name: "Training Partners",
     link: "/library",
     icon: BookOpen,
-    subItems: [
-      { name: "E-books", link: "/ebooks" },
-      { name: "Documents", link: "/documents" },
-    ],
+    // subItems: [
+    //   { name: "E-books", link: "/ebooks" },
+    //   { name: "Documents", link: "/documents" },
+    // ],
+  },
+  {
+    name: "Training Centeres",
+    link: "/users",
+    icon: Users,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
+  },
+  {
+    name: "Batches",
+    link: "/users",
+    icon: Users,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
+  },
+  {
+    name: "Candidates",
+    link: "/users",
+    icon: Users,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
+  },
+  {
+    name: "Assessment",
+    link: "/users",
+    icon: Users,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
+  },
+  {
+    name: "Placement",
+    link: "/users",
+    icon: Users,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
   },
   {
     name: "Users",
-    link: "/users",
-    icon: Users,
-    subItems: [
-      { name: "Manage Users", link: "/manage-users" },
-      { name: "User Roles", link: "/user-roles" },
-    ],
-  },
-  {
-    name: "Buildings",
     link: "/buildings",
     icon: Building,
     subItems: [
-      { name: "List Buildings", link: "/list-buildings" },
-      { name: "Add Building", link: "/add-building" },
+      { name: "Trainers", link: "/list-buildings" },
+      { name: "Assessors", link: "/add-building" },
+      { name: "Others", link: "/add-building" },
     ],
   },
   {
-    name: "Layers",
-    link: "/layers",
-    icon: Layers,
+    name: "Masters",
+    link: "/buildings",
+    icon: Building,
+    subItems: [
+      { name: "Sectors", link: "/list-buildings" },
+      { name: "Departments", link: "/add-building" },
+      // { name: "Others", link: "/add-building" },
+    ],
   },
   {
-    name: "Profile",
-    link: "/profile",
-    icon: User,
+    name: "Reports",
+    link: "/buildings",
+    icon: Building,
+    subItems: [
+      { name: "Invoice", link: "/list-buildings" },
+      { name: "Overall Report", link: "/add-building" },
+     
+    ],
   },
 ];

@@ -1,31 +1,25 @@
 import React from 'react';
-import { Button } from '@mui/material';
-import { Add } from '@mui/icons-material'; // Import the + icon from Material UI
 import useModalStore from '../../services/state/useModelStore';
 
+
 type ModalOpenButtonProps = {
-  modalType: string;
+  modalType: number; 
+  modalTitle: string; 
+  bulkName: string;
+  Icon: React.ElementType;
 };
 
-const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType }) => {
+const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle,bulkName,Icon }) => {
   const openModal = useModalStore((state) => state.openModal);
 
   return (
-    <Button
-      variant="contained"
-      onClick={() => openModal(modalType)}
-      sx={{
-        mt: 2,
-        backgroundColor: 'black', // Black color for the button
-        color: 'white', // White text color
-        '&:hover': {
-          backgroundColor: '#333', // Darker shade on hover
-        },
-      }}
-      startIcon={<Add />} // Add the + icon at the start
+    <button
+      onClick={() => openModal(modalType, modalTitle, bulkName)} // Pass both modalType and modalTitle
+      className="py-2 px-4 text-xs bg-theme-primary hover:bg-theme-primary-hover rounded-md flex items-center gap-2 text-white"
     >
-      ADD {modalType.charAt(0).toUpperCase() + modalType.slice(1)} 
-    </Button>
+      <Icon className="w-6 h-6" /> {/* Icon */}
+      {modalTitle} {/* Use the modalTitle prop for the button label */}
+    </button>
   );
 };
 

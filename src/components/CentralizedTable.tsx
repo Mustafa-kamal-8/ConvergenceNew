@@ -36,19 +36,21 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
   );
 
   return (
-    <div className="bg-white shadow-md  overflow-auto">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="p-4"><p className="font-bold"></p></div>
+    <div className="bg-white overflow-auto border rounded-lg max-h-80 custom-scrollbar">
       {/* Table */}
       <table
         {...getTableProps()}
-        className="text-sm text-left text-gray-950 border-collapse"
+        className="text-xs text-left text-gray-950 border-collapse"
       >
-        <thead className="bg-blue-500 text-white uppercase text-sm">
+        <thead className="bg-gray-300  uppercase text-xs">
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="px-6 py-4 border-r border-gray-300 text-center"
+                  className="px-4 py-2 border-r border-gray-300 text-center"
                 >
                   {column.render("Header")}
                 </th>
@@ -67,7 +69,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
                 {row.cells.map((cell : any) => (
                   <td
                     {...cell.getCellProps()}
-                    className="px-6 py-3 text-center border-r border-gray-200"
+                    className="px-6 py-3 text-center whitespace-nowrap"
                   >
                     {cell.render("Cell")}
                   </td>
@@ -78,17 +80,19 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
         </tbody>
       </table>
 
-      {/* Pagination */}
-      <div className="flex flex-col md:flex-row items-center justify-between mt-6 px-4 py-2 bg-gray-100 rounded-lg border-t">
+
+    </div>
+          {/* Pagination */}
+          <div className="flex flex-col md:flex-row items-center justify-between mt-2 px-4 py-2 rounded-lg border-t">
         <div className="flex items-center mb-2 md:mb-0 space-x-2">
-          <label htmlFor="rowsPerPage" className="text-sm font-medium">
+          <label htmlFor="rowsPerPage" className="text-xs font-medium">
             Rows per page:
           </label>
           <select
             id="rowsPerPage"
             value={currentPageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
-            className="block w-20 px-2 py-1 text-sm border rounded bg-white focus:ring focus:ring-blue-200 focus:outline-none"
+            className="block w-20 px-2 py-1 text-xs border rounded bg-white focus:ring focus:ring-blue-200 focus:outline-none"
           >
             {[5, 10, 15, 20, 25, 30].map((size) => (
               <option key={size} value={size}>
@@ -121,7 +125,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
           >
             Previous
           </button>
-          <span className="text-sm font-medium">
+          <span className="text-xs font-medium">
             Page <span className="text-blue-500">{pageIndex + 1}</span> of{" "}
             <span className="text-blue-500">{pageOptions.length}</span>
           </span>
@@ -149,7 +153,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
           </button>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 
