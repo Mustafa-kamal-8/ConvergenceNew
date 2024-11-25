@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { NavItems } from "../../utils/NavItems";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import logo from "../../assets/asdm_logo_w.png";
+import '../../custom.css'
 
 const Sidebar = ({
   isCollapsed,

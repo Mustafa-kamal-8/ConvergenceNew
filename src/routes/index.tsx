@@ -5,6 +5,7 @@ import Scheme from "../pages/Scheme";
 import Target from "../pages/Target";
 import Course from "../pages/Course";
 import TrainingPartner from "../pages/TrainingPartner";
+import Batch from "../pages/Batch";
 
 import Login from "../pages/Login";
 
@@ -19,6 +20,7 @@ const Index = () => {
           <Route path="Target" element={<Target />} />
           <Route path="Course" element={<Course />} />
           <Route path="TrainingPartner" element={<TrainingPartner />} />
+          <Route path="Batch" element={<Batch />} />
        
         </Route>
       </Routes>

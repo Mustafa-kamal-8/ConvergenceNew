@@ -42,7 +42,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
       {/* Table */}
       <table
         {...getTableProps()}
-        className="text-xs text-left text-gray-950 border-collapse"
+        className="text-xs text-left text-gray-950 border-collapse w-full"
       >
         <thead className="bg-gray-300  uppercase text-xs">
           {headerGroups.map((headerGroup) => (

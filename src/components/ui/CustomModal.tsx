@@ -8,10 +8,12 @@ import Traget from './Modals/TargetModal'
 import CourseModal from './Modals/CourseModal';
 import TrainingPartnerModal from './Modals/TrainingPartnerModal';
 import { X } from 'lucide-react';
+import BatchModel from './Modals/BatchModel';
 
 
 const CustomModal: React.FC = () => {
   const { isOpen, modalType, modalTitle,bulkName, closeModal } = useModalStore();
+  
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -23,6 +25,8 @@ const CustomModal: React.FC = () => {
           return <CourseModal />;
           case 3:
             return <TrainingPartnerModal />;
+            case 4:
+              return <BatchModel />;
         case 11:
           return <BulkUploadModal bulkName={bulkName} />;
      
@@ -36,7 +40,7 @@ const CustomModal: React.FC = () => {
 
   return (
     <Modal open={isOpen} onClose={closeModal}>
-      <Box className="fixed w-full max-w-3xl bg-white border shadow-md left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl"
+      <Box className="fixed  bg-white border shadow-md left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl"
        
       >
         <div className='p-4 flex gap-4 justify-between'>

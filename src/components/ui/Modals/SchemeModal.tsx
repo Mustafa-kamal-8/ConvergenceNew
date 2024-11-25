@@ -129,8 +129,14 @@ const SchemeModalContent: React.FC = () => {
             <DatePicker
               selected={dateOfSanction}
               onChange={handleDateChange}
-              dateFormat="yyyy-MM-dd" // Date format you prefer
+              dateFormat="dd-MM-yyyy"
+              placeholderText="dd-mm-yyyy"
               className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full"
+              showYearDropdown // Enable year dropdown
+              yearDropdownItemNumber={100} // Show 100 years in the dropdown
+              scrollableYearDropdown // Make the year dropdown scrollable
+              showMonthDropdown // Enable month dropdown
+              scrollableMonthYearDropdown // Make both month and year dropdown scrollable
             />
           </div>
         </div>

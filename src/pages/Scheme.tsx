@@ -99,6 +99,7 @@ const Scheme: React.FC = () => {
             )}
            
           </div>
+          <div className="flex gap-1">
           <TemplateDownloadButton
               templateType={0}
               templateTitle="Template"
@@ -117,7 +118,7 @@ const Scheme: React.FC = () => {
               bulkName="scheme"
               Icon={Add}
             />
-
+</div>
          
         </div>
      

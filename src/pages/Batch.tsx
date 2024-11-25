@@ -24,7 +24,7 @@ interface SchemeData {
     Action: any;
   }
   
-  const Target: React.FC = () => {
+  const Batch: React.FC = () => {
     const [data, setData] = useState<SchemeData[]>([
       {
         id: "1",
@@ -84,7 +84,7 @@ const handleDropdownSelect = (option: string) => {
         <CustomModal />
       </div>
       <div className="">
-        <p className="text-2xl font-bold mb-4">List Of Target</p>
+        <p className="text-2xl font-bold mb-4">List Of Batches</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <Dropdown
@@ -102,7 +102,7 @@ const handleDropdownSelect = (option: string) => {
           </div>
           <div className="flex gap-1">
           <TemplateDownloadButton
-              templateType={1}
+              templateType={4}
               templateTitle="Template"
               Icon={DownloadCloud}
             />
@@ -110,16 +110,16 @@ const handleDropdownSelect = (option: string) => {
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="target"
+              bulkName="batch"
               Icon={UploadCloud}
             />
             <ModalOpenButton
-              modalType={1}
-              modalTitle="Add Target"
-              bulkName="target"
+              modalType={4}
+              modalTitle="Add Batch"
+              bulkName="Batch"
               Icon={Add}
             />
-  </div>
+</div>
          
         </div>
      
@@ -130,4 +130,6 @@ const handleDropdownSelect = (option: string) => {
   )
 }
 
-export default Target
+export default Batch
+
+

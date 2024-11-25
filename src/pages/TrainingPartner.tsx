@@ -100,6 +100,7 @@ const handleDropdownSelect = (option: string) => {
             )}
            
           </div>
+          <div className="flex gap-1">
           <TemplateDownloadButton
               templateType={3}
               templateTitle="Template"
@@ -118,7 +119,7 @@ const handleDropdownSelect = (option: string) => {
               bulkName="trainingPartner"
               Icon={Add}
             />
-
+</div>
          
         </div>
      

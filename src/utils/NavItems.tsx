@@ -1,12 +1,10 @@
 import {
   Home,
-  ClipboardList,
+
   Target,
-  BookOpen,
-  Users,
-  Building,
-  Layers,
-  User,
+
+  Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2
+
 
 } from "lucide-react";
 
@@ -29,9 +27,9 @@ export const NavItems: NavItem[] = [
     icon: Home,
   },
   {
-    name: "Scheme",
+    name: "Schemes",
     link: "/Scheme",
-    icon: Layers,
+    icon: Table2,
     // subItems: [
     //   { name: "Manual", link: "/SchemeForm" },
     //   { name: "Bulk Upload", link: "/SchemeExcel" },
@@ -47,18 +45,18 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Course",
+    name: "Courses",
     link: "/Course",
-    icon: BookOpen,
+    icon: Book,
     // subItems: [
     //   { name: "E-books", link: "/ebooks" },
     //   { name: "Documents", link: "/documents" },
     // ],
   },
   {
-    name: "Training Partner",
+    name: "Partners & Centeres",
     link: "/TrainingPartner",
-    icon: Users,
+    icon: Building2,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
@@ -66,26 +64,36 @@ export const NavItems: NavItem[] = [
   },
   {
     name: "Batches",
-    link: "/users",
-    icon: Users,
+    link: "/Batch",
+    icon: Group,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
     // ],
   },
   {
-    name: "Candidates",
-    link: "/users",
-    icon: Users,
+    name: "Cnadidates",
+    link: "/Cnadidates",
+    icon: User2,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
     // ],
+  },
+  {
+    name: "Users",
+    link: "",
+    icon: Users2,
+    subItems: [
+      { name: "Trainers", link: "/list-buildings" },
+      { name: "Assessors", link: "/add-building" },
+      // { name: "Others", link: "/add-building" },
+    ],
   },
   {
     name: "Assessment",
     link: "/users",
-    icon: Users,
+    icon: FileSignature,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
@@ -94,40 +102,34 @@ export const NavItems: NavItem[] = [
   {
     name: "Placement",
     link: "/users",
-    icon: Users,
+    icon: Spline,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
     //   { name: "User Roles", link: "/user-roles" },
     // ],
   },
   {
-    name: "Users",
-    link: "/buildings",
-    icon: Building,
-    subItems: [
-      { name: "Trainers", link: "/list-buildings" },
-      { name: "Assessors", link: "/add-building" },
-      { name: "Others", link: "/add-building" },
-    ],
-  },
-  {
     name: "Masters",
-    link: "/buildings",
-    icon: Building,
+    link: "",
+    icon: Settings2,
     subItems: [
-      { name: "Sectors", link: "/list-buildings" },
-      { name: "Departments", link: "/add-building" },
-      // { name: "Others", link: "/add-building" },
+      { name: "Departments", link: "/list-buildings" },
+      { name: "Sectors", link: "/add-building" },
+      { name: "States & Districts", link: "/add-building" },
+     
     ],
   },
+ 
   {
     name: "Reports",
-    link: "/buildings",
-    icon: Building,
+    link: "",
+    icon: Receipt,
     subItems: [
       { name: "Invoice", link: "/list-buildings" },
       { name: "Overall Report", link: "/add-building" },
      
     ],
   },
+ 
+ 
 ];
