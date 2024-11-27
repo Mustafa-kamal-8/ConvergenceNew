@@ -8,7 +8,13 @@ import Traget from './Modals/TargetModal'
 import CourseModal from './Modals/CourseModal';
 import TrainingPartnerModal from './Modals/TrainingPartnerModal';
 import { X } from 'lucide-react';
-import BatchModel from './Modals/BatchModel';
+import BatchModal from './Modals/BatchModal';
+import CandidateModal from './Modals/CandidateModal';
+import TrainerModal from "./Modals/TrainerModal";
+import AssessorsModal from './Modals/AssessorsModal';
+import AssessmentModal from './Modals/AssessmentModal';
+import PlacementModal from './Modals/PlacementModal';
+import InvoiceModal from './Modals/InvoiceModal';
 
 
 const CustomModal: React.FC = () => {
@@ -19,18 +25,30 @@ const CustomModal: React.FC = () => {
     switch (modalType) {
       case 0:
         return <Scheme />;
-        case 1:
-          return <Traget />;
-          case 2:
-          return <CourseModal />;
-          case 3:
-            return <TrainingPartnerModal />;
-            case 4:
-              return <BatchModel />;
-        case 11:
-          return <BulkUploadModal bulkName={bulkName} />;
-     
-        // return <TrainerModalContent />;
+      case 1:
+        return <Traget />;
+      case 2:
+        return <CourseModal />;
+      case 3:
+        return <TrainingPartnerModal />;
+      case 4:
+        return <BatchModal />;
+      case 5:
+        return <CandidateModal />;
+      case 6:
+        return <TrainerModal />;
+      case 7:
+        return <AssessorsModal />;
+      case 8:
+        return <AssessmentModal />;
+      case 9:
+        return <PlacementModal />;
+      case 10:
+        return <InvoiceModal />;
+      case 11:
+        return <BulkUploadModal bulkName={bulkName} />;
+
+      // return <TrainerModalContent />;
       default:
         return <p>No content available</p>;
     }
@@ -39,14 +57,13 @@ const CustomModal: React.FC = () => {
   console.log("modal title is",modalTitle);
 
   return (
-    <Modal open={isOpen} onClose={closeModal}>
-      <Box className="fixed  bg-white border shadow-md left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl"
-       
+    <Modal open={isOpen} onClose={closeModal} className='relative flex items-center justify-center'>
+      <Box className="fixed bg-white w-fit border shadow-md rounded-xl mx-24"
       >
         <div className='p-4 flex gap-4 justify-between'>
           
         <Typography variant="h5" component="h2" mb={2}>
-            {modalTitle} {/* Ensure modalTitle is displayed */}
+            {modalTitle} 
           </Typography>
         <button className=" text-theme-primary hover:text-theme-primary-hover" onClick={closeModal}>
           <X />

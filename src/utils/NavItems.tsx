@@ -72,8 +72,8 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Cnadidates",
-    link: "/Cnadidates",
+    name: "Candidates",
+    link: "/Candidate",
     icon: User2,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
@@ -85,14 +85,15 @@ export const NavItems: NavItem[] = [
     link: "",
     icon: Users2,
     subItems: [
-      { name: "Trainers", link: "/list-buildings" },
-      { name: "Assessors", link: "/add-building" },
+      { name: "Assessors", link: "/Assessors" },
+      { name: "Trainers", link: "/Trainer" },
+
       // { name: "Others", link: "/add-building" },
     ],
   },
   {
     name: "Assessment",
-    link: "/users",
+    link: "/Assessment",
     icon: FileSignature,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
@@ -101,7 +102,7 @@ export const NavItems: NavItem[] = [
   },
   {
     name: "Placement",
-    link: "/users",
+    link: "/Placement",
     icon: Spline,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
@@ -116,20 +117,16 @@ export const NavItems: NavItem[] = [
       { name: "Departments", link: "/list-buildings" },
       { name: "Sectors", link: "/add-building" },
       { name: "States & Districts", link: "/add-building" },
-     
     ],
   },
- 
+
   {
     name: "Reports",
     link: "",
     icon: Receipt,
     subItems: [
-      { name: "Invoice", link: "/list-buildings" },
+      { name: "Invoice", link: "/Invoice" },
       { name: "Overall Report", link: "/add-building" },
-     
     ],
   },
- 
- 
 ];

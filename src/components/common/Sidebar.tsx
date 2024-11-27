@@ -23,7 +23,8 @@ const Sidebar = ({
   const routeTitles: { [key: string]: string } = {
     "/Dashboard": "Dashboard",
     "/Scheme": "Scheme",
-    "/SchemeExcel": "SchemeExcel",
+    "/Assessors": "Assessors",
+    "/Trainer": "Trainer",
   };
 
   const currentPageTitle = routeTitles[location.pathname] || "Default Title";
