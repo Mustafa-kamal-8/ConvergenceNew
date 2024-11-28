@@ -9,54 +9,37 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { assessorsColumns } from "../utils/tableColumns";
 
-interface SchemeData {
+
+interface AssessorsData {
   id: string;
-  Scheme: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
+  AssessorId: string;
+  Name: string;
+  Email: string;
+  Mobile: string;
+  AssessorAgency: string;
+  ValidUpto: string;
   Action: any;
 }
 
 const Assessors: React.FC = () => {
-  const [data, setData] = useState<SchemeData[]>([
+  const [data, setData] = useState<AssessorsData[]>([
     {
       id: "1",
-      Scheme: "Scheme A",
-      SchemeType: "Type 1",
-      SchemeCode: "S001",
-      FundName: "Fund X",
-      FundType: "Equity",
-      FundRatio: "60%",
-      OrderNumber: "O001",
-      SantionDate: "2023-01-01",
+      AssessorId: "6",
+      Name: "gvgg",
+      Email: "sds@gmail.com",
+      Mobile: "9876566545",
+      AssessorAgency: "A agency",
+      ValidUpto: "01/02.2020",
       Action: (
         <button className="py-1 px-3 text-white bg-blue-500 rounded">
           View
         </button>
       ),
     },
-    {
-      id: "2",
-      Scheme: "Scheme B",
-      SchemeType: "Type 2",
-      SchemeCode: "S002",
-      FundName: "Fund Y",
-      FundType: "Debt",
-      FundRatio: "40%",
-      OrderNumber: "O002",
-      SantionDate: "2023-06-15",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
+  
   ]);
 
   const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
@@ -68,8 +51,8 @@ const Assessors: React.FC = () => {
     setSearchValue(searchValue);
     const filteredData = data.filter(
       (candidate) =>
-        (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (selectedOption === "All" || candidate.AssessorId === selectedOption) &&
+        candidate.AssessorId.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -79,8 +62,8 @@ const Assessors: React.FC = () => {
     setSelectedOption(option);
     const filteredData = data.filter(
       (candidate) =>
-        (option === "All" || candidate.Scheme === option) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (option === "All" || candidate.AssessorId === option) &&
+        candidate.AssessorId.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -129,7 +112,7 @@ const Assessors: React.FC = () => {
         </div>
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+       <CentralizedTable columns={assessorsColumns} data={data} pageSize={5} /> 
     </>
   );
 };

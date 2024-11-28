@@ -10,46 +10,36 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { courseColumns } from "../utils/tableColumns";
 
-interface SchemeData {
-    id: string;
-    Scheme: string;
-    SchemeType: string;
-    SchemeCode: string;
-    FundName: string;
-    FundType: string;
-    FundRatio: string;
-    OrderNumber: string;
-    SantionDate: string;
-    Action: any;
-  }
+interface CourseData {
+  id: string;
+  SectorName: string;
+  QPNOSCode: string;
+  JobRoleName: string;
+  TotalTheoryHours: string;
+  TotalPracticalHours: string;
+  DateValidUpto: string;
+  Action: any;
+}
   
   const Course: React.FC = () => {
-    const [data, setData] = useState<SchemeData[]>([
+    const [data, setData] = useState<CourseData[]>([
       {
         id: "1",
-        Scheme: "Scheme A",
-        SchemeType: "Type 1",
-        SchemeCode: "S001",
-        FundName: "Fund X",
-        FundType: "Equity",
-        FundRatio: "60%",
-        OrderNumber: "O001",
-        SantionDate: "2023-01-01",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
+        SectorName: "Sector A",
+        QPNOSCode: "T1y66",
+        JobRoleName: "Developer",
+        TotalTheoryHours: "Equity",
+        TotalPracticalHours: "11",
+        DateValidUpto: "01/02/2024",
+        Action: (
+          <button className="py-1 px-3 text-white bg-blue-500 rounded">
+            View
+          </button>
+        ),
       },
-      {
-        id: "2",
-        Scheme: "Scheme B",
-        SchemeType: "Type 2",
-        SchemeCode: "S002",
-        FundName: "Fund Y",
-        FundType: "Debt",
-        FundRatio: "40%",
-        OrderNumber: "O002",
-        SantionDate: "2023-06-15",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
-      },
+     
     ]);
 
 const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
@@ -61,8 +51,8 @@ const handleSearch = (searchValue: string) => {
   setSearchValue(searchValue);
   const filteredData = data.filter(
     (candidate) =>
-      (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (selectedOption === "All" || candidate.SectorName === selectedOption) &&
+      candidate.SectorName.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -72,8 +62,8 @@ const handleDropdownSelect = (option: string) => {
   setSelectedOption(option);
   const filteredData = data.filter(
     (candidate) =>
-      (option === "All" || candidate.Scheme === option) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (option === "All" || candidate.SectorName === option) &&
+      candidate.SectorName.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -98,10 +88,9 @@ const handleDropdownSelect = (option: string) => {
                 placeholder="Search by name..."
               />
             )}
-           
           </div>
           <div className="flex gap-1">
-          <TemplateDownloadButton
+            <TemplateDownloadButton
               templateType={2}
               templateTitle="Template"
               Icon={DownloadCloud}
@@ -119,15 +108,13 @@ const handleDropdownSelect = (option: string) => {
               bulkName="course"
               Icon={Add}
             />
-</div>
-         
+          </div>
         </div>
-     
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+       <CentralizedTable columns={courseColumns} data={data} pageSize={5} /> 
     </>
-  )
+  );
 }
 
 export default Course

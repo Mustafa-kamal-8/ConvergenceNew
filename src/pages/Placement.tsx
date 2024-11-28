@@ -9,48 +9,35 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { placementColumns } from "../utils/tableColumns";
 
-interface SchemeData {
+interface PlacementData {
   id: string;
-  Scheme: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
+  BatchId: string;
+  CandidateId: string;
+  IsPlaced: string;
+  PlacementType: string;
+  EmployerName: string;
+  EmployerContact: string;
+  PlacementState: string;
+  PlacementDistrict: string;
+  MonthlySalary: string;
   Action: any;
 }
 
 const Placement: React.FC = () => {
-  const [data, setData] = useState<SchemeData[]>([
+  const [data, setData] = useState<PlacementData[]>([
     {
       id: "1",
-      Scheme: "Scheme A",
-      SchemeType: "Type 1",
-      SchemeCode: "S001",
-      FundName: "Fund X",
-      FundType: "Equity",
-      FundRatio: "60%",
-      OrderNumber: "O001",
-      SantionDate: "2023-01-01",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-    {
-      id: "2",
-      Scheme: "Scheme B",
-      SchemeType: "Type 2",
-      SchemeCode: "S002",
-      FundName: "Fund Y",
-      FundType: "Debt",
-      FundRatio: "40%",
-      OrderNumber: "O002",
-      SantionDate: "2023-06-15",
+      BatchId: "B001",
+      CandidateId: "C001",
+      IsPlaced: "Yes",
+      PlacementType: "Full-time",
+      EmployerName: "Company A",
+      EmployerContact: "9876543210",
+      PlacementState: "Assam",
+      PlacementDistrict: "Kamrup",
+      MonthlySalary: "₹50,000",
       Action: (
         <button className="py-1 px-3 text-white bg-blue-500 rounded">
           View
@@ -68,8 +55,11 @@ const Placement: React.FC = () => {
     setSearchValue(searchValue);
     const filteredData = data.filter(
       (candidate) =>
-        (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (selectedOption === "All" ||
+          candidate.PlacementType === selectedOption) &&
+        candidate.PlacementType.toLowerCase().includes(
+          searchValue.toLowerCase()
+        )
     );
     setData(filteredData);
   };
@@ -79,8 +69,10 @@ const Placement: React.FC = () => {
     setSelectedOption(option);
     const filteredData = data.filter(
       (candidate) =>
-        (option === "All" || candidate.Scheme === option) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (option === "All" || candidate.PlacementType === option) &&
+        candidate.PlacementType.toLowerCase().includes(
+          searchValue.toLowerCase()
+        )
     );
     setData(filteredData);
   };
@@ -129,7 +121,7 @@ const Placement: React.FC = () => {
         </div>
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+       <CentralizedTable columns={placementColumns} data={data} pageSize={5} /> 
     </>
   );
 };

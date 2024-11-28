@@ -10,45 +10,43 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { trainingColumns } from "../utils/tableColumns";
 
-interface SchemeData {
-    id: string;
-    Scheme: string;
-    SchemeType: string;
-    SchemeCode: string;
-    FundName: string;
-    FundType: string;
-    FundRatio: string;
-    OrderNumber: string;
-    SantionDate: string;
-    Action: any;
-  }
-  
+interface TrainingPartnerData {
+  id: string;
+  PartnerId: string;
+  Name: string;
+  SPOCName: string;
+  SmartId: string;
+  Mobile: string;
+  Email: string;
+  Address: string;
+  State: string;
+  District: string;
+  Block: string;
+  Village: string;
+  Action : any
+}
   const TrainingPartner: React.FC = () => {
-    const [data, setData] = useState<SchemeData[]>([
+    const [data, setData] = useState<TrainingPartnerData[]>([
       {
         id: "1",
-        Scheme: "Scheme A",
-        SchemeType: "Type 1",
-        SchemeCode: "S001",
-        FundName: "Fund X",
-        FundType: "Equity",
-        FundRatio: "60%",
-        OrderNumber: "O001",
-        SantionDate: "2023-01-01",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
-      },
-      {
-        id: "2",
-        Scheme: "Scheme B",
-        SchemeType: "Type 2",
-        SchemeCode: "S002",
-        FundName: "Fund Y",
-        FundType: "Debt",
-        FundRatio: "40%",
-        OrderNumber: "O002",
-        SantionDate: "2023-06-15",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
+        PartnerId: "S67",
+        Name: "Training A",
+        SPOCName: "Traing b",
+        SmartId: "9789ghg",
+        Mobile: "87654564543",
+        Email: "ghj@gmail.com",
+        Address: "ghgh",
+        State: "Assam",
+        District: "Kamrup M",
+        Block: "Dispur",
+         Village: "Hengrabari",
+        Action: (
+          <button className="py-1 px-3 text-white bg-blue-500 rounded">
+            View
+          </button>
+        ),
       },
     ]);
 
@@ -61,8 +59,8 @@ const handleSearch = (searchValue: string) => {
   setSearchValue(searchValue);
   const filteredData = data.filter(
     (candidate) =>
-      (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (selectedOption === "All" || candidate.PartnerId === selectedOption) &&
+      candidate.PartnerId.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -72,8 +70,8 @@ const handleDropdownSelect = (option: string) => {
   setSelectedOption(option);
   const filteredData = data.filter(
     (candidate) =>
-      (option === "All" || candidate.Scheme === option) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (option === "All" || candidate.PartnerId === option) &&
+      candidate.PartnerId.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -98,10 +96,9 @@ const handleDropdownSelect = (option: string) => {
                 placeholder="Search by name..."
               />
             )}
-           
           </div>
           <div className="flex gap-1">
-          <TemplateDownloadButton
+            <TemplateDownloadButton
               templateType={3}
               templateTitle="Template"
               Icon={DownloadCloud}
@@ -119,15 +116,13 @@ const handleDropdownSelect = (option: string) => {
               bulkName="trainingPartner"
               Icon={Add}
             />
-</div>
-         
+          </div>
         </div>
-     
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+       <CentralizedTable columns={trainingColumns} data={data} pageSize={5} /> 
     </>
-  )
+  );
 }
 
 export default TrainingPartner

@@ -10,46 +10,47 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { batchColumns } from "../utils/tableColumns";
 
-interface SchemeData {
-    id: string;
-    Scheme: string;
-    SchemeType: string;
-    SchemeCode: string;
-    FundName: string;
-    FundType: string;
-    FundRatio: string;
-    OrderNumber: string;
-    SantionDate: string;
-    Action: any;
-  }
+interface BatchData {
+  id: string;
+  BatchId: string;
+  SDMSBatchId: string;
+  BatchDuration: string;
+  TrainingPartner: string;
+  TrainingCenter: string;
+  Trainer: string;
+ 
+  Sector: string;
+  JobRole: string;
+  QPNOSCode: string;
+ 
+  Action: any;
+}
   
   const Batch: React.FC = () => {
-    const [data, setData] = useState<SchemeData[]>([
+    const [data, setData] = useState<BatchData[]>([
       {
         id: "1",
-        Scheme: "Scheme A",
-        SchemeType: "Type 1",
-        SchemeCode: "S001",
-        FundName: "Fund X",
-        FundType: "Equity",
-        FundRatio: "60%",
-        OrderNumber: "O001",
-        SantionDate: "2023-01-01",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
+        BatchId: "1",
+        SDMSBatchId: "12",
+        BatchDuration: "8",
+        TrainingPartner: "guio",
+        TrainingCenter: "hghg",
+        Trainer: "jhgjhg",
+      
+        Sector: "huighui",
+        JobRole: "huighui",
+        QPNOSCode: "554gefg565",
+       
+      
+        Action: (
+          <button className="py-1 px-3 text-white bg-blue-500 rounded">
+            View
+          </button>
+        ),
       },
-      {
-        id: "2",
-        Scheme: "Scheme B",
-        SchemeType: "Type 2",
-        SchemeCode: "S002",
-        FundName: "Fund Y",
-        FundType: "Debt",
-        FundRatio: "40%",
-        OrderNumber: "O002",
-        SantionDate: "2023-06-15",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
-      },
+     
     ]);
 
 const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
@@ -61,8 +62,8 @@ const handleSearch = (searchValue: string) => {
   setSearchValue(searchValue);
   const filteredData = data.filter(
     (candidate) =>
-      (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (selectedOption === "All" || candidate.SDMSBatchId === selectedOption) &&
+      candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -72,8 +73,8 @@ const handleDropdownSelect = (option: string) => {
   setSelectedOption(option);
   const filteredData = data.filter(
     (candidate) =>
-      (option === "All" || candidate.Scheme === option) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+      (option === "All" || candidate.SDMSBatchId === option) &&
+      candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -98,10 +99,9 @@ const handleDropdownSelect = (option: string) => {
                 placeholder="Search by name..."
               />
             )}
-           
           </div>
           <div className="flex gap-1">
-          <TemplateDownloadButton
+            <TemplateDownloadButton
               templateType={4}
               templateTitle="Template"
               Icon={DownloadCloud}
@@ -119,15 +119,13 @@ const handleDropdownSelect = (option: string) => {
               bulkName="Batch"
               Icon={Add}
             />
-</div>
-         
+          </div>
         </div>
-     
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+       <CentralizedTable columns={batchColumns} data={data} pageSize={5} /> 
     </>
-  )
+  );
 }
 
 export default Batch

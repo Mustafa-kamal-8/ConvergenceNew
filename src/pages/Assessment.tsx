@@ -9,55 +9,59 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { assessmentColumns } from "../utils/tableColumns";
 
-interface SchemeData {
+interface AssessmentData {
   id: string;
-  Scheme: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
+  BatchId: string;
+  SDMSBatchId: string;
+  CandidateId: string;
+  AssessedId: string;
+  AssesmentDate: string;
+  Agency: string;
+  AgencyMobile: string;
+  AgencyEmail: string;
+  AccessorId: string;
+  AccessorName: string;
+  Result: string;
+  ResultDate: string;
+  CertificationStatus: string;
+  TotalMarks: string;
+  ObtainedMarks: string;
+  MarksheetURL: string;
+  CertificateURL: string;
   Action: any;
 }
 
+
 const Assessment: React.FC = () => {
-  const [data, setData] = useState<SchemeData[]>([
-    {
-      id: "1",
-      Scheme: "Scheme A",
-      SchemeType: "Type 1",
-      SchemeCode: "S001",
-      FundName: "Fund X",
-      FundType: "Equity",
-      FundRatio: "60%",
-      OrderNumber: "O001",
-      SantionDate: "2023-01-01",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-    {
-      id: "2",
-      Scheme: "Scheme B",
-      SchemeType: "Type 2",
-      SchemeCode: "S002",
-      FundName: "Fund Y",
-      FundType: "Debt",
-      FundRatio: "40%",
-      OrderNumber: "O002",
-      SantionDate: "2023-06-15",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-  ]);
+ const [data, setData] = useState<AssessmentData[]>([
+   {
+     id: "1",
+     BatchId: "7678",
+     SDMSBatchId: "Type6757fg",
+     CandidateId: "S001",
+     AssessedId: "787hujh",
+     AssesmentDate: "01/02/2023",
+     Agency: "agency1",
+     AgencyMobile: "98765656545",
+     AgencyEmail: "agency@gmail.com",
+     AccessorId: "A123",
+     AccessorName: "John Doe",
+     Result: "Pass",
+     ResultDate: "02/02/2023",
+     CertificationStatus: "Certified",
+     TotalMarks: "100",
+     ObtainedMarks: "90",
+     MarksheetURL: "http://example.com/marksheet",
+     CertificateURL: "http://example.com/certificate",
+     Action: (
+       <button className="py-1 px-3 text-white bg-blue-500 rounded">
+         View
+       </button>
+     ),
+   },
+ ]);
 
   const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
   const [selectedOption, setSelectedOption] = useState<string>("All");
@@ -68,8 +72,9 @@ const Assessment: React.FC = () => {
     setSearchValue(searchValue);
     const filteredData = data.filter(
       (candidate) =>
-        (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (selectedOption === "All" ||
+          candidate.SDMSBatchId === selectedOption) &&
+        candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -79,8 +84,8 @@ const Assessment: React.FC = () => {
     setSelectedOption(option);
     const filteredData = data.filter(
       (candidate) =>
-        (option === "All" || candidate.Scheme === option) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (option === "All" || candidate.SDMSBatchId === option) &&
+        candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -129,7 +134,7 @@ const Assessment: React.FC = () => {
         </div>
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+     <CentralizedTable columns={assessmentColumns} data={data} pageSize={5} /> 
     </>
   );
 };

@@ -10,46 +10,33 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { targetColumns } from "../utils/tableColumns";
 
-interface SchemeData {
-    id: string;
-    Scheme: string;
-    SchemeType: string;
-    SchemeCode: string;
-    FundName: string;
-    FundType: string;
-    FundRatio: string;
-    OrderNumber: string;
-    SantionDate: string;
-    Action: any;
-  }
+interface TargetData {
+  id: string;
+  SchemeCode: string;
+  SanctionOrderNumber: string;
+  DateOfSanction: string;
+  TotalTarget: string;
+  Action: any;
+}
   
   const Target: React.FC = () => {
-    const [data, setData] = useState<SchemeData[]>([
+    const [data, setData] = useState<TargetData[]>([
       {
         id: "1",
-        Scheme: "Scheme A",
-        SchemeType: "Type 1",
-        SchemeCode: "S001",
-        FundName: "Fund X",
-        FundType: "Equity",
-        FundRatio: "60%",
-        OrderNumber: "O001",
-        SantionDate: "2023-01-01",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
+        SchemeCode: "S78678",
+        SanctionOrderNumber: "gb56756",
+        DateOfSanction: "01/02/2022",
+        TotalTarget: "89789",
+  
+        Action: (
+          <button className="py-1 px-3 text-white bg-blue-500 rounded">
+            View
+          </button>
+        ),
       },
-      {
-        id: "2",
-        Scheme: "Scheme B",
-        SchemeType: "Type 2",
-        SchemeCode: "S002",
-        FundName: "Fund Y",
-        FundType: "Debt",
-        FundRatio: "40%",
-        OrderNumber: "O002",
-        SantionDate: "2023-06-15",
-        Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
-      },
+     
     ]);
 
 const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
@@ -60,9 +47,9 @@ const [searchValue, setSearchValue] = useState<string>("");
 const handleSearch = (searchValue: string) => {
   setSearchValue(searchValue);
   const filteredData = data.filter(
-    (candidate) =>
-      (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+    (target) =>
+      (selectedOption === "All" || target.SchemeCode === selectedOption) &&
+      target.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -71,9 +58,9 @@ const handleSearch = (searchValue: string) => {
 const handleDropdownSelect = (option: string) => {
   setSelectedOption(option);
   const filteredData = data.filter(
-    (candidate) =>
-      (option === "All" || candidate.Scheme === option) &&
-      candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+    (target) =>
+      (option === "All" || target.SchemeCode === option) &&
+      target.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
   );
   setData(filteredData);
 };
@@ -98,10 +85,9 @@ const handleDropdownSelect = (option: string) => {
                 placeholder="Search by name..."
               />
             )}
-           
           </div>
           <div className="flex gap-1">
-          <TemplateDownloadButton
+            <TemplateDownloadButton
               templateType={1}
               templateTitle="Template"
               Icon={DownloadCloud}
@@ -119,15 +105,13 @@ const handleDropdownSelect = (option: string) => {
               bulkName="target"
               Icon={Add}
             />
-  </div>
-         
+          </div>
         </div>
-     
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+      <CentralizedTable columns={targetColumns} data={data} pageSize={5} />
     </>
-  )
+  );
 }
 
 export default Target

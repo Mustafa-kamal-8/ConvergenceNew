@@ -9,48 +9,31 @@ import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { invoiceColumns } from "../utils/tableColumns";
 
-interface SchemeData {
+interface InvoiceData {
   id: string;
-  Scheme: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
+  BatchId: string;
+  InvoiceType: string;
+  InvoiceNumber: string;
+  InvoiceDate: string;
+  NoOfCandidates: string;
+  Rate: string;
+  Amount: string;
   Action: any;
 }
 
 const Invoice: React.FC = () => {
-  const [data, setData] = useState<SchemeData[]>([
+  const [data, setData] = useState<InvoiceData[]>([
     {
       id: "1",
-      Scheme: "Scheme A",
-      SchemeType: "Type 1",
-      SchemeCode: "S001",
-      FundName: "Fund X",
-      FundType: "Equity",
-      FundRatio: "60%",
-      OrderNumber: "O001",
-      SantionDate: "2023-01-01",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-    {
-      id: "2",
-      Scheme: "Scheme B",
-      SchemeType: "Type 2",
-      SchemeCode: "S002",
-      FundName: "Fund Y",
-      FundType: "Debt",
-      FundRatio: "40%",
-      OrderNumber: "O002",
-      SantionDate: "2023-06-15",
+      BatchId: "B001",
+      InvoiceType: "Standard",
+      InvoiceNumber: "INV001",
+      InvoiceDate: "2023-02-15",
+      NoOfCandidates: "30",
+      Rate: "5000",
+      Amount: "150000",
       Action: (
         <button className="py-1 px-3 text-white bg-blue-500 rounded">
           View
@@ -68,8 +51,9 @@ const Invoice: React.FC = () => {
     setSearchValue(searchValue);
     const filteredData = data.filter(
       (candidate) =>
-        (selectedOption === "All" || candidate.Scheme === selectedOption) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (selectedOption === "All" ||
+          candidate.InvoiceType === selectedOption) &&
+        candidate.InvoiceType.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -79,8 +63,8 @@ const Invoice: React.FC = () => {
     setSelectedOption(option);
     const filteredData = data.filter(
       (candidate) =>
-        (option === "All" || candidate.Scheme === option) &&
-        candidate.SchemeCode.toLowerCase().includes(searchValue.toLowerCase())
+        (option === "All" || candidate.InvoiceType === option) &&
+        candidate.InvoiceType.toLowerCase().includes(searchValue.toLowerCase())
     );
     setData(filteredData);
   };
@@ -129,7 +113,7 @@ const Invoice: React.FC = () => {
         </div>
       </div>
 
-      {/* <CentralizedTable columns={candidateColumns} data={data} pageSize={5} /> */}
+     <CentralizedTable columns={invoiceColumns} data={data} pageSize={5} /> 
     </>
   );
 };
