@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { candidateColumns } from "../utils/tableColumns";
+import { schemeColumns as getTrainingColumns} from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import Dropdown from "../components/ui/Dropdown";
-import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
-import Input from "../components/ui/Input";
+import {  DownloadCloud, UploadCloud } from "lucide-react";
+
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import { useNavigate } from "react-router-dom";
 
 interface SchemeData {
   id: string;
   Scheme: string;
+  Targets: string;
   SchemeType: string;
   SchemeCode: string;
   FundName: string;
@@ -20,14 +22,21 @@ interface SchemeData {
   FundRatio: string;
   OrderNumber: string;
   SantionDate: string;
-  Action: any;
+  TotalTarget: string;
+  Action: unknown;
 }
 
 const Scheme: React.FC = () => {
+
+  const navigate = useNavigate();
+  const candidateColumns = React.useMemo(() => getTrainingColumns(navigate), [navigate]);
+
+
   const [data, setData] = useState<SchemeData[]>([
     {
       id: "1",
       Scheme: "Scheme A",
+      Targets:"5",
       SchemeType: "Type 1",
       SchemeCode: "S001",
       FundName: "Fund X",
@@ -35,11 +44,13 @@ const Scheme: React.FC = () => {
       FundRatio: "60%",
       OrderNumber: "O001",
       SantionDate: "2023-01-01",
+      TotalTarget:"34",
       Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
     },
     {
       id: "2",
       Scheme: "Scheme B",
+      Targets:"7",
       SchemeType: "Type 2",
       SchemeCode: "S002",
       FundName: "Fund Y",
@@ -47,6 +58,7 @@ const Scheme: React.FC = () => {
       FundRatio: "40%",
       OrderNumber: "O002",
       SantionDate: "2023-06-15",
+      TotalTarget:"44",
       Action: <button className="py-1 px-3 text-white bg-blue-500 rounded">View</button>,
     },
   ]);
@@ -111,13 +123,16 @@ const Scheme: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="scheme"
               Icon={UploadCloud}
+              id= {''}
             />
             <ModalOpenButton
               modalType={0}
               modalTitle="Add scheme"
               bulkName="scheme"
               Icon={Add}
+              id= {''}
             />
+           
 </div>
          
         </div>

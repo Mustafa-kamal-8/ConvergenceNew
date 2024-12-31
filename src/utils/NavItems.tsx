@@ -1,7 +1,7 @@
 import {
   Home,
 
-  Target,
+
 
   Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2
 
@@ -16,7 +16,7 @@ interface NavSubItems {
 interface NavItem {
   name?: string;
   link?: string;
-  icon?: any ; // Ensure this matches LucideIcon type
+  icon?: unknown ; // Ensure this matches LucideIcon type
   subItems?: NavSubItems[];
 }
 
@@ -27,21 +27,22 @@ export const NavItems: NavItem[] = [
     icon: Home,
   },
   {
-    name: "Schemes",
+    name: "Masters",
+    link: "",
+    icon: Settings2,
+    subItems: [
+      { name: "Departments", link: "/list-buildings" },
+      { name: "Sectors", link: "/add-building" },
+      { name: "States & Districts", link: "/add-building" },
+    ],
+  },
+  {
+    name: "Schemes & Targets",
     link: "/Scheme",
     icon: Table2,
     // subItems: [
     //   { name: "Manual", link: "/SchemeForm" },
     //   { name: "Bulk Upload", link: "/SchemeExcel" },
-    // ],
-  },
-  {
-    name: "Target",
-    link: "/Target",
-    icon: Target,
-    // subItems: [
-    //   { name: "View Goals", link: "/view-goals" },
-    //   { name: "Add Goals", link: "/add-goals" },
     // ],
   },
   {
@@ -63,6 +64,29 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
+    name: "Users",
+    link: "",
+    icon: Users2,
+    subItems: [
+      { name: "Assessors", link: "/Assessors" },
+      { name: "Trainers", link: "/Trainer" },
+
+      // { name: "Others", link: "/add-building" },
+    ],
+  },
+  
+  // {
+  //   name: "Target",
+  //   link: "/Target",
+  //   icon: Target,
+  //   subItems: [
+  //     { name: "View Goals", link: "/view-goals" },
+  //     { name: "Add Goals", link: "/add-goals" },
+  //   ],
+  // },
+ 
+  
+  {
     name: "Batches",
     link: "/Batch",
     icon: Group,
@@ -80,17 +104,7 @@ export const NavItems: NavItem[] = [
     //   { name: "User Roles", link: "/user-roles" },
     // ],
   },
-  {
-    name: "Users",
-    link: "",
-    icon: Users2,
-    subItems: [
-      { name: "Assessors", link: "/Assessors" },
-      { name: "Trainers", link: "/Trainer" },
-
-      // { name: "Others", link: "/add-building" },
-    ],
-  },
+ 
   {
     name: "Assessment",
     link: "/Assessment",
@@ -109,16 +123,7 @@ export const NavItems: NavItem[] = [
     //   { name: "User Roles", link: "/user-roles" },
     // ],
   },
-  {
-    name: "Masters",
-    link: "",
-    icon: Settings2,
-    subItems: [
-      { name: "Departments", link: "/list-buildings" },
-      { name: "Sectors", link: "/add-building" },
-      { name: "States & Districts", link: "/add-building" },
-    ],
-  },
+
 
   {
     name: "Reports",

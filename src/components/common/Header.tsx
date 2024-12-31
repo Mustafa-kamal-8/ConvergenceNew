@@ -5,7 +5,7 @@ const Header = ({
   toggleSidebar,
 }: {
   isSidebarCollapsed: boolean;
-  toggleSidebar: any;
+  toggleSidebar: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
     <div

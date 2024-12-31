@@ -1,8 +1,14 @@
 import { Column } from 'react-table';
+import { useNavigate } from "react-router-dom";
+import ModalOpenButton from '../components/ui/ModelOpenButton';
+import {
+Plus
+} from "lucide-react";
 
 interface SchemeData {
   id: string;
   Scheme: string;
+  Targets: string;
   SchemeType: string;
   SchemeCode: string;
   FundName: string;
@@ -10,12 +16,35 @@ interface SchemeData {
   FundRatio: string;
   OrderNumber: string;
   SantionDate: string;
-  Action: any;
+  TotalTarget: string;
+  Action: unknown;
 }
 
-export const candidateColumns: Column<SchemeData>[] = [
+export const schemeColumns: (navigate: ReturnType<typeof useNavigate>) => Column<SchemeData>[] = (navigate) => [
   { Header: "ID", accessor: "id" },
   { Header: "Scheme", accessor: "Scheme" },
+  {
+    Header: "Targets",
+    accessor: "Targets",
+    Cell: ({ row }: { row: { original: SchemeData } }) => (
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span
+          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+          onClick={() => navigate(`/Scheme/Targets/${row.original.id}`)}
+        >
+          {row.original.Targets}
+        </span>
+        <ModalOpenButton
+          modalType={1}
+          modalTitle="Add Target"
+          bulkName="target"
+          Icon={Plus}
+          id={row.original.id}
+          variant="table"
+        />
+      </div>
+    ),
+  },
   { Header: "Scheme Type", accessor: "SchemeType" },
   { Header: "Scheme Code", accessor: "SchemeCode" },
   { Header: "Fund Name", accessor: "FundName" },
@@ -23,9 +52,9 @@ export const candidateColumns: Column<SchemeData>[] = [
   { Header: "Fund Ratio", accessor: "FundRatio" },
   { Header: "Order Number", accessor: "OrderNumber" },
   { Header: "Santion Date", accessor: "SantionDate" },
+  { Header: "Total Target", accessor: "TotalTarget" },
   { Header: "Action", accessor: "Action" },
 ];
-
 
 
 
@@ -38,7 +67,7 @@ interface TargetData {
   SanctionOrderNumber: string;
   DateOfSanction: string;
   TotalTarget: string;
-  Action: any;
+  Action: unknown;
 }
 export const targetColumns: Column<TargetData>[] = [
   { Header: "ID", accessor: "id" },
@@ -63,7 +92,7 @@ interface CourseData {
   TotalTheoryHours: string;
   TotalPracticalHours: string;
   DateValidUpto: string;
-  Action: any;
+  Action: unknown;
 }
 
 
@@ -86,6 +115,7 @@ export const courseColumns: Column<CourseData>[] = [
 
 interface TrainingPartnerData {
   id: string;
+  Centeres: string;
   PartnerId: string;
   Name: string;
   SPOCName: string;
@@ -98,12 +128,34 @@ interface TrainingPartnerData {
   Block: string;
   Village: string;
   gftg: string;
-  Action: any;
+  Action: unknown;
 }
 
 
-export const trainingColumns: Column<TrainingPartnerData>[] = [
+export const trainingColumns = (navigate: ReturnType<typeof useNavigate>): Column<TrainingPartnerData>[] => [
   { Header: "ID", accessor: "id" },
+  { 
+    Header: "Centers",
+    accessor: "Centeres",
+    Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span 
+          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+          onClick={() => navigate(`/TrainingPartner/Centeres/${row.original.id}`)}
+        >
+          {row.original.Centeres}
+        </span>
+        <ModalOpenButton
+          modalType={12}
+          modalTitle="Add Centeres"
+          bulkName="trainingCenter"
+          Icon={Plus}
+          id={row.original.id} 
+          variant="table"
+        />
+      </div>
+    ),
+  },
   { Header: "Partner ID", accessor: "PartnerId" },
   { Header: "Name", accessor: "Name" },
   { Header: "SPOC Name", accessor: "SPOCName" },
@@ -114,7 +166,28 @@ export const trainingColumns: Column<TrainingPartnerData>[] = [
   { Header: "District", accessor: "District" },
   { Header: "Block/ULB", accessor: "Block" },
   { Header: "Village/City", accessor: "Village" },
-  { Header: "Action", accessor: "Action" },
+  { 
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button 
+          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+          onClick={() => navigate(`/TrainingPartner/Centeres/${row.original.id}`)}
+        >
+          {row.original.Centeres}
+        </button>
+        <ModalOpenButton
+          modalType={12}
+          modalTitle="Add Centeres"
+          bulkName="trainingCenter"
+          Icon={Plus}
+          id={row.original.id} 
+          variant="table"
+        />
+      </div>
+    ),
+  },
 ];
 
 
@@ -136,7 +209,7 @@ interface BatchData {
   JobRole: string;
   QPNOSCode: string;
  
-  Action: any;
+  Action: unknown;
 }
 
 
@@ -168,7 +241,7 @@ interface AssessorsData {
   Mobile: string;
   AssessorAgency: string;
   ValidUpto: string;
-  Action: any;
+  Action: unknown;
 }
  
 
@@ -194,7 +267,7 @@ interface TrainerData {
   Mobile: string;
   Email: string;
   IDCard: string;
-  Action: any;
+  Action: unknown;
 }
 
 export const trainerColumns: Column<TrainerData>[] = [
@@ -228,7 +301,7 @@ interface AssessmentData {
   ObtainedMarks: string;
   MarksheetURL: string;
   CertificateURL: string;
-  Action: any;
+  Action: unknown;
 }
 
 export const assessmentColumns: Column<AssessmentData>[] = [
@@ -266,7 +339,7 @@ interface PlacementData {
   PlacementState: string;
   PlacementDistrict: string;
   MonthlySalary: string;
-  Action: any;
+  Action: unknown;
 }
 
 export const placementColumns: Column<PlacementData>[] = [
@@ -297,7 +370,7 @@ interface InvoiceData {
   NoOfCandidates: string;
   Rate: string;
   Amount: string;
-  Action: any;
+  Action: unknown;
 }
 
 export const invoiceColumns: Column<InvoiceData>[] = [
@@ -312,3 +385,71 @@ export const invoiceColumns: Column<InvoiceData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
+
+
+interface CenterData {
+  id: string;
+    TpId: string;
+    PartnerId: string;
+    Name: string;
+    CenterId: string;
+    SmartId: string;
+    spocName: string;
+    Mobile: string;
+    Email: string;
+    Address: string;
+    State: string;
+    District: string;
+    Block: string;
+    Village: string;
+    Constituency: string;
+    Action: unknown;
+}
+
+export const centerColumns: Column<CenterData>[] = [
+  { Header: "ID", accessor: "id" },
+  { Header: "TP ID", accessor: "TpId" },
+  { Header: "Partner ID", accessor: "PartnerId" },
+  { Header: "Center Name", accessor: "Name" },
+  { Header: "Center ID", accessor: "CenterId" },
+  { Header: "Samrt ID", accessor: "SmartId" },
+  { Header: "SPOC Name", accessor: "spocName" },
+  { Header: "SPOC Mobile", accessor: "Mobile" },
+  { Header: "SPOC Email", accessor: "Email" },
+  { Header: "Address", accessor: "Address" },
+  { Header: "State", accessor: "State" },
+  { Header: "District", accessor: "District" },
+  { Header: "Block", accessor: "Block" },
+  { Header: "Village", accessor: "Village" },
+  { Header: "Constituency", accessor: "Constituency" },
+  { Header: "Action", accessor: "Action" },
+
+];
+
+
+
+interface CandidateData {
+  id: string;
+  BatchId: string;
+  CandidateId: string;
+  CandidateName: string;
+  FatherName: string;
+  MotherName: string;
+  DOB: string;
+  Age: string;
+  Gender: string;
+  Action: unknown;
+}
+
+export const candidateColumns: Column<CandidateData>[] = [
+  { Header: "ID", accessor: "id" },
+  { Header: "Batch ID", accessor: "BatchId" },
+  { Header: "Candidate ID", accessor: "CandidateId" },
+  { Header: "Candidate Name", accessor: "CandidateName" },
+  { Header: "Father Name", accessor: "FatherName" },
+  { Header: "Mother Name", accessor: "MotherName" },
+  { Header: "Date of Birth", accessor: "DOB" },
+  { Header: "Age", accessor: "Age" },
+  { Header: "Gender", accessor: "Gender" },
+  { Header: "Action", accessor: "Action" },
+];

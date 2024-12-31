@@ -18,7 +18,7 @@ interface TargetData {
   SanctionOrderNumber: string;
   DateOfSanction: string;
   TotalTarget: string;
-  Action: any;
+  Action: unknown;
 }
   
   const Target: React.FC = () => {
@@ -91,6 +91,7 @@ const handleDropdownSelect = (option: string) => {
               templateType={1}
               templateTitle="Template"
               Icon={DownloadCloud}
+      
             />
 
             <ModalOpenButton
@@ -98,13 +99,9 @@ const handleDropdownSelect = (option: string) => {
               modalTitle="Bulk Upload"
               bulkName="target"
               Icon={UploadCloud}
+              id= {''}
             />
-            <ModalOpenButton
-              modalType={1}
-              modalTitle="Add Target"
-              bulkName="target"
-              Icon={Add}
-            />
+           
           </div>
         </div>
       </div>

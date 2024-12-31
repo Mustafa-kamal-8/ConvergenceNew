@@ -100,12 +100,14 @@ const Trainer: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="trainer"
               Icon={UploadCloud}
+              id= {''}
             />
             <ModalOpenButton
               modalType={6}
               modalTitle="Add Trainer"
               bulkName="Trainer"
               Icon={Add}
+              id= {''}
             />
           </div>
         </div>

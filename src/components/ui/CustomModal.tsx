@@ -15,10 +15,11 @@ import AssessorsModal from './Modals/AssessorsModal';
 import AssessmentModal from './Modals/AssessmentModal';
 import PlacementModal from './Modals/PlacementModal';
 import InvoiceModal from './Modals/InvoiceModal';
+import TrainingCenterModel from './Modals/TrainingCenterModel';
 
 
 const CustomModal: React.FC = () => {
-  const { isOpen, modalType, modalTitle,bulkName, closeModal } = useModalStore();
+  const { isOpen, modalType, modalTitle,bulkName, id,closeModal } = useModalStore();
   
 
   const renderModalContent = () => {
@@ -47,6 +48,8 @@ const CustomModal: React.FC = () => {
         return <InvoiceModal />;
       case 11:
         return <BulkUploadModal bulkName={bulkName} />;
+        case 12:
+          return <TrainingCenterModel  id={id}/>;
 
       // return <TrainerModalContent />;
       default:

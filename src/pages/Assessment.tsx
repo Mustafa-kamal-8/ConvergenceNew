@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { candidateColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
@@ -30,7 +29,7 @@ interface AssessmentData {
   ObtainedMarks: string;
   MarksheetURL: string;
   CertificateURL: string;
-  Action: any;
+  Action: unknown;
 }
 
 
@@ -123,12 +122,14 @@ const Assessment: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="assessment"
               Icon={UploadCloud}
+              id= {''}
             />
             <ModalOpenButton
               modalType={8}
               modalTitle="Add Assessment"
               bulkName="Assessment"
               Icon={Add}
+              id= {''}
             />
           </div>
         </div>

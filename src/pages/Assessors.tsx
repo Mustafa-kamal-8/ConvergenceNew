@@ -101,12 +101,14 @@ const Assessors: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="assessors"
               Icon={UploadCloud}
+              id= {''}
             />
             <ModalOpenButton
               modalType={7}
               modalTitle="Add Assessors"
               bulkName="Assessors"
               Icon={Add}
+              id= {''}
             />
           </div>
         </div>
