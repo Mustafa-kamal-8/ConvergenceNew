@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Cookies from "js-cookie";
 
 
@@ -10,8 +11,7 @@ interface UserDetails {
 
 // Set token and user details in cookies
 export const setAuthCookies = (
-    token: string,
-    userDetails: UserDetails,
+token: string, userDetails: UserDetails, _p0?: number,
 
 ): void => {
     const expiryDate = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000);

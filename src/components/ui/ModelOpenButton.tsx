@@ -7,13 +7,13 @@ type ModalOpenButtonProps = {
   modalTitle: string;
   bulkName: string;
   Icon: React.ElementType;
-  variant?: 'default' | 'table'; // Add a variant prop
+  variant?: 'default' | 'table'; 
 };
 
 const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle, bulkName, Icon, id, variant = 'default' }) => {
   const openModal = useModalStore((state) => state.openModal);
 
-  // Different styles based on variant
+
   const buttonStyles =
     variant === 'table'
       ? 'py-1 px-2 ml-4 text-xs bg-[#4F46E5]  hover:bg-[#3730A3] text-black rounded-md flex items-center gap-1'
@@ -24,8 +24,8 @@ const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle
       onClick={() => openModal(modalType, modalTitle, bulkName, id)}
       className={buttonStyles}
     >
-      <Icon className={variant === 'table' ? 'w-4 h-4' : 'w-6 h-6'} /> {/* Adjust icon size */}
-      {modalTitle} {/* Only show modalTitle for non-table variant */}
+      <Icon className={variant === 'table' ? 'w-4 h-4' : 'w-6 h-6'} /> 
+      {modalTitle} 
     </button>
   );
 };
