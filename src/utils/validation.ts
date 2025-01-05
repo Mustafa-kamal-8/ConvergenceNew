@@ -259,3 +259,140 @@ export const batchSchema = Joi.object({
     "any.required": `"qpnosCode" is a required field`,
   }),
 });
+
+
+
+export const assessmentValidationSchema = Joi.object({
+  batchId: Joi.string().required().messages({
+    "string.base": `"Batch ID" should be a type of 'text'`,
+    "any.required": `"Batch ID" is a required field`,
+  }),
+  sdmsBatchId: Joi.string().required().messages({
+    "string.base": `"sdmsBatchId" should be a type of 'text'`,
+    "any.required": `"sdmsBatchId" is a required field`,
+  }),
+  candidateId: Joi.string().required().messages({
+    "string.base": `"candidateId" should be a type of 'text'`,
+    "any.required": `"candidateId" is a required field`,
+  }),
+  assessedId: Joi.string().required().messages({
+    "string.base": `"assessedId" should be a type of 'text'`,
+    "any.required": `"assessedId" is a required field`,
+  }),
+  assessmentDate: Joi.date().required().messages({
+    "string.base": `"assessmentDate" should be a type of 'text'`,
+    "any.required": `"assessmentDate" is a required field`,
+  }),
+  agency: Joi.string().required().messages({
+    "string.base": `"agency" should be a type of 'text'`,
+    "any.required": `"agency" is a required field`,
+  }),
+  agencyMobile: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
+    "string.pattern.base": "Mobile number must be 10 digits.",
+    "any.required": "Mobile number is required.",
+  }),
+    agencyEmail: Joi.string()
+    .email({ tlds: { allow: false } }) 
+    .required()
+    .label("Email")
+    .messages({
+      "string.empty": "Email is required.",
+      "string.email": "Email must be a valid email address.",
+      "any.required": "Email is required.",
+    }),
+  result: Joi.string().required().messages({
+    "string.base": `"result" should be a type of 'text'`,
+    "any.required": `"result" is a required field`,
+  }),
+  resultDate: Joi.date().required().messages({
+    "string.base": `"resultDate" should be a type of 'text'`,
+    "any.required": `"resultDate" is a required field`,
+  }),
+});
+
+
+export const placementValidationSchema = Joi.object({
+  batchId: Joi.string().required().messages({
+    "string.base": `"Batch ID" should be a type of 'text'`,
+    "any.required": `"Batch ID" is a required field`,
+  }),
+  candidateId: Joi.string().required().messages({
+    "string.base": `"Candidate ID" should be a type of 'text'`,
+    "any.required": `"Candidate ID" is a required field`,
+  }),
+  isCandidatePlaced: Joi.string().valid("yes", "no").required().messages({
+    "string.base": `"Is Cnadidate Placed" should be a type of 'text'`,
+    "any.required": `"Is Cnadidate Placed"" is a required field`,
+  }),
+  placementType: Joi.string().required().messages({
+    "string.base": `"Placement Type" should be a type of 'text'`,
+    "any.required": `"Placement Type" is a required field`,
+  }),
+  employerName: Joi.string().required().messages({
+    "string.base": `"Employe Name" should be a type of 'text'`,
+    "any.required": `"Employe Name" is a required field`,
+  }),
+  employerContactNumber: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
+    "string.pattern.base": "Mobile number must be 10 digits.",
+    "any.required": "Mobile number is required.",
+  }),
+  placementState: Joi.string().required().messages({
+    "string.base": `"Placement State" should be a type of 'text'`,
+    "any.required": `"Placement State" is a required field`,
+  }),
+  placementDistrict: Joi.string().required().messages({
+    "string.base": `"Placement District" should be a type of 'text'`,
+    "any.required": `"Placement District" is a required field`,
+  }),
+  monthlySalary: Joi.string().required().messages({
+    "string.base": `"Monthly Salary" should be a type of 'text'`,
+    "any.required": `"Monthly Salary" is a required field`,
+  }),
+});
+
+
+export const invoiceValidationSchema = Joi.object({
+  batchId: Joi.string().required().messages({
+    "string.base": `"Monthly Salary" should be a type of 'text'`,
+    "any.required": `"Monthly Salary" is a required field`,
+  }),
+  invoiceType: Joi.string().required().messages({
+    "string.base": `"Monthly Salary" should be a type of 'text'`,
+    "any.required": `"Monthly Salary" is a required field`,
+  }),
+  invoiceTranche: Joi.string().required().messages({
+    "string.base": `"Monthly Salary" should be a type of 'text'`,
+    "any.required": `"Monthly Salary" is a required field`,
+  }),
+  invoiceNumber: Joi.string().required().messages({
+    "string.base": `"Monthly Salary" should be a type of 'text'`,
+    "any.required": `"Monthly Salary" is a required field`,
+  }),
+  invoiceDate: Joi.date()
+    .required()
+    .messages({
+      "any.required": "Date of Invoice is required.",
+      "date.base": "Invalid date format.",
+    }),
+  noOfCandidates: Joi.string()
+    .pattern(/^\d+$/)
+    .required()
+    .messages({
+      "string.empty": "No of Candidates is required",
+      "string.pattern.base": "No of Candidates must be a valid number",
+    }),
+  rate: Joi.string()
+    .pattern(/^\d+(\.\d{1,2})?$/)
+    .required()
+    .messages({
+      "string.empty": "Rate is required",
+      "string.pattern.base": "Rate must be a valid number",
+    }),
+  amount: Joi.string()
+    .pattern(/^\d+(\.\d{1,2})?$/)
+    .required()
+    .messages({
+      "string.empty": "Amount is required",
+      "string.pattern.base": "Amount must be a valid number",
+    }),
+});

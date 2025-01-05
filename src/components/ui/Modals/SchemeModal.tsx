@@ -1,85 +1,76 @@
 import React, { useState } from "react";
-import "react-datepicker/dist/react-datepicker.css"; 
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import DatePicker from "react-datepicker";
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
 import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
 import { SchemeFormData } from "../../../utils/formTypes";
-import { SchemeValidation } from "../../../utils/validation"; 
+import { SchemeValidation } from "../../../utils/validation";
 import { useMutation } from "@tanstack/react-query";
-import { submitSchemeForm } from "../../../services/state/api/FormApi"; 
-import { toast } from "react-toastify"; 
+import { submitSchemeForm } from "../../../services/state/api/FormApi";
+import { toast } from "react-toastify";
 
 const SchemeModalContent: React.FC = () => {
-  const { handleSubmit, control, formState: { errors }, setValue } = useForm<SchemeFormData>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<SchemeFormData>({
     resolver: joiResolver(SchemeValidation),
+    mode: "onChange",
   });
 
   const [selectedScheme, setSelectedScheme] = useState<string>("new");
-  
+
   const mutation = useMutation({
-    mutationFn: submitSchemeForm, 
-    onSuccess: (data) => {
+    mutationFn: submitSchemeForm,
+    onSuccess: () => {
       toast.success("Scheme submitted successfully!");
-      console.log("Scheme submitted successfully:", data);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Error submitting scheme.");
-      console.error("Error submitting scheme:", error);
     },
   });
 
   const onSubmit = (data: SchemeFormData) => {
     mutation.mutate(data);
-    console.log("Submitted data:", data);
   };
-
-  const handleSchemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedScheme(event.target.value);
-  };
-
-  const handleDateChange = (date: Date | null) => {
-   
-    setValue("dateOfSanction", date ? date.toISOString().split("T")[0] : "");
-  };
-  
 
   const schemeTypes = ["Type 1", "Type 2", "Type 3"];
   const fundingTypes = ["Type A", "Type B", "Type C"];
 
   return (
-    <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
-      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4">
+    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
+      >
         {/* Radio Buttons */}
-        <div className="col-span-full flex items-center gap-4">
+    
           <div className="flex items-center gap-2">
             <input
               type="radio"
-              name="scheme"
               value="new"
               checked={selectedScheme === "new"}
-              onChange={handleSchemeChange}
-              className="w-5 h-5 border border-gray-300 rounded-md focus:ring-indigo-400"
+              onChange={() => setSelectedScheme("new")}
+              className="w-5 h-5"
             />
             <Label text="New Scheme" />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="">
             <input
               type="radio"
-              name="scheme"
               value="existing"
               checked={selectedScheme === "existing"}
-              onChange={handleSchemeChange}
-              className="w-5 h-5 border border-gray-300 rounded-md focus:ring-indigo-400"
+              onChange={() => setSelectedScheme("existing")}
+              className="w-5 h-5"
             />
             <Label text="Existing Scheme" />
           </div>
-        </div>
+  
 
-        {/* Conditional Fields for Scheme Type */}
+        {/* Conditional Field: Scheme Name or Existing Scheme */}
         {selectedScheme === "new" ? (
           <div className="col-span-full">
             <Label text="Scheme Name" />
@@ -93,17 +84,13 @@ const SchemeModalContent: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="col-span-full">
+          <div className="">
             <Label text="Select Scheme" />
             <Controller
               control={control}
               name="selectedSchemeType"
               render={({ field }) => (
-                <Select
-                  {...field}
-                  options={schemeTypes}
-                  placeholder="-- Select --"
-                />
+                <Select {...field} options={schemeTypes} placeholder="-- Select --" />
               )}
             />
             {errors.selectedSchemeType && (
@@ -119,11 +106,7 @@ const SchemeModalContent: React.FC = () => {
             control={control}
             name="selectedFundingType"
             render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select --"
-              />
+              <Select {...field} options={fundingTypes} placeholder="-- Select --" />
             )}
           />
           {errors.selectedFundingType && (
@@ -143,7 +126,7 @@ const SchemeModalContent: React.FC = () => {
         </div>
 
         {/* Fund Name */}
-        <div className="col-span-full sm:col-span-2 lg:col-span-1">
+        <div className="col-span-full sm:col-span-2">
           <Label text="Fund Name" />
           <Controller
             control={control}
@@ -162,11 +145,7 @@ const SchemeModalContent: React.FC = () => {
             control={control}
             name="schemeFundingType"
             render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select --"
-              />
+              <Select {...field} options={fundingTypes} placeholder="-- Select --" />
             )}
           />
           {errors.schemeFundingType && (
@@ -186,7 +165,7 @@ const SchemeModalContent: React.FC = () => {
         </div>
 
         {/* Order Number */}
-        <div className="col-span-full sm:col-span-2 lg:col-span-1">
+        <div className="col-span-full sm:col-span-2">
           <Label text="Scheme Order Number" />
           <Controller
             control={control}
@@ -202,20 +181,10 @@ const SchemeModalContent: React.FC = () => {
         <div>
           <Label text="Date Of Sanction" />
           <Controller
-            name="dateOfSanction"
             control={control}
+            name="dateOfSanction"
             render={({ field }) => (
-              <DatePicker
-                selected={field.value ? new Date(field.value) : null}
-                onChange={handleDateChange}
-                dateFormat="dd-MM-yyyy"
-                placeholderText="dd-mm-yyyy"
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-indigo-400"
-                showYearDropdown
-                yearDropdownItemNumber={100}
-                scrollableYearDropdown
-                showMonthDropdown
-              />
+              <Input {...field} type="date" className="w-full" />
             )}
           />
           {errors.dateOfSanction && (
@@ -224,7 +193,7 @@ const SchemeModalContent: React.FC = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end bg-gray-100 p-4 rounded-xl">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button text="Submit" />
         </div>
       </form>
@@ -233,6 +202,7 @@ const SchemeModalContent: React.FC = () => {
 };
 
 export default SchemeModalContent;
+
 
 
 

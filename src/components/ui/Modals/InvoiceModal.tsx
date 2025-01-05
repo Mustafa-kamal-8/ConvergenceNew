@@ -1,107 +1,188 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { toast } from "react-toastify";
+import { invoiceValidationSchema } from "../../../utils/validation";
+import { InvoiceFormData } from "../../../utils/formTypes";
 import Label from "../Label";
 import Input from "../Input";
-import "react-datepicker/dist/react-datepicker.css"; // Import the styles for the date picker
-import DatePicker from "react-datepicker"; // Import react-datepicker
-import "../../../custom.css";
-import Dropdown from "../Dropdown";
 import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
+import "../../../custom.css";
 
-const InvoiceModal = () => {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-  const [selectedFundingType, setSelectedFundingType] = useState("");
-
-  const handleDateChange = (
-    dates: [Date | null, Date | null] | Date | null
-  ) => {
-    if (Array.isArray(dates)) {
-      const [start, end] = dates;
-      setStartDate(start ?? undefined);
-      setEndDate(end ?? undefined);
-    } else {
-      setStartDate(dates ?? undefined);
-    }
-  };
+const InvoiceModal: React.FC = () => {
   const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
-  const handleFundingTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedFundingType(event.target.value);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<InvoiceFormData>({
+    resolver: joiResolver(invoiceValidationSchema),
+    mode: "onChange",
+  });
+
+  const onSubmit = (data: InvoiceFormData) => {
+    console.log("Form submitted successfully", data);
+    toast.success("Form submitted successfully!");
   };
+
   return (
-    <div>
-      <div>
-        <div className="grid gap-4 grid-cols-3 py-4 px-8">
-          <div>
-            <Label text="Batch ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Invoice Type" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div className="">
-            <Label text="Invoice Tranche" />
-            <Input type="text" />
-          </div>
-          <div className="">
-            <Label text="Invoice Number" />
-            <Input type="text" />
-          </div>
-          <div className="">
-            <Label text="Invoice Date" />
-            <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange // Enables range selection
-              dateFormat="dd-MM-yyyy"
-              placeholderText="Select date range"
-              className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full"
-              showYearDropdown
-              yearDropdownItemNumber={100}
-              scrollableYearDropdown
-              showMonthDropdown
-              scrollableMonthYearDropdown
-              // Custom format to show in the input field
-              value={
-                startDate && endDate
-                  ? `${startDate.toLocaleDateString(
-                      "en-GB"
-                    )} - ${endDate.toLocaleDateString("en-GB")}`
-                  : ""
-              }
-            />
-          </div>
-          <div className="">
-            <Label text="No of Candidates" />
-            <Input type="text" />
-          </div>
-          <div className="">
-            <Label text="Rate" />
-            <Input type="text" />
-          </div>{" "}
-          <div className="">
-            <Label text="Amount" />
-            <Input type="text" />
-          </div>
+    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
+      >
+        {/* Batch ID */}
+        <div className="col-span-1">
+          <Label text="Batch ID" />
+          <Controller
+            name="batchId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={fundingTypes}
+                placeholder="-- Select --"
+                className={errors.batchId ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.batchId && <p className="text-red-500">{errors.batchId.message}</p>}
         </div>
-        <div className="flex items-center justify-end gap-2 bg-gray-100 p-4 rounded-xl">
+
+        {/* Invoice Type */}
+        <div className="col-span-1">
+          <Label text="Invoice Type" />
+          <Controller
+            name="invoiceType"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={fundingTypes}
+                placeholder="-- Select --"
+                className={errors.invoiceType ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.invoiceType && <p className="text-red-500">{errors.invoiceType.message}</p>}
+        </div>
+
+        {/* Invoice Tranche */}
+        <div className="col-span-1">
+          <Label text="Invoice Tranche" />
+          <Controller
+            name="invoiceTranche"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder="Enter Invoice Tranche"
+                className={`w-full ${errors.invoiceTranche ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.invoiceTranche && <p className="text-red-500">{errors.invoiceTranche.message}</p>}
+        </div>
+
+        {/* Invoice Number */}
+        <div className="col-span-1">
+          <Label text="Invoice Number" />
+          <Controller
+            name="invoiceNumber"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder="Enter Invoice Number"
+                className={`w-full ${errors.invoiceNumber ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.invoiceNumber && <p className="text-red-500">{errors.invoiceNumber.message}</p>}
+        </div>
+
+        {/* Invoice Date */}
+        <div className="col-span-1">
+          <Label text="Invoice Date" />
+          <Controller
+            name="invoiceDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                className={`w-full ${errors.invoiceDate ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.invoiceDate && <p className="text-red-500">{errors.invoiceDate.message}</p>}
+        </div>
+
+        {/* No of Candidates */}
+        <div className="col-span-1">
+          <Label text="No of Candidates" />
+          <Controller
+            name="noOfCandidates"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder="Enter number of candidates"
+                className={`w-full ${errors.noOfCandidates ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.noOfCandidates && (
+            <p className="text-red-500">{errors.noOfCandidates.message}</p>
+          )}
+        </div>
+
+        {/* Rate */}
+        <div className="col-span-1">
+          <Label text="Rate" />
+          <Controller
+            name="rate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder="Enter Rate"
+                className={`w-full ${errors.rate ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.rate && <p className="text-red-500">{errors.rate.message}</p>}
+        </div>
+
+        {/* Amount */}
+        <div className="col-span-1">
+          <Label text="Amount" />
+          <Controller
+            name="amount"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder="Enter Amount"
+                className={`w-full ${errors.amount ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.amount && <p className="text-red-500">{errors.amount.message}</p>}
+        </div>
+
+        {/* Submit Button */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button text="Submit" />
         </div>
-      </div>
+      </form>
     </div>
   );
 };

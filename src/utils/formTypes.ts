@@ -65,3 +65,47 @@ export interface BatchFormData {
   jobRole: string;
   qpnosCode: string;
 }
+
+export type AssessmentFormData = {
+  batchId: string;
+  sdmsBatchId: string;
+  candidateId: string;
+  assessedId: string;
+  assessmentDate: string;
+  agency: string;
+  agencyMobile: string;
+  agencyEmail: string;
+  accessorId: string;
+  accessorName: string;
+  result: string;
+  resultDate: string;
+  certificationStatus: string;
+  totalMarks: number;
+  obtainedMarks: number;
+  marksheetUrl: string;
+  certificateUrl: string;
+};
+
+
+export interface PlacementFormData {
+  batchId: string;
+  candidateId: string;
+  isCandidatePlaced: "yes" | "no" | "";
+  placementType: string;
+  employerName: string;
+  employerContactNumber: string;
+  placementState: string;
+  placementDistrict: string;
+  monthlySalary: string;
+}
+
+export interface InvoiceFormData {
+  batchId: string;
+  invoiceType: string;
+  invoiceTranche: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  noOfCandidates: string;
+  rate: string;
+  amount: string;
+}

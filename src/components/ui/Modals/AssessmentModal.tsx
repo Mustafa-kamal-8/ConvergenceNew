@@ -1,191 +1,218 @@
-import React, { useState } from 'react'
-import Input from '../Input'
-import Label from '../Label'
-import Dropdown from '../Dropdown'
-import Select from '../Select'
-import Button from '../SubmitButton'
-import DatePicker from "react-datepicker"; // Import react-datepicker
+import React from "react";
+import Input from "../Input";
+import Label from "../Label";
+import Select from "../Select";
+import Button from "../SubmitButton";
 
-const AssessmentModal = () => {
+import { useForm, Controller } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { toast } from "react-toastify";
+import { assessmentValidationSchema } from "../../../utils/validation";
+import { AssessmentFormData } from "../../../utils/formTypes";
 
-   const [selectedFundingType, setSelectedFundingType] = useState("");
-    const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-    const [endDate, setEndDate] = useState<Date | undefined>(new Date()); 
 
-    const handleFundingTypeChange = (
-      event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-      setSelectedFundingType(event.target.value);
-    };
+const AssessmentModal: React.FC = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AssessmentFormData>({
+    resolver: joiResolver(assessmentValidationSchema),
+    mode: "onChange", 
+  });
 
-     const fundingTypes = ["Option 1", "Option 2", "Option 3"];
-        const resultType = ["Pass", "Fail"];
+  const onSubmit = (data: AssessmentFormData) => {
+    console.log("Form submitted successfully", data);
+    toast.success("Form submitted successfully!");
+  };
 
-      const handleDateChange = (
-        dates: [Date | null, Date | null] | Date | null
-      ) => {
-        if (Array.isArray(dates)) {
-          const [start, end] = dates;
-          setStartDate(start ?? undefined);
-          setEndDate(end ?? undefined);
-        } else {
-          setStartDate(dates ?? undefined);
-        }
-      };
-
+  const resultType = ["Pass", "Fail"];
 
   return (
-    <div className="w-full">
-      <div className="w-full">
-        <div className="grid gap-4 grid-cols-1 py-4 px-8  lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
-          <div>
-            <Label text="Batch ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="SDMS Batch ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Candidate ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div className="">
-            <Label text="Assessed ID" />
-            <Input type="text" />
-          </div>
-
-          <div className="">
-            <Label text="Assesment Date" />
-            <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange // Enables range selection
-              dateFormat="dd-MM-yyyy"
-              placeholderText="Select date range"
-              className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full"
-              showYearDropdown
-              yearDropdownItemNumber={100}
-              scrollableYearDropdown
-              showMonthDropdown
-              scrollableMonthYearDropdown
-              // Custom format to show in the input field
-              value={
-                startDate && endDate
-                  ? `${startDate.toLocaleDateString(
-                      "en-GB"
-                    )} - ${endDate.toLocaleDateString("en-GB")}`
-                  : ""
-              }
-            />
-          </div>
-
-          <div className="">
-            <Label text="Agency" />
-            <Input type="text" />
-          </div>
-          <div className="">
-            <Label text="Agency Mobile" />
-            <Input type="text" />
-          </div>
-          <div className="">
-            <Label text="Agency Email" />
-            <Input type="text" />
-          </div>
-          <div>
-            <Label text=" Accessor ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text=" Accessor Name" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Result" />
-            <Select
-              options={resultType}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div className="">
-            <Label text="Result Date" />
-            <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange // Enables range selection
-              dateFormat="dd-MM-yyyy"
-              placeholderText="Select date range"
-              className="px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full"
-              showYearDropdown
-              yearDropdownItemNumber={100}
-              scrollableYearDropdown
-              showMonthDropdown
-              scrollableMonthYearDropdown
-              // Custom format to show in the input field
-              value={
-                startDate && endDate
-                  ? `${startDate.toLocaleDateString(
-                      "en-GB"
-                    )} - ${endDate.toLocaleDateString("en-GB")}`
-                  : ""
-              }
-            />
-          </div>
-
-          <div className="lg:w-[15rem] ">
-            <Label text="Certification Status" />
-            <Input type="text" />
-          </div>
-          <div className="lg:w-[15rem]">
-            <Label text="Total Marks" />
-            <Input type="text" />
-          </div>
-          <div className="lg:w-[15rem]">
-            <Label text="Obtained Marks" />
-            <Input type="text" />
-          </div>
-          <br></br>
-          <div className="lg:w-[15rem]">
-            <Label text="Marksheet URL" />
-            <Input type="text" />
-          </div>
-          <div className="lg:w-[15rem]">
-            <Label text="Certificate URL" />
-            <Input type="text" />
-          </div>
+    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
+      >
+        {/* Batch ID */}
+        <div className="col-span-1">
+          <Label text="Batch ID" />
+          <Controller
+            name="batchId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.batchId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.batchId && <p className="text-red-500">{errors.batchId.message}</p>}
         </div>
-
-        <div className="flex items-center justify-end gap-2 bg-gray-100 p-4 rounded-xl">
+  
+        {/* SDMS Batch ID */}
+        <div className="col-span-1">
+          <Label text="SDMS Batch ID" />
+          <Controller
+            name="sdmsBatchId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.sdmsBatchId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.sdmsBatchId && <p className="text-red-500">{errors.sdmsBatchId.message}</p>}
+        </div>
+  
+        {/* Candidate ID */}
+        <div className="col-span-1">
+          <Label text="Candidate ID" />
+          <Controller
+            name="candidateId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.candidateId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.candidateId && <p className="text-red-500">{errors.candidateId.message}</p>}
+        </div>
+  
+        {/* Assessed ID */}
+        <div className="col-span-1">
+          <Label text="Assessed ID" />
+          <Controller
+            name="assessedId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.assessedId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.assessedId && <p className="text-red-500">{errors.assessedId.message}</p>}
+        </div>
+  
+        {/* Assessment Date */}
+        <div className="col-span-1">
+          <Label text="Assessment Date" />
+          <Controller
+            name="assessmentDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                className={`w-full ${errors.assessmentDate ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.assessmentDate && <p className="text-red-500">{errors.assessmentDate.message}</p>}
+        </div>
+  
+        {/* Agency */}
+        <div className="col-span-1">
+          <Label text="Agency" />
+          <Controller
+            name="agency"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.agency ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.agency && <p className="text-red-500">{errors.agency.message}</p>}
+        </div>
+  
+        {/* Agency Mobile */}
+        <div className="col-span-1">
+          <Label text="Agency Mobile" />
+          <Controller
+            name="agencyMobile"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.agencyMobile ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.agencyMobile && <p className="text-red-500">{errors.agencyMobile.message}</p>}
+        </div>
+  
+        {/* Agency Email */}
+        <div className="col-span-1">
+          <Label text="Agency Email" />
+          <Controller
+            name="agencyEmail"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.agencyEmail ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.agencyEmail && <p className="text-red-500">{errors.agencyEmail.message}</p>}
+        </div>
+  
+        {/* Result Type */}
+        <div className="col-span-1">
+          <Label text="Result Type" />
+          <Controller
+            name="result"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={resultType}
+                placeholder="-- Select --"
+                className="w-full"
+              />
+            )}
+          />
+          {errors.result && <p className="text-red-500">{errors.result.message}</p>}
+        </div>
+  
+        {/* Result Date */}
+        <div className="col-span-1">
+          <Label text="Result Date" />
+          <Controller
+            name="resultDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                className={`w-full ${errors.resultDate ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.resultDate && <p className="text-red-500">{errors.resultDate.message}</p>}
+        </div>
+  
+        {/* Submit Button */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button text="Submit" />
         </div>
-      </div>
+      </form>
     </div>
   );
-}
+  
+};
 
-export default AssessmentModal
+export default AssessmentModal;

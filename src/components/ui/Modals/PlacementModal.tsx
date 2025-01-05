@@ -1,118 +1,228 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
 import Label from "../Label";
 import Input from "../Input";
-import "react-datepicker/dist/react-datepicker.css"; // Import the styles for the date picker
-import DatePicker from "react-datepicker"; // Import react-datepicker
-import "../../../custom.css";
-import Dropdown from "../Dropdown";
+import "react-datepicker/dist/react-datepicker.css";
 import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
+import { PlacementFormData } from "../../../utils/formTypes";
+import { placementValidationSchema } from "../../../utils/validation";
 
-const PlacementModal = () => {
+const fundingTypes = ["Option 1", "Option 2", "Option 3"];
+const placementStates = ["State 1", "State 2", "State 3"];
+const placementDistricts = ["District 1", "District 2", "District 3"];
 
-    const [selectedFundingType, setSelectedFundingType] = useState("");
-    const [candidatePaa, setCandidatePaa] = useState("");
+const PlacementModal: React.FC = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PlacementFormData>({
+    resolver: joiResolver(placementValidationSchema),
+    mode: "onChange",
+  });
 
-    const handleFundingTypeChange = (
-      event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-      setSelectedFundingType(event.target.value);
-    };
+  const onSubmit = (data: PlacementFormData) => {
+    console.log("Form Submitted:", data);
+  };
 
-    const fundingTypes = ["Option 1", "Option 2", "Option 3"];
-
-    // Handle change for "Candidate Paa or not?"
-    const handleCandidatePaaChange = (
-      event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      setCandidatePaa(event.target.value);
-    };
   return (
-    <div>
-      <div>
-        <div className="grid gap-4 grid-cols-3 py-4 px-8">
-          <div>
-            <Label text="Batch ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Candidate ID" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div className="py-4 px-8">
-            <Label text="Is Candidate Placed?" />
-            <div className="flex items-center gap-4">
-              <label>
-                <input
-                  type="radio"
-                  name="candidatePaa"
-                  value="yes"
-                  checked={candidatePaa === "yes"}
-                  onChange={handleCandidatePaaChange}
-                />
-                Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="candidatePaa"
-                  value="no"
-                  checked={candidatePaa === "no"}
-                  onChange={handleCandidatePaaChange}
-                />
-                No
-              </label>
-            </div>
-          </div>
-          <div>
-            <Label text="Placement Type" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Employer Name" />
-            <Input type="text" />
-          </div>
-          <div>
-            <Label text="Employer Contact Number" />
-            <Input type="text" />
-          </div>
-          <div>
-            <Label text="Placement State" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Placement Districts" />
-            <Select
-              options={fundingTypes}
-              onChange={handleFundingTypeChange}
-              placeholder="-- Select --"
-            />
-          </div>
-          <div>
-            <Label text="Monthly Salary" />
-            <Input type="text" />
-          </div>
+    <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+       className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
+      >
+        {/* Batch ID */}
+        <div>
+          <Label text="Batch ID" />
+          <Controller
+            name="batchId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={fundingTypes}
+                placeholder="-- Select --"
+                className={`w-full ${errors.batchId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.batchId && <p className="text-red-500">{errors.batchId.message}</p>}
         </div>
-        <div className="flex items-center justify-end gap-2 bg-gray-100 p-4 rounded-xl">
+
+        {/* Candidate ID */}
+        <div>
+          <Label text="Candidate ID" />
+          <Controller
+            name="candidateId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={fundingTypes}
+                placeholder="-- Select --"
+                className={`w-full ${errors.candidateId ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.candidateId && <p className="text-red-500">{errors.candidateId.message}</p>}
+        </div>
+
+        {/* Is Candidate Placed? */}
+        <div>
+          <Label text="Is Candidate Placed?" />
+          <Controller
+            name="isCandidatePlaced"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-4">
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="yes"
+                    checked={field.value === "yes"}
+                    onChange={() => field.onChange("yes")}
+                  />
+                  Yes
+                </label>
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="no"
+                    checked={field.value === "no"}
+                    onChange={() => field.onChange("no")}
+                  />
+                  No
+                </label>
+              </div>
+            )}
+          />
+          {errors.isCandidatePlaced && (
+            <p className="text-red-500">{errors.isCandidatePlaced.message}</p>
+          )}
+        </div>
+
+        {/* Placement Type */}
+        <div>
+          <Label text="Placement Type" />
+          <Controller
+            name="placementType"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={fundingTypes}
+                placeholder="-- Select --"
+                className={`w-full ${errors.placementType ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.placementType && <p className="text-red-500">{errors.placementType.message}</p>}
+        </div>
+
+        {/* Employer Name */}
+        <div>
+          <Label text="Employer Name" />
+          <Controller
+            name="employerName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.employerName ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.employerName && <p className="text-red-500">{errors.employerName.message}</p>}
+        </div>
+
+        {/* Employer Contact Number */}
+        <div>
+          <Label text="Employer Contact Number" />
+          <Controller
+            name="employerContactNumber"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.employerContactNumber ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.employerContactNumber && (
+            <p className="text-red-500">{errors.employerContactNumber.message}</p>
+          )}
+        </div>
+
+        {/* Placement State */}
+        <div>
+          <Label text="Placement State" />
+          <Controller
+            name="placementState"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={placementStates}
+                placeholder="-- Select --"
+                className={`w-full ${errors.placementState ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.placementState && (
+            <p className="text-red-500">{errors.placementState.message}</p>
+          )}
+        </div>
+
+        {/* Placement District */}
+        <div>
+          <Label text="Placement District" />
+          <Controller
+            name="placementDistrict"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={placementDistricts}
+                placeholder="-- Select --"
+                className={`w-full ${errors.placementDistrict ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.placementDistrict && (
+            <p className="text-red-500">{errors.placementDistrict.message}</p>
+          )}
+        </div>
+
+        {/* Monthly Salary */}
+        <div>
+          <Label text="Monthly Salary" />
+          <Controller
+            name="monthlySalary"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.monthlySalary ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.monthlySalary && (
+            <p className="text-red-500">{errors.monthlySalary.message}</p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button text="Submit" />
         </div>
-      </div>
+      </form>
     </div>
   );
 };
