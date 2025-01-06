@@ -2,28 +2,35 @@ import Joi from "joi";
 import { SchemeFormData } from "./formTypes";
 
 export const SchemeValidation = Joi.object<SchemeFormData>({
-  selectedSchemeType: Joi.string()
-    .valid("Type 1", "Type 2", "Type 3")
-    .required()
-    .messages({
-      "any.required": "Scheme Type is required.",
-      "string.empty": "Scheme Type is required.",
-    }),
+  // selectedSchemeType: Joi.string()
+  //   .valid("Type 1", "Type 2", "Type 3")
+  //   .required()
+  //   .messages({
+  //     "any.required": "Scheme Type is required.",
+  //     "string.empty": "Scheme Type is required.",
+  //   }),
 
-  selectedFundingType: Joi.string()
-    .valid("Type A", "Type B", "Type C")
-    .required()
-    .messages({
-      "any.required": "Funding Type is required.",
-      "string.empty": "Funding Type is required.",
-    }),
+  // selectedFundingType: Joi.string()
+   
+  //   .required()
+  //   .messages({
+  //     "any.required": "Funding Type is required.",
+  //     "string.empty": "Funding Type is required.",
+  //   }),
 
-  schemeName: Joi.string()
-    .when("selectedScheme", { is: "new", then: Joi.required() })
-    .messages({
-      "any.required": "Name is required.",
-      "string.empty": "Name is required.", 
-    }),
+  scheme: Joi.string()
+  .required()
+  .messages({
+    "any.required": "Name is required.",
+    "string.empty": "Name  is required.",
+  }),
+
+  schemeType: Joi.string()
+  .required()
+  .messages({
+    "any.required": "Name is required.",
+    "string.empty": "Name  is required.",
+  }),
 
   schemeCode: Joi.string()
     .required()
@@ -40,7 +47,7 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
     }),
 
   schemeFundingType: Joi.string()
-    .valid("Type A", "Type B", "Type C")
+   
     .required()
     .messages({
       "any.required": "Funding Type is required.",
@@ -54,7 +61,7 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
       "number.empty": "Funding Ratio is required.",
     }),
 
-  schemeOrderNumber: Joi.string()
+    sanctionOrderNo: Joi.string()
     .required()
     .messages({
       "any.required": "Scheme Order Number is required.",

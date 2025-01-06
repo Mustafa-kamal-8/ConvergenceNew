@@ -1,15 +1,15 @@
 
 export interface SchemeFormData {
-    selectedSchemeType: string
-    selectedFundingType: string;
-    schemeName: string;
+  schemeType: string
+    // selectedFundingType: string;
+    scheme: string;
     schemeCode: string;
     fundName: string;
     schemeFundingType: string
     schemeFundingRatio: string
-    schemeOrderNumber: string
+    sanctionOrderNo: string
     dateOfSanction: string;
-    selectedScheme: string
+    // selectedScheme: string
   }
 
 export interface CourseFormData  {

@@ -2,7 +2,9 @@ import React from "react";
 import { useTable, usePagination } from "react-table";
 
 interface CentralizedTableProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[];
   pageSize?: number;
 }
@@ -59,14 +61,15 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()} className="divide-y divide-gray-200">
-          {page.map((row : any) => {
+       
+          {page.map((row) => {
             prepareRow(row);
             return (
               <tr
                 {...row.getRowProps()}
                 className="hover:bg-gray-50 transition duration-150"
               >
-                {row.cells.map((cell : any) => (
+                {row.cells.map((cell ) => (
                   <td
                     {...cell.getCellProps()}
                     className="px-6 py-3 text-center whitespace-nowrap"

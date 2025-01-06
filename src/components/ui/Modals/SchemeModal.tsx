@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
-import Select from "../../ui/Select";
+// import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
 import { SchemeFormData } from "../../../utils/formTypes";
 import { SchemeValidation } from "../../../utils/validation";
@@ -21,7 +21,7 @@ const SchemeModalContent: React.FC = () => {
     mode: "onChange",
   });
 
-  const [selectedScheme, setSelectedScheme] = useState<string>("new");
+  // const [selectedScheme, setSelectedScheme] = useState<string>("new");
 
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
@@ -37,8 +37,8 @@ const SchemeModalContent: React.FC = () => {
     mutation.mutate(data);
   };
 
-  const schemeTypes = ["Type 1", "Type 2", "Type 3"];
-  const fundingTypes = ["Type A", "Type B", "Type C"];
+  // const schemeTypes = ["Type 1", "Type 2", "Type 3"];
+  // const fundingTypes = ["Type A", "Type B", "Type C"];
 
   return (
     <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -46,9 +46,9 @@ const SchemeModalContent: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-        {/* Radio Buttons */}
+      
     
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <input
               type="radio"
               value="new"
@@ -69,8 +69,6 @@ const SchemeModalContent: React.FC = () => {
             <Label text="Existing Scheme" />
           </div>
   
-
-        {/* Conditional Field: Scheme Name or Existing Scheme */}
         {selectedScheme === "new" ? (
           <div className="col-span-full">
             <Label text="Scheme Name" />
@@ -97,20 +95,30 @@ const SchemeModalContent: React.FC = () => {
               <p className="text-red-500">{errors.selectedSchemeType.message}</p>
             )}
           </div>
-        )}
+        )} */}
 
-        {/* Scheme Type and Code */}
+<div>
+          <Label text="Scheme Name" />
+          <Controller
+            control={control}
+            name="scheme"
+            render={({ field }) => <Input {...field} type="text" />}
+          />
+          {errors.scheme && (
+            <p className="text-red-500">{errors.scheme.message}</p>
+          )}
+        </div>
+
+      
         <div>
           <Label text="Scheme Type" />
           <Controller
             control={control}
-            name="selectedFundingType"
-            render={({ field }) => (
-              <Select {...field} options={fundingTypes} placeholder="-- Select --" />
-            )}
+            name="schemeType"
+            render={({ field }) => <Input {...field} type="text" />}
           />
-          {errors.selectedFundingType && (
-            <p className="text-red-500">{errors.selectedFundingType.message}</p>
+          {errors.schemeType && (
+            <p className="text-red-500">{errors.schemeType.message}</p>
           )}
         </div>
         <div>
@@ -140,13 +148,11 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Funding Type and Ratio */}
         <div>
-          <Label text="Scheme Funding Type" />
+          <Label text="Funding Type" />
           <Controller
             control={control}
             name="schemeFundingType"
-            render={({ field }) => (
-              <Select {...field} options={fundingTypes} placeholder="-- Select --" />
-            )}
+            render={({ field }) => <Input {...field} type="text" />}
           />
           {errors.schemeFundingType && (
             <p className="text-red-500">{errors.schemeFundingType.message}</p>
@@ -169,11 +175,11 @@ const SchemeModalContent: React.FC = () => {
           <Label text="Scheme Order Number" />
           <Controller
             control={control}
-            name="schemeOrderNumber"
+            name="sanctionOrderNo"
             render={({ field }) => <Input {...field} type="text" />}
           />
-          {errors.schemeOrderNumber && (
-            <p className="text-red-500">{errors.schemeOrderNumber.message}</p>
+          {errors.sanctionOrderNo && (
+            <p className="text-red-500">{errors.sanctionOrderNo.message}</p>
           )}
         </div>
 

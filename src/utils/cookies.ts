@@ -31,6 +31,7 @@ export const getUserDetails = (): UserDetails | null => {
 
 
 
+
 // Remove all auth-related cookies
 export const clearAuthCookies = (): void => {
     Cookies.remove('token');

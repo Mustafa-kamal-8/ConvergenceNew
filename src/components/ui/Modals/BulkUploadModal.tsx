@@ -1,59 +1,110 @@
-import React, { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useState } from "react";
+import DropInput from "../DropInput";
+import Button from "../Button";
+import { toast } from "react-toastify";
+import axios from "axios";
+import * as XLSX from "xlsx"; // Import XLSX for parsing Excel files
 
-// Define the props for the component
 interface BulkUploadModalProps {
   bulkName: string;
 }
 
+const API_BASE_URL = process.env.VITE_API_BASE_URL;
+
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
-  // Using useDropzone to manage file upload
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles: any[]) => {
-      setFiles(acceptedFiles); // Add selected files to state
-    },
-    maxSize: 2 * 1024 * 1024, // Max 2MB
-    accept: ['.xlsx', '.csv'], // Use an array of allowed file types
-    multiple: false, // Only allow one file at a time
-  });
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
-  // State to hold the files
-  const [files, setFiles] = useState<any[]>([]);
+  const handleClearFile = () => {
+    setFile(null);
+    console.log("File cleared");
+  };
 
-  // Remove files from the state
-  const handleRemove = () => {
-    setFiles([]); // Clear the files from the state
+  const handleUpload = async () => {
+    if (!file) {
+      toast.error("Please select a file before uploading.");
+      return;
+    }
+
+    // Log the file data here
+    console.log("File data before upload:", file);
+    console.log("File name:", file.name);
+    console.log("File size:", file.size);
+    console.log("File type:", file.type);
+
+    // Read the file content and log the data
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target?.result;
+      if (data instanceof ArrayBuffer) {
+        if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel") {
+          // If the file is an Excel file
+          const workbook = XLSX.read(data, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
+          console.log("Parsed Excel data:", jsonData); // This will log the data
+        }
+      } else {
+        console.error("File could not be read as ArrayBuffer.");
+      }
+    };
+    if (file) {
+      reader.readAsArrayBuffer(file); // Read the file as binary string
+    }
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", bulkName); // Pass bulkName to the API
+
+      const { data: resData } = await axios.post(`${API_BASE_URL}/upload/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (resData.success) {
+        toast.success("File uploaded successfully!");
+        handleClearFile();
+      } else {
+        toast.error("Error while uploading the file.");
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("An error occurred while uploading. Please try again later.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <div className="p-6">
-    <div className="max-w-md w-full border-2 border-gray-300 border-dashed rounded-lg bg-gray-50 h-44 flex items-center justify-center text-sm text-gray-500 relative">
-      <label htmlFor="bulkUpload" className="flex-grow h-full w-full p-6 flex items-center justify-center">
-        <div {...getRootProps({ className: 'dropzone' })}>
-          <input {...getInputProps()} id="bulkUpload"/>
-          <p className="text-center">
-            Drag 'n' drop some files here, or click to select files
-            <br />
-            Max 2MB | .xlsx, .csv
-          </p>
-        </div>
-      </label>
+    <div className="p-6 max-w-md mx-auto bg-white rounded-md shadow-lg space-y-4 sm:max-w-lg lg:max-w-xl xl:max-w-2xl">
+      <DropInput
+        file={file}
+        setFile={setFile}
+        handleClearFile={handleClearFile}
+      />
 
-      {/* Show selected files */}
-      {files && files.length > 0 && (
-        <aside className="absolute top-0 left-0 w-full h-full bg-gray-50 rounded-lg flex items-center justify-center p-6">
-          <div className="text-center">
-            <p>{files.map((file) => file.name).join(', ')}</p> {/* Show file names */}
-            <button
-              onClick={handleRemove}
-              className="mt-2 text-red-500 hover:text-red-700 underline"
-            >
-              Remove File
-            </button>
-          </div>
-        </aside>
-      )}
-    </div>
+      <div className="flex justify-center gap-4 mt-4">
+        <Button
+          variant="outline"
+          onClick={handleClearFile}
+          disabled={uploading || !file}
+          className="w-full sm:w-auto"
+        >
+          Clear
+        </Button>
+        <Button
+          onClick={handleUpload}
+          disabled={uploading || !file}
+          className="w-full sm:w-auto"
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </Button>
+      </div>
     </div>
   );
 };
