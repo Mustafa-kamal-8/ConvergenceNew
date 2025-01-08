@@ -16,7 +16,7 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     if (templateType === 0) {
       data = [['User Name', 'Password']];
     } else if (templateType === 1) {
-      data = [['Father Name', 'Mother Name'], ['ExampleFather', 'ExampleMother']];
+      data = [['sanction no', 'scheme code','total target','sanction date']];
     } else {
       console.error('Invalid template type');
       return;

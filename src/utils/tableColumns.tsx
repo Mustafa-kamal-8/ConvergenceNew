@@ -1,86 +1,93 @@
-import { Column } from 'react-table';
+import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
-import ModalOpenButton from '../components/ui/ModelOpenButton';
-import {
-Plus
-} from "lucide-react";
+import ModalOpenButton from "../components/ui/ModelOpenButton";
+import { Plus } from "lucide-react";
+import moment from "moment";
 
 interface SchemeData {
-  id: string;
-  Scheme: string;
-  Targets: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
-  TotalTarget: string;
-  Action: unknown;
+  pklSchemeId: string;
+  vsSchemeName: string;
+  vsSchemeType: string;
+  vsSchemeCode: string;
+  vsFundName: string;
+  vsSchemeFundingType: string;
+  vsSchemeFundingRatio: string;
+  sanctionOrderNo: string;
+  dtSanctionDate: string; 
+  count: string;
 }
 
-export const schemeColumns: (navigate: ReturnType<typeof useNavigate>) => Column<SchemeData>[] = (navigate) => [
-  { Header: "ID", accessor: "id" },
-  { Header: "Scheme", accessor: "Scheme" },
+export const schemeColumns: (
+  navigate: ReturnType<typeof useNavigate>
+) => Column<SchemeData>[] = (navigate) => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Scheme", accessor: "vsSchemeName" },
   {
     Header: "Targets",
-    accessor: "Targets",
+    accessor: "count",
     Cell: ({ row }: { row: { original: SchemeData } }) => (
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span
-          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-          onClick={() => navigate(`/Scheme/Targets/${row.original.id}`)}
+          style={{ cursor: "pointer", color: "red", textDecoration: "underline" }}
+          onClick={() => navigate(`/Scheme/Targets/${row.original.pklSchemeId}`)}
         >
-          {row.original.Targets}
+          {row.original.count || "N/A"}
         </span>
         <ModalOpenButton
           modalType={1}
           modalTitle="Add Target"
           bulkName="target"
           Icon={Plus}
-          id={row.original.id}
+          id={row.original.pklSchemeId}
           variant="table"
         />
       </div>
     ),
   },
-  { Header: "Scheme Type", accessor: "SchemeType" },
-  { Header: "Scheme Code", accessor: "SchemeCode" },
-  { Header: "Fund Name", accessor: "FundName" },
-  { Header: "Fund Type", accessor: "FundType" },
-  { Header: "Fund Ratio", accessor: "FundRatio" },
-  { Header: "Order Number", accessor: "OrderNumber" },
-  { Header: "Santion Date", accessor: "SantionDate" },
-  { Header: "Total Target", accessor: "TotalTarget" },
-  { Header: "Action", accessor: "Action" },
+  { Header: "Scheme Type", accessor: "vsSchemeType" },
+  { Header: "Scheme Code", accessor: "vsSchemeCode" },
+  { Header: "Fund Name", accessor: "vsFundName" },
+  { Header: "Fund Type", accessor: "vsSchemeFundingType" },
+  { Header: "Fund Ratio", accessor: "vsSchemeFundingRatio" },
+  { Header: "Order Number", accessor: "sanctionOrderNo" },
+  {
+    Header: "Sanction Date",
+    accessor: "dtSanctionDate",
+    Cell: ({ value }: { value: string }) =>
+      moment(value).format("YYYY-MM-DD"), 
+  },
 ];
 
 
 
-
-
-
 interface TargetData {
-  id: string;
+  id: number;
   SchemeCode: string;
   SanctionOrderNumber: string;
   DateOfSanction: string;
   TotalTarget: string;
   Action: unknown;
 }
-export const targetColumns: Column<TargetData>[] = [
-  { Header: "ID", accessor: "id" },
+
+export const targetColumns = (navigate: (path: string) => void): Column<TargetData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "SchemeCode" },
   { Header: "Sanction Order Number", accessor: "SanctionOrderNumber" },
   { Header: "Date Of Sanction", accessor: "DateOfSanction" },
-  { Header: "TotalTarget", accessor: "TotalTarget" },
-  { Header: "Action", accessor: "Action" },
+  { Header: "Total Target", accessor: "TotalTarget" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/target/${row.original.id}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
-
-
-
-
 
 
 

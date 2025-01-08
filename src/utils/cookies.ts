@@ -25,9 +25,9 @@ export const getToken = (): string | undefined => Cookies.get('token');
 // Get user details from cookies
 export const getUserDetails = (): UserDetails | null => {
     const details = Cookies.get('userDetails');
-    return details ? JSON.parse(details) as UserDetails : null;
+    return details ? (JSON.parse(details) as UserDetails) : null;
+  };
   
-};
 
 
 

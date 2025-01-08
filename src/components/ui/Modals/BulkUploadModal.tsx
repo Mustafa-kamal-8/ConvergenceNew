@@ -3,15 +3,20 @@ import DropInput from "../DropInput";
 import Button from "../Button";
 import { toast } from "react-toastify";
 import axios from "axios";
-import * as XLSX from "xlsx"; // Import XLSX for parsing Excel files
+import * as XLSX from "xlsx"; 
+import { getUserDetails } from "../../../utils/cookies";
 
 interface BulkUploadModalProps {
   bulkName: string;
+  schemeId: string;
 }
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
-const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
+const userDetails = getUserDetails();
+
+console.log("user details are",userDetails)
+const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -25,14 +30,17 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
       toast.error("Please select a file before uploading.");
       return;
     }
+    if (!userDetails || !userDetails.departmentId) {
+      toast.error("User details or department ID is missing.");
+      console.error("User details are invalid or missing departmentId.");
+      return;
+    }
 
-    // Log the file data here
     console.log("File data before upload:", file);
     console.log("File name:", file.name);
     console.log("File size:", file.size);
     console.log("File type:", file.type);
 
-    // Read the file content and log the data
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = e.target?.result;
@@ -43,14 +51,24 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet);
-          console.log("Parsed Excel data:", jsonData); // This will log the data
+          console.log("Parsed Excel data:", jsonData); 
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const updatedData = jsonData.map((row: any) => {
+            return {
+              ...row,
+              'schemeId': parseInt(schemeId), // Add or overwrite the 'scheme id' value
+            };
+          });
+  
+          console.log("Updated parsed Excel data:", updatedData);
         }
       } else {
         console.error("File could not be read as ArrayBuffer.");
       }
     };
     if (file) {
-      reader.readAsArrayBuffer(file); // Read the file as binary string
+      reader.readAsArrayBuffer(file); 
     }
 
     setUploading(true);
@@ -58,9 +76,11 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", bulkName); // Pass bulkName to the API
+      formData.append("type", bulkName); 
+      formData.append("fklDepartmentId", userDetails.departmentId.toString());
+      formData.append("fklSchemeId",  (schemeId))
 
-      const { data: resData } = await axios.post(`${API_BASE_URL}/upload/`, formData, {
+      const { data: resData } = await axios.post(`${API_BASE_URL}/file-upload/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -70,7 +90,8 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
         toast.success("File uploaded successfully!");
         handleClearFile();
       } else {
-        toast.error("Error while uploading the file.");
+        const errorMessage = resData.message || "Error while uploading the file.";
+        toast.error(errorMessage);
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

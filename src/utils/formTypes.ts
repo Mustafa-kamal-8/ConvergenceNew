@@ -13,13 +13,14 @@ export interface SchemeFormData {
   }
 
 export interface CourseFormData  {
-    sectorName: string;
-    qpnosCode: string;
-    jobRoleName: string;
-    totalTheoryHours: string;
-    totalPracticalHours: string;
-    dateValidFrom: string;
-    dateValidUpto: string;
+  dtFromDate: string,
+  dtToDate: string,
+  fklSectorId: string,
+  vsCourseCode: string,
+  vsCourseName: string,
+  iTheoryDurationInHours: string,
+  iPracticalDurationInHours: string,
+
   };
   
  export interface TrainingPartnerFormData {
@@ -108,4 +109,12 @@ export interface InvoiceFormData {
   noOfCandidates: string;
   rate: string;
   amount: string;
+}
+
+export interface targetFormData{
+  sanctionOrderNo: string;
+  vsSchemeCode: string;
+  dtSanctionDate: string
+  iTotalTarget: number;
+
 }

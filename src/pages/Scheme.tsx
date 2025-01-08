@@ -1,86 +1,50 @@
 import React, { useState, useEffect } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { schemeColumns as getTrainingColumns } from "../utils/tableColumns";
-import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
-import SearchInputBox from "../components/ui/SearchInputBox";
+import { schemeColumns } from "../utils/tableColumns";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getSchemeData } from "../services/state/api/tableDataApi";
 import Dropdown from "../components/ui/Dropdown";
+import SearchInputBox from "../components/ui/SearchInputBox";
+import ModalOpenButton from "../components/ui/ModelOpenButton";
 import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
-import { useNavigate } from "react-router-dom";
-import { getSchemeData } from "../services/state/api/tableDataApi";
-import { useQuery } from "@tanstack/react-query";
-
-interface SchemeData {
-  id: string;
-  Scheme: string;
-  Targets: string;
-  SchemeType: string;
-  SchemeCode: string;
-  FundName: string;
-  FundType: string;
-  FundRatio: string;
-  OrderNumber: string;
-  SantionDate: string;
-  TotalTarget: string;
-  Action: unknown;
-}
+import CustomModal from "../components/ui/CustomModal";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
-  const candidateColumns = React.useMemo(() => getTrainingColumns(navigate), [navigate]);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedOption, setSelectedOption] = useState<string>("All");
-  const [filteredData, setFilteredData] = useState<SchemeData[]>([]);
+  const columns = React.useMemo(() => schemeColumns(navigate), [navigate]);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedOption, setSelectedOption] = useState("All");
+  const [filteredData, setFilteredData] = useState([]);
 
   const { data: fetchedData, isSuccess } = useQuery({
     queryKey: ["schemeData"],
     queryFn: getSchemeData,
   });
 
-  // Transform API response to match `SchemeData` format
   useEffect(() => {
     if (isSuccess && fetchedData?.data) {
-      const transformedData = fetchedData.data.map((item: { pklSchemeId: { toString: () => unknown; }; vsSchemeName: unknown; vsSchemeType: unknown; vsSchemeCode: unknown; vsFundName: unknown; vsSchemeFundingType: unknown; vsSchemeFUndingRatio: unknown; sanctionOrderNo: unknown; dtSanctionDate: string | number | Date; }) => ({
-        id: item.pklSchemeId.toString(),
-        Scheme: item.vsSchemeName,
-        Targets: "N/A", // Adjust based on the actual API response
-        SchemeType: item.vsSchemeType,
-        SchemeCode: item.vsSchemeCode,
-        FundName: item.vsFundName,
-        FundType: item.vsSchemeFundingType,
-        FundRatio: item.vsSchemeFUndingRatio,
-        OrderNumber: item.sanctionOrderNo,
-        SantionDate: new Date(item.dtSanctionDate).toLocaleDateString(),
-        TotalTarget: "N/A", // Adjust if available in the API response
-        Action: (
-          <button className="py-1 px-3 text-white bg-blue-500 rounded">
-            View
-          </button>
-        ),
-      }));
-      setFilteredData(transformedData);
+      setFilteredData(fetchedData.data); 
     }
   }, [fetchedData, isSuccess]);
 
-  // Handle search logic
-  const handleSearch = (searchValue: string) => {
-    setSearchValue(searchValue);
-    const filtered = fetchedData.data.filter(
-      (candidate: { vsSchemeName: string; }) =>
-        candidate.vsSchemeName.toLowerCase().includes(searchValue.toLowerCase())
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filtered = fetchedData.data.filter((item: any) =>
+      item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
   };
 
-  // Handle dropdown selection
-  const handleDropdownSelect = (option: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDropdownSelect = (option:any) => {
     setSelectedOption(option);
-    // Update filtered data based on selected option
     const filtered = fetchedData.data.filter(
-      (candidate: { vsSchemeType: string; }) =>
-        option === "All" || candidate.vsSchemeType === option
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (item: any) => option === "All" || item.vsSchemeType === option
     );
     setFilteredData(filtered);
   };
@@ -129,7 +93,7 @@ const Scheme: React.FC = () => {
           </div>
         </div>
       </div>
-      <CentralizedTable columns={candidateColumns} data={filteredData} pageSize={5} />
+      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>
   );
 };

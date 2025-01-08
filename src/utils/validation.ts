@@ -79,28 +79,28 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
 
 
 export const courseSchema = Joi.object({
-  sectorName: Joi.string().required().label("Sector Name").messages({
+  fklSectorId: Joi.number().required().label("Sector Name").messages({
     "string.empty": "Sector Name is required.",
   }),
-  qpnosCode: Joi.string().required().label("QPNOS Code").messages({
+  vsCourseCode: Joi.string().required().label("QPNOS Code").messages({
     "string.empty": "QPNOS Code is required.",
   }),
-  jobRoleName: Joi.string().required().label("Job Role Name").messages({
+  vsCourseName: Joi.string().required().label("Job Role Name").messages({
     "string.empty": "Job Role Name is required.",
   }),
-  totalTheoryHours: Joi.number().required().messages({
+  iTheoryDurationInHours: Joi.number().required().messages({
     "number.base": "Total Theory Hours must be a number.",
     "any.required": "Total Theory Hours is required.",
   }),
-  totalPracticalHours: Joi.number().required().messages({
+  iPracticalDurationInHours: Joi.number().required().messages({
     "number.base": "Total Practical Hours must be a number.",
     "any.required": "Total Practical Hours is required.",
   }),
-  dateValidFrom: Joi.date().required().messages({
+  dtFromDate: Joi.date().required().messages({
     "date.base": "Date Valid From must be a valid date.",
     "any.required": "Date Valid From is required.",
   }),
-  dateValidUpto: Joi.date().required().messages({
+  dtToDate: Joi.date().required().messages({
     "date.base": "Date Valid Upto must be a valid date.",
     "any.required": "Date Valid Upto is required.",
   }),
@@ -402,4 +402,22 @@ export const invoiceValidationSchema = Joi.object({
       "string.empty": "Amount is required",
       "string.pattern.base": "Amount must be a valid number",
     }),
+});
+
+
+export const targetSchema = Joi.object({
+  sanctionOrderNo: Joi.string().required().label("Sanction No").messages({
+    "string.empty": "Sector Name is required.",
+  }),
+  vsSchemeCode: Joi.string().required().label("Scheme Code").messages({
+    "string.empty": "Scheme Code is required.",
+  }),
+  dtSanctionDate: Joi.string().required().label("Sanction Date").messages({
+    "string.empty": "Sanction Date is required.",
+  }),
+  iTotalTarget: Joi.number().required().label("Total Target").messages({
+    "number.base": "Total Target must be a number.",
+    "any.required": "Total Target is required.",
+  }),
+ 
 });

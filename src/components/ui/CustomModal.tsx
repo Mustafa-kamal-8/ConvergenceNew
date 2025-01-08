@@ -1,6 +1,6 @@
 // src/components/ui/CustomModal.tsx
 import React from 'react';
-import { Modal, Box, Typography, Button } from '@mui/material';
+import { Modal, Box, Typography} from '@mui/material';
 import useModalStore from '../../services/state/useModelStore';
 import Scheme from './Modals/SchemeModal';
 import BulkUploadModal from './Modals/BulkUploadModal';
@@ -19,7 +19,7 @@ import TrainingCenterModel from './Modals/TrainingCenterModel';
 
 
 const CustomModal: React.FC = () => {
-  const { isOpen, modalType, modalTitle,bulkName, id,closeModal } = useModalStore();
+  const { isOpen, modalType, modalTitle,bulkName, id,closeModal,schemeId } = useModalStore();
   
 
   const renderModalContent = () => {
@@ -27,9 +27,9 @@ const CustomModal: React.FC = () => {
       case 0:
         return <Scheme />;
       case 1:
-        return <Traget />;
+        return <Traget id={id ?? ''}/>;
       case 2:
-        return <CourseModal />;
+        return <CourseModal/>;
       case 3:
         return <TrainingPartnerModal />;
       case 4:
@@ -47,7 +47,7 @@ const CustomModal: React.FC = () => {
       case 10:
         return <InvoiceModal />;
       case 11:
-        return <BulkUploadModal bulkName={bulkName} />;
+        return <BulkUploadModal bulkName={bulkName} schemeId={schemeId ?? ''} />;
         case 12:
           return <TrainingCenterModel  id={id}/>;
 

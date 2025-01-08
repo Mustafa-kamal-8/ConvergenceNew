@@ -6,7 +6,8 @@ type ModalState = {
   modalTitle: string;
   bulkName: string;
   id: string | null;
-  openModal: (type: number, title: string, bulkName: string , id: string) => void;
+  schemeId: string | null;
+  openModal: (type: number, title: string, bulkName: string , id: string, schemeId:string) => void;
   closeModal: () => void;
 };
 
@@ -16,8 +17,9 @@ const useModalStore = create<ModalState>((set) => ({
   modalTitle: '',
   bulkName: '',
   id: null,
-  openModal: (type: number, title: string , bulkName: string , id: string) => set({ isOpen: true, modalType: type, modalTitle: title , bulkName:bulkName , id:id}),
-  closeModal: () => set({ isOpen: false, modalType: null, modalTitle: '', bulkName: '' , id:null }), 
+  schemeId: null,
+  openModal: (type: number, title: string , bulkName: string , id: string, schemeId:string) => set({ isOpen: true, modalType: type, modalTitle: title , bulkName:bulkName , id:id, schemeId:schemeId}),
+  closeModal: () => set({ isOpen: false, modalType: null, modalTitle: '', bulkName: '' , id:null, schemeId:'' }), 
 }));
 
 export default useModalStore;

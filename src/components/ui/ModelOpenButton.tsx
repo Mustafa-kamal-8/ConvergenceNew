@@ -7,10 +7,11 @@ type ModalOpenButtonProps = {
   modalTitle: string;
   bulkName: string;
   Icon: React.ElementType;
-  variant?: 'default' | 'table'; 
+  variant?: 'default' | 'table';
+  schemeId?: string;
 };
 
-const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle, bulkName, Icon, id, variant = 'default' }) => {
+const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle, bulkName, Icon, id, variant = 'default',schemeId }) => {
   const openModal = useModalStore((state) => state.openModal);
 
 
@@ -21,7 +22,7 @@ const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle
 
   return (
     <button
-      onClick={() => openModal(modalType, modalTitle, bulkName, id)}
+      onClick={() => openModal(modalType, modalTitle, bulkName, id, schemeId ?? '')}
       className={buttonStyles}
     >
       <Icon className={variant === 'table' ? 'w-4 h-4' : 'w-6 h-6'} /> 
