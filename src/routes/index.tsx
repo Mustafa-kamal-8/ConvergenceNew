@@ -1,4 +1,4 @@
-import { Routes, Route} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Layout from "../components/common/Layout";
 import Scheme from "../pages/Scheme";
@@ -16,14 +16,14 @@ import TrainingCenter from "../pages/TrainingCenter";
 
 import Login from "../../src/components/auth/Login";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
-import NotFound from "../pages/NotFound";
+import NotFound from "../pages/404/NotFound";
+import SystemAdminLayout from "../components/common/SysAdminLayout";
+import CreateDepartment from "../pages/department-creation/CreateDepartment";
 
 const Index = () => {
   return (
     <Routes>
-    
       <Route path="Login" element={<Login />} />
-      
 
       <Route
         path="/"
@@ -38,7 +38,10 @@ const Index = () => {
         <Route path="Scheme/Targets/:id" element={<Target />} />
         <Route path="Course" element={<Course />} />
         <Route path="TrainingPartner" element={<TrainingPartner />} />
-        <Route path="TrainingPartner/Centeres/:id" element={<TrainingCenter />} />
+        <Route
+          path="TrainingPartner/Centeres/:id"
+          element={<TrainingCenter />}
+        />
         <Route path="Batch" element={<Batch />} />
         <Route path="Candidate" element={<Candidate />} />
         <Route path="Trainer" element={<Trainer />} />
@@ -47,8 +50,18 @@ const Index = () => {
         <Route path="Placement" element={<Placement />} />
         <Route path="Invoice" element={<Invoice />} />
       </Route>
-      
-      
+
+      <Route
+        path="/department-creation"
+        element={
+          <ProtectedRoute>
+            <SystemAdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="" element={<CreateDepartment />} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

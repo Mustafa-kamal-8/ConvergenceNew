@@ -1,11 +1,14 @@
 import { Menu, Bell } from "lucide-react";
+import logo from "../../assets/ASDMLOGO.png";
 
 const Header = ({
   isSidebarCollapsed,
   toggleSidebar,
+  isSysAdmin,
 }: {
   isSidebarCollapsed: boolean;
   toggleSidebar: React.MouseEventHandler<HTMLButtonElement>;
+  isSysAdmin?: boolean;
 }) => {
   return (
     <div
@@ -15,12 +18,18 @@ const Header = ({
     >
       <div className="flex items-center justify-between p-4">
         <div className="flex-grow flex gap-4 items-center">
-          <button onClick={toggleSidebar}>
-            <Menu />
-          </button>
-          <div>
-            <input placeholder="search" />
-          </div>
+          {isSysAdmin ? (
+            <img src={logo} className="w-16 h-16" />
+          ) : (
+            <>
+              <button onClick={toggleSidebar}>
+                <Menu />
+              </button>
+              <div>
+                <input placeholder="search" />
+              </div>
+            </>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <button>

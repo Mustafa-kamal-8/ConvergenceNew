@@ -385,6 +385,20 @@ export const placementColumns: Column<PlacementData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
+export const departmentListColumns : Column<PlacementData>[] = [
+  { Header: "ID", accessor: "id" },
+  { Header: "Batch ID", accessor: "BatchId" },
+  { Header: "Candidate ID", accessor: "CandidateId" },
+  { Header: "Is Placed ", accessor: "IsPlaced" },
+  { Header: "Placement Type ", accessor: "PlacementType" },
+  { Header: "Employer Name", accessor: "EmployerName" },
+  { Header: "Employer Contact", accessor: "EmployerContact" },
+  { Header: "Placement State", accessor: "PlacementState" },
+  { Header: "PlacementDistrict", accessor: "PlacementDistrict" },
+  { Header: "Monthly Salary", accessor: "MonthlySalary" },
+  { Header: "Action", accessor: "Action" },
+];
+
 
 
 
