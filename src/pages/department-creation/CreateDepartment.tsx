@@ -1,26 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
 import CentralizedTable from "../../components/CentralizedTable";
 import { departmentListColumns } from "../../utils/tableColumns";
+import { getCreatedDepartments } from "../../services/state/api/departmentCreationApi";
 
 const CreateDepartment = () => {
-  const data = [
-    {
-      id: "1",
-      BatchId: "B001",
-      CandidateId: "C001",
-      IsPlaced: "Yes",
-      PlacementType: "Full-time",
-      EmployerName: "Company A",
-      EmployerContact: "9876543210",
-      PlacementState: "Assam",
-      PlacementDistrict: "Kamrup",
-      MonthlySalary: "₹50,000",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-  ];
+  const { data } = useQuery({
+    queryKey: ["getCreatedDepartments"],
+    queryFn: getCreatedDepartments,
+  });
+
   return (
     <div>
       <CentralizedTable

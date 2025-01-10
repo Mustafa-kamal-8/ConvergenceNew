@@ -5,8 +5,6 @@ import { getUserDetails } from "../../../utils/cookies";
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL;
 const userDetails = getUserDetails();
- 
-  
 
 
 export const submitSchemeForm = async (data: SchemeFormData) => {

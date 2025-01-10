@@ -13,7 +13,7 @@ interface SchemeData {
   vsSchemeFundingType: string;
   vsSchemeFundingRatio: string;
   sanctionOrderNo: string;
-  dtSanctionDate: string; 
+  dtSanctionDate: string;
   count: string;
 }
 
@@ -26,10 +26,22 @@ export const schemeColumns: (
     Header: "Targets",
     accessor: "count",
     Cell: ({ row }: { row: { original: SchemeData } }) => (
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <span
-          style={{ cursor: "pointer", color: "red", textDecoration: "underline" }}
-          onClick={() => navigate(`/Scheme/Targets/${row.original.pklSchemeId}`)}
+          style={{
+            cursor: "pointer",
+            color: "red",
+            textDecoration: "underline",
+          }}
+          onClick={() =>
+            navigate(`/Scheme/Targets/${row.original.pklSchemeId}`)
+          }
         >
           {row.original.count || "N/A"}
         </span>
@@ -53,12 +65,9 @@ export const schemeColumns: (
   {
     Header: "Sanction Date",
     accessor: "dtSanctionDate",
-    Cell: ({ value }: { value: string }) =>
-      moment(value).format("YYYY-MM-DD"), 
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
 ];
-
-
 
 interface TargetData {
   id: number;
@@ -69,7 +78,9 @@ interface TargetData {
   Action: unknown;
 }
 
-export const targetColumns = (navigate: (path: string) => void): Column<TargetData>[] => [
+export const targetColumns = (
+  navigate: (path: string) => void
+): Column<TargetData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "SchemeCode" },
   { Header: "Sanction Order Number", accessor: "SanctionOrderNumber" },
@@ -89,14 +100,12 @@ export const targetColumns = (navigate: (path: string) => void): Column<TargetDa
   },
 ];
 
-
-
 interface CourseData {
   id: string;
   vsCourseName: string;
-  vsCourseCode:string
+  vsCourseCode: string;
   dtFromDate: string;
-  dtToDate:string
+  dtToDate: string;
   JobRoleName: string;
   iTheoryDurationInHours: string;
   iPracticalDurationInHours: string;
@@ -105,23 +114,29 @@ interface CourseData {
   Action: unknown;
 }
 
-
-export const courseColumns = (navigate: (path: string) => void): Column<CourseData>[] => [
+export const courseColumns = (
+  navigate: (path: string) => void
+): Column<CourseData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Sector Name", accessor: "vsSectorName" },
   { Header: "QPNOS Code", accessor: "vsCourseCode" },
-  { Header: "From Date", accessor: "dtFromDate" , Cell: ({ value }: { value: string }) =>
-    moment(value).format("YYYY-MM-DD"), },
-  { Header: "To Date", accessor: "dtToDate", Cell: ({ value }: { value: string }) =>
-    moment(value).format("YYYY-MM-DD"),  },
+  {
+    Header: "From Date",
+    accessor: "dtFromDate",
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+  },
+  {
+    Header: "To Date",
+    accessor: "dtToDate",
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+  },
   { Header: "Job Role Name", accessor: "vsCourseName" },
   { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
   { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
   {
     Header: "Created At",
     accessor: "dtcreatedAt",
-    Cell: ({ value }: { value: string }) =>
-      moment(value).format("YYYY-MM-DD"), 
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
   {
     Header: "Action",
@@ -137,11 +152,6 @@ export const courseColumns = (navigate: (path: string) => void): Column<CourseDa
   },
 ];
 
-
-
-
-
-
 interface TrainingPartnerData {
   id: string;
   Centeres: string;
@@ -151,7 +161,7 @@ interface TrainingPartnerData {
   SmartId: string;
   Mobile: string;
   Email: string;
-  Address: string;       
+  Address: string;
   State: string;
   District: string;
   Block: string;
@@ -160,17 +170,30 @@ interface TrainingPartnerData {
   Action: unknown;
 }
 
-
-export const trainingColumns = (navigate: ReturnType<typeof useNavigate>): Column<TrainingPartnerData>[] => [
+export const trainingColumns = (
+  navigate: ReturnType<typeof useNavigate>
+): Column<TrainingPartnerData>[] => [
   { Header: "ID", accessor: "id" },
-  { 
+  {
     Header: "Centers",
     accessor: "Centeres",
     Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span 
-          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-          onClick={() => navigate(`/TrainingPartner/Centeres/${row.original.id}`)}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span
+          style={{
+            cursor: "pointer",
+            color: "blue",
+            textDecoration: "underline",
+          }}
+          onClick={() =>
+            navigate(`/TrainingPartner/Centeres/${row.original.id}`)
+          }
         >
           {row.original.Centeres}
         </span>
@@ -179,7 +202,7 @@ export const trainingColumns = (navigate: ReturnType<typeof useNavigate>): Colum
           modalTitle="Add Centeres"
           bulkName="trainingCenter"
           Icon={Plus}
-          id={row.original.id} 
+          id={row.original.id}
           variant="table"
         />
       </div>
@@ -195,14 +218,26 @@ export const trainingColumns = (navigate: ReturnType<typeof useNavigate>): Colum
   { Header: "District", accessor: "District" },
   { Header: "Block/ULB", accessor: "Block" },
   { Header: "Village/City", accessor: "Village" },
-  { 
+  {
     Header: "Action",
     accessor: "Action",
     Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button 
-          style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-          onClick={() => navigate(`/TrainingPartner/Centeres/${row.original.id}`)}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <button
+          style={{
+            cursor: "pointer",
+            color: "blue",
+            textDecoration: "underline",
+          }}
+          onClick={() =>
+            navigate(`/TrainingPartner/Centeres/${row.original.id}`)
+          }
         >
           {row.original.Centeres}
         </button>
@@ -211,19 +246,13 @@ export const trainingColumns = (navigate: ReturnType<typeof useNavigate>): Colum
           modalTitle="Add Centeres"
           bulkName="trainingCenter"
           Icon={Plus}
-          id={row.original.id} 
+          id={row.original.id}
           variant="table"
         />
       </div>
     ),
   },
 ];
-
-
-
-
-
-
 
 interface BatchData {
   id: string;
@@ -237,11 +266,9 @@ interface BatchData {
   Sector: string;
   JobRole: string;
   QPNOSCode: string;
- 
+
   Action: unknown;
 }
-
-
 
 export const batchColumns: Column<BatchData>[] = [
   { Header: "ID", accessor: "id" },
@@ -251,16 +278,12 @@ export const batchColumns: Column<BatchData>[] = [
   { Header: "Training Partner ", accessor: "TrainingPartner" },
   { Header: "Training Center", accessor: "TrainingCenter" },
   { Header: "Trainer ", accessor: "Trainer" },
- 
+
   { Header: "Sector", accessor: "Sector" },
   { Header: "Job Role", accessor: "JobRole" },
   { Header: "QPNOSCode", accessor: "QPNOSCode" },
   { Header: "Action", accessor: "Action" },
 ];
-
-
-
-
 
 interface AssessorsData {
   id: string;
@@ -272,8 +295,6 @@ interface AssessorsData {
   ValidUpto: string;
   Action: unknown;
 }
- 
-
 
 export const assessorsColumns: Column<AssessorsData>[] = [
   { Header: "ID", accessor: "id" },
@@ -285,8 +306,6 @@ export const assessorsColumns: Column<AssessorsData>[] = [
   { Header: "Valid Upto ", accessor: "ValidUpto" },
   { Header: "Action", accessor: "Action" },
 ];
-
-
 
 interface TrainerData {
   id: string;
@@ -309,8 +328,6 @@ export const trainerColumns: Column<TrainerData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
-
-
 interface AssessmentData {
   id: string;
   BatchId: string;
@@ -321,12 +338,12 @@ interface AssessmentData {
   Agency: string;
   AgencyMobile: string;
   AgencyEmail: string;
-  AccessorId : string;
+  AccessorId: string;
   AccessorName: string;
   Result: string;
   ResultDate: string;
   CertificationStatus: string;
-  TotalMarks : string;
+  TotalMarks: string;
   ObtainedMarks: string;
   MarksheetURL: string;
   CertificateURL: string;
@@ -354,8 +371,6 @@ export const assessmentColumns: Column<AssessmentData>[] = [
   { Header: "Certificate URL", accessor: "CertificateURL" },
   { Header: "Action", accessor: "Action" },
 ];
-
-
 
 interface PlacementData {
   id: string;
@@ -385,23 +400,48 @@ export const placementColumns: Column<PlacementData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
-export const departmentListColumns : Column<PlacementData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Batch ID", accessor: "BatchId" },
-  { Header: "Candidate ID", accessor: "CandidateId" },
-  { Header: "Is Placed ", accessor: "IsPlaced" },
-  { Header: "Placement Type ", accessor: "PlacementType" },
-  { Header: "Employer Name", accessor: "EmployerName" },
-  { Header: "Employer Contact", accessor: "EmployerContact" },
-  { Header: "Placement State", accessor: "PlacementState" },
-  { Header: "PlacementDistrict", accessor: "PlacementDistrict" },
-  { Header: "Monthly Salary", accessor: "MonthlySalary" },
-  { Header: "Action", accessor: "Action" },
+interface DepartmentListData {
+  id: string;
+  BatchId: string;
+  departmentName: string;
+  adminName: string;
+  phoneNumber: string;
+  createdDate: string;
+  userName: string;
+}
+
+export const departmentListColumns: Column<DepartmentListData>[] = [
+  {
+    Header: "Sl. No.",
+    accessor: (_, index) => index + 1,
+    id: "sl_no",
+  },
+  {
+    Header: "Department Name",
+    accessor: "departmentName",
+    Cell: ({ value }) => value ?? "N/A",
+  },
+  {
+    Header: "Contact Number",
+    accessor: "phoneNumber",
+    Cell: ({ value }) => value ?? "N/A",
+  },
+  {
+    Header: "User Name",
+    accessor: "userName",
+    Cell: ({ value }) => value ?? "N/A",
+  },
+  {
+    Header: "Created Time",
+    accessor: "createdDate",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+  },
+  {
+    Header: "Created By",
+    accessor: "adminName",
+    Cell: ({ value }) => value ?? "N/A",
+  },
 ];
-
-
-
-
 
 interface InvoiceData {
   id: string;
@@ -428,25 +468,23 @@ export const invoiceColumns: Column<InvoiceData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
-
-
 interface CenterData {
   id: string;
-    TpId: string;
-    PartnerId: string;
-    Name: string;
-    CenterId: string;
-    SmartId: string;
-    spocName: string;
-    Mobile: string;
-    Email: string;
-    Address: string;
-    State: string;
-    District: string;
-    Block: string;
-    Village: string;
-    Constituency: string;
-    Action: unknown;
+  TpId: string;
+  PartnerId: string;
+  Name: string;
+  CenterId: string;
+  SmartId: string;
+  spocName: string;
+  Mobile: string;
+  Email: string;
+  Address: string;
+  State: string;
+  District: string;
+  Block: string;
+  Village: string;
+  Constituency: string;
+  Action: unknown;
 }
 
 export const centerColumns: Column<CenterData>[] = [
@@ -466,10 +504,7 @@ export const centerColumns: Column<CenterData>[] = [
   { Header: "Village", accessor: "Village" },
   { Header: "Constituency", accessor: "Constituency" },
   { Header: "Action", accessor: "Action" },
-
 ];
-
-
 
 interface CandidateData {
   id: string;
