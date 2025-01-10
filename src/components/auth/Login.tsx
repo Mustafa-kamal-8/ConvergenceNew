@@ -37,8 +37,10 @@ const Login = () => {
         );
 
         toast.success(response.data.message || "Login Successful!");
-
-        console.log("Login successful", response.data);
+        if (type === "create") {
+          navigate("/department-creation");
+          return;
+        }
         navigate("/dashboard");
       } else {
         toast.error(response.data.message || "Login failed");
