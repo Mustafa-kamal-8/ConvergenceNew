@@ -24,17 +24,17 @@ export interface CourseFormData  {
   };
   
  export interface TrainingPartnerFormData {
-    partnerID: string;
-    name: string;
-    spocName: string;
-    smartID: string;
-    mobile: string;
-    email: string;
-    address: string;
-    state: string;
-    district: string;
-    blockULB: string;
-    villageCity: string;
+  vsTpName: string,
+  vsSpocEmail: string,
+  iSpocContactNum: string,
+  vsSpocName: string,
+  vsTpCode: string,
+  vsState: string,
+  vsDistrict: string,
+  vsBlock: string,
+  vsVillage: string,
+  vsAddress: string,
+  vsSmartId: string,
   }
 
 

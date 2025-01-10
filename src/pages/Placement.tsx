@@ -5,11 +5,10 @@ import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import Dropdown from "../components/ui/Dropdown";
-import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
-import Input from "../components/ui/Input";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { placementColumns } from "../utils/tableColumns";
+import { DownloadCloud, UploadCloud } from "lucide-react";
 
 interface PlacementData {
   id: string;

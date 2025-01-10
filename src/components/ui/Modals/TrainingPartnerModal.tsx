@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Button from "../../ui/SubmitButton";
@@ -8,6 +8,8 @@ import Input from "../Input";
 import { toast } from "react-toastify";
 import { TrainingPartnerFormData } from "../../../utils/formTypes";
 import { trainingPartnerSchema } from "../../../utils/validation";
+import { useQuery } from "@tanstack/react-query";
+import { getMasterData } from "../../../services/state/api/masterApi";
 
 const TrainingPartnerModal: React.FC = () => {
   const {
@@ -17,6 +19,18 @@ const TrainingPartnerModal: React.FC = () => {
   } = useForm<TrainingPartnerFormData>({
     resolver: joiResolver(trainingPartnerSchema),
   });
+
+  const { data: masterData } = useQuery({
+    queryKey: ["masterData", "state"], 
+    queryFn: () => getMasterData("state"), 
+  });
+  
+   useEffect(() => {
+     if (masterData) {
+      console.log("Fetched master data:", masterData);
+     }
+   }, [masterData]);
+
 
   const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
@@ -36,18 +50,18 @@ const TrainingPartnerModal: React.FC = () => {
         <div className="col-span-1 sm:col-span-2 lg:col-span-1">
           <Label text="Partner ID" />
           <Controller
-            name="partnerID"
+            name="vsTpCode"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.partnerID ? "border-red-500" : ""}
+                className={errors.vsTpCode ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.partnerID && (
-            <p className="text-red-500">{errors.partnerID.message}</p>
+          {errors.vsTpCode && (
+            <p className="text-red-500">{errors.vsTpCode.message}</p>
           )}
         </div>
 
@@ -55,174 +69,194 @@ const TrainingPartnerModal: React.FC = () => {
         <div className="col-span-2">
           <Label text="Name" />
           <Controller
-            name="name"
+            name="vsTpName"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.name ? "border-red-500" : ""}
+                className={errors.vsTpName ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.name && <p className="text-red-500">Name is required</p>}
+           {errors.vsTpName && (
+            <p className="text-red-500">{errors.vsTpName.message}</p>
+          )}
         </div>
 
         {/* SPOC Name */}
         <div className="col-span-2">
           <Label text="SPOC Name" />
           <Controller
-            name="spocName"
+            name="vsSpocName"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.spocName ? "border-red-500" : ""}
+                className={errors.vsSpocName ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.spocName && <p className="text-red-500">SPOC Name is required</p>}
+          {errors.vsSpocName && (
+            <p className="text-red-500">{errors.vsSpocName.message}</p>
+          )}
         </div>
 
         {/* Smart ID */}
         <div className="col-span-1">
           <Label text="Smart ID" />
           <Controller
-            name="smartID"
+            name="vsSmartId"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.smartID ? "border-red-500" : ""}
+                className={errors.vsSmartId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.smartID && <p className="text-red-500">Smart ID is required</p>}
+             {errors.vsSmartId && (
+            <p className="text-red-500">{errors.vsSmartId.message}</p>
+          )}
         </div>
 
         {/* Mobile */}
         <div className="col-span-1">
           <Label text="Mobile" />
           <Controller
-            name="mobile"
+            name="iSpocContactNum"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="tel"
-                className={errors.mobile ? "border-red-500" : ""}
+                className={errors.iSpocContactNum ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.mobile && <p className="text-red-500">Mobile is required</p>}
+           {errors.iSpocContactNum && (
+            <p className="text-red-500">{errors.iSpocContactNum.message}</p>
+          )}
         </div>
 
         {/* Email */}
         <div className="col-span-1">
           <Label text="Email" />
           <Controller
-            name="email"
+            name="vsSpocEmail"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="email"
-                className={errors.email ? "border-red-500" : ""}
+                className={errors.vsSpocEmail ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.email && <p className="text-red-500">Email is required</p>}
+        {errors.vsSpocEmail && (
+            <p className="text-red-500">{errors.vsSpocEmail.message}</p>
+          )}
         </div>
 
         {/* Address */}
         <div className="col-span-2">
           <Label text="Address" />
           <Controller
-            name="address"
+            name="vsAddress"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.address ? "border-red-500" : ""}
+                className={errors.vsAddress ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.address && <p className="text-red-500">Address is required</p>}
+            {errors.vsAddress && (
+            <p className="text-red-500">{errors.vsAddress.message}</p>
+          )}
         </div>
 
         {/* State */}
         <div className="col-span-1">
           <Label text="State" />
           <Controller
-            name="state"
+            name="vsState"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select State --"
-                className={errors.state ? "border-red-500" : ""}
+                className={errors.vsState ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.state && <p className="text-red-500">State is required</p>}
+          {errors.vsState && (
+            <p className="text-red-500">{errors.vsState.message}</p>
+          )}
         </div>
 
         {/* District */}
         <div className="col-span-1">
           <Label text="District" />
           <Controller
-            name="district"
+            name="vsDistrict"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select District --"
-                className={errors.district ? "border-red-500" : ""}
+                className={errors.vsDistrict ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.district && <p className="text-red-500">District is required</p>}
+        {errors.vsDistrict && (
+            <p className="text-red-500">{errors.vsDistrict.message}</p>
+          )}
         </div>
 
         {/* Block/ULB */}
         <div className="col-span-1">
           <Label text="Block/ULB" />
           <Controller
-            name="blockULB"
+            name="vsBlock"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select Block/ULB --"
-                className={errors.blockULB ? "border-red-500" : ""}
+                className={errors.vsBlock ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.blockULB && <p className="text-red-500">Block/ULB is required</p>}
+          {errors.vsBlock && (
+            <p className="text-red-500">{errors.vsBlock.message}</p>
+          )}
         </div>
 
         {/* Village/City */}
         <div className="col-span-1">
           <Label text="Village/City" />
           <Controller
-            name="villageCity"
+            name="vsVillage"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select Village/City --"
-                className={errors.villageCity ? "border-red-500" : ""}
+                className={errors.vsVillage ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.villageCity && <p className="text-red-500">Village/City is required</p>}
+         {errors.vsVillage && (
+            <p className="text-red-500">{errors.vsVillage.message}</p>
+          )}
         </div>
 
         {/* Submit Button */}

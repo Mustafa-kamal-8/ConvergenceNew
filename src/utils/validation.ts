@@ -108,23 +108,23 @@ export const courseSchema = Joi.object({
 
 
 export const trainingPartnerSchema = Joi.object({
-  partnerID: Joi.string().required().label("Partner ID").messages({
-    "string.empty": "Partner ID is required.",
-    "any.required": "Partner ID is required.",
+  vsTpName: Joi.string().required().label("Partner Name").messages({
+    "string.empty": "Partner Name is required.",
+    "any.required": "Partner Name is required.",
   }),
-  name: Joi.string().required().label("Name").messages({
-    "string.empty": "Name is required.",
-    "any.required": "Name is required.",
-  }),
-  spocName: Joi.string().required().label("SPOC Name").messages({
+  vsSpocName: Joi.string().required().label("SPOC Name").messages({
     "string.empty": "SPOC Name is required.",
     "any.required": "SPOC Name is required.",
   }),
-  smartID: Joi.string().required().label("Smart ID").messages({
-    "string.empty": "Smart ID is required.",
-    "any.required": "Smart ID is required.",
+  vsTpCode: Joi.string().required().label("TP Code").messages({
+    "string.empty": "Partner ID is required.",
+    "any.required": "Partner ID is required.",
   }),
-  mobile: Joi.string()
+  vsState: Joi.string().required().label("State").messages({
+    "string.empty": "State is required.",
+    "any.required": "State is required.",
+  }),
+  iSpocContactNum: Joi.string()
     .pattern(/^[0-9]{10}$/)
     .required()
     .label("Mobile")
@@ -133,7 +133,7 @@ export const trainingPartnerSchema = Joi.object({
       "string.pattern.base": "Mobile number must be 10 digits.",
       "any.required": "Mobile number is required.",
     }),
-    email: Joi.string()
+    vsSpocEmail: Joi.string()
     .email({ tlds: { allow: false } }) 
     .required()
     .label("Email")
@@ -143,25 +143,25 @@ export const trainingPartnerSchema = Joi.object({
       "any.required": "Email is required.",
     }),
   
-  address: Joi.string().required().label("Address").messages({
-    "string.empty": "Address is required.",
-    "any.required": "Address is required.",
-  }),
-  state: Joi.string().required().label("State").messages({
-    "string.empty": "State is required.",
-    "any.required": "State is required.",
-  }),
-  district: Joi.string().required().label("District").messages({
+    vsDistrict: Joi.string().required().label("Address").messages({
     "string.empty": "District is required.",
     "any.required": "District is required.",
   }),
-  blockULB: Joi.string().required().label("Block/ULB").messages({
-    "string.empty": "Block/ULB is required.",
-    "any.required": "Block/ULB is required.",
+  vsBlock: Joi.string().required().label("Block").messages({
+    "string.empty": "Block is required.",
+    "any.required": "Block is required.",
   }),
-  villageCity: Joi.string().required().label("Village/City").messages({
-    "string.empty": "Village/City is required.",
-    "any.required": "Village/City is required.",
+  vsVillage: Joi.string().required().label("Village").messages({
+    "string.empty": "Village is required.",
+    "any.required": "Village is required.",
+  }),
+  vsAddress: Joi.string().required().label("Address").messages({
+    "string.empty": "Address is required.",
+    "any.required": "Address is required.",
+  }),
+  vsSmartId: Joi.string().required().label("Smart ID").messages({
+    "string.empty": "Smart ID is required.",
+    "any.required": "Smart ID is required.",
   }),
 });
 

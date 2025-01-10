@@ -14,7 +14,7 @@ export const getMasterData = async (queryType: string) => {
     `${API_BASE_URL}/master/get`,
     {
       fklDepartmentId,
-      queryType, // Dynamically added key
+      queryType, 
     },
     {
       headers: {
