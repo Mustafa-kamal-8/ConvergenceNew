@@ -78,8 +78,11 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       formData.append("file", file);
       formData.append("type", bulkName); 
       formData.append("fklDepartmentId", userDetails.departmentId.toString());
-      formData.append("fklSchemeId",  (schemeId))
+      if(schemeId){
+        formData.append("fklSchemeId",  (schemeId))
 
+      }
+    
       const { data: resData } = await axios.post(`${API_BASE_URL}/file-upload/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

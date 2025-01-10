@@ -41,7 +41,7 @@ export const submitTargetForm = async (data: targetFormData & { fklSchemeId: str
 export const submitCourseForm =async(data: CourseFormData) =>{
   const requestData={
     ...data,
-    fklDepartmentId: userDetails?.departmentId,
+      fklDepartmentId: userDetails?.departmentId,
     queryType: "course"
   }
     const response = await axios.post(`${API_BASE_URL}/manual-file-upload`,requestData);

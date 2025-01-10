@@ -93,26 +93,48 @@ export const targetColumns = (navigate: (path: string) => void): Column<TargetDa
 
 interface CourseData {
   id: string;
-  SectorName: string;
-  QPNOSCode: string;
+  vsCourseName: string;
+  vsCourseCode:string
+  dtFromDate: string;
+  dtToDate:string
   JobRoleName: string;
-  TotalTheoryHours: string;
-  TotalPracticalHours: string;
-  DateValidUpto: string;
+  iTheoryDurationInHours: string;
+  iPracticalDurationInHours: string;
+  dtcreatedAt: string;
+  vsSectorName: string;
   Action: unknown;
 }
 
 
-
-export const courseColumns: Column<CourseData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Sector Name", accessor: "SectorName" },
-  { Header: "QPNOS Code", accessor: "QPNOSCode" },
-  { Header: "Job Role Name", accessor: "JobRoleName" },
-  { Header: "Total Theory Hours", accessor: "TotalTheoryHours" },
-  { Header: "Total Practical Hours", accessor: "TotalPracticalHours" },
-  { Header: "Date Valid Upto ", accessor: "DateValidUpto" },
-  { Header: "Action", accessor: "Action" },
+export const courseColumns = (navigate: (path: string) => void): Column<CourseData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Sector Name", accessor: "vsSectorName" },
+  { Header: "QPNOS Code", accessor: "vsCourseCode" },
+  { Header: "From Date", accessor: "dtFromDate" , Cell: ({ value }: { value: string }) =>
+    moment(value).format("YYYY-MM-DD"), },
+  { Header: "To Date", accessor: "dtToDate", Cell: ({ value }: { value: string }) =>
+    moment(value).format("YYYY-MM-DD"),  },
+  { Header: "Job Role Name", accessor: "vsCourseName" },
+  { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
+  { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
+  {
+    Header: "Created At",
+    accessor: "dtcreatedAt",
+    Cell: ({ value }: { value: string }) =>
+      moment(value).format("YYYY-MM-DD"), 
+  },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/target/${row.original.id}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
 
 

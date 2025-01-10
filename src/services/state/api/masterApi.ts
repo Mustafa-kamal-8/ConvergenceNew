@@ -9,10 +9,13 @@ const authorization = getToken();
 console.log("dpt id is",fklDepartmentId)
 
 
-export const getMasterData = async () => {
+export const getMasterData = async (queryType: string) => {
   const response = await axios.post(
     `${API_BASE_URL}/master/get`,
-    { fklDepartmentId }, 
+    {
+      fklDepartmentId,
+      queryType, // Dynamically added key
+    },
     {
       headers: {
         Authorization: `Bearer ${authorization}`,
@@ -23,6 +26,7 @@ export const getMasterData = async () => {
 
   return response.data;
 };
+
 
 export default { getMasterData };
 

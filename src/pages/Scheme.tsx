@@ -3,7 +3,7 @@ import CentralizedTable from "../components/CentralizedTable";
 import { schemeColumns } from "../utils/tableColumns";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getSchemeData } from "../services/state/api/tableDataApi";
+import { getTableData } from "../services/state/api/tableDataApi";
 import Dropdown from "../components/ui/Dropdown";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
@@ -20,9 +20,11 @@ const Scheme: React.FC = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const { data: fetchedData, isSuccess } = useQuery({
-    queryKey: ["schemeData"],
-    queryFn: getSchemeData,
+    queryKey: ["schemeData" , "scheme"],
+    queryFn: () => getTableData("scheme"),
   });
+
+  
 
   useEffect(() => {
     if (isSuccess && fetchedData?.data) {

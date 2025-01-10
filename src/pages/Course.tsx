@@ -1,71 +1,57 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { candidateColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import Dropdown from "../components/ui/Dropdown";
-import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
-import Input from "../components/ui/Input";
+import {  DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { courseColumns } from "../utils/tableColumns";
+import { getTableData } from "../services/state/api/tableDataApi";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
-interface CourseData {
-  id: string;
-  SectorName: string;
-  QPNOSCode: string;
-  JobRoleName: string;
-  TotalTheoryHours: string;
-  TotalPracticalHours: string;
-  DateValidUpto: string;
-  Action: any;
-}
-  
+
   const Course: React.FC = () => {
-    const [data, setData] = useState<CourseData[]>([
-      {
-        id: "1",
-        SectorName: "Sector A",
-        QPNOSCode: "T1y66",
-        JobRoleName: "Developer",
-        TotalTheoryHours: "Equity",
-        TotalPracticalHours: "11",
-        DateValidUpto: "01/02/2024",
-        Action: (
-          <button className="py-1 px-3 text-white bg-blue-500 rounded">
-            View
-          </button>
-        ),
-      },
-     
-    ]);
 
 const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
 const [selectedOption, setSelectedOption] = useState<string>("All");
 const [searchValue, setSearchValue] = useState<string>("");
+ const [filteredData, setFilteredData] = useState([]);
+  const navigate = useNavigate();
+
+const { data: fetchedData, isSuccess } = useQuery({
+  queryKey: ["courseData" , "course"],
+  queryFn: () => getTableData("course"),
+});
+
+ useEffect(() => {
+    if (isSuccess && fetchedData?.data) {
+      setFilteredData(fetchedData.data); 
+    }
+  }, [fetchedData, isSuccess]);
 
 // Handle search logic
-const handleSearch = (searchValue: string) => {
-  setSearchValue(searchValue);
-  const filteredData = data.filter(
-    (candidate) =>
-      (selectedOption === "All" || candidate.SectorName === selectedOption) &&
-      candidate.SectorName.toLowerCase().includes(searchValue.toLowerCase())
+const handleSearch = (value: string) => {
+  setSearchValue(value);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const filtered = fetchedData.data.filter((item: any) =>
+    item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
   );
-  setData(filteredData);
+  setFilteredData(filtered);
 };
 
-// Handle dropdown selection
-const handleDropdownSelect = (option: string) => {
+
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ const handleDropdownSelect = (option:any) => {
   setSelectedOption(option);
-  const filteredData = data.filter(
-    (candidate) =>
-      (option === "All" || candidate.SectorName === option) &&
-      candidate.SectorName.toLowerCase().includes(searchValue.toLowerCase())
+  const filtered = fetchedData.data.filter(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (item: any) => option === "All" || item.vsSchemeType === option
   );
-  setData(filteredData);
+  setFilteredData(filtered);
 };
 
   return (
@@ -114,7 +100,7 @@ const handleDropdownSelect = (option: string) => {
         </div>
       </div>
 
-       <CentralizedTable columns={courseColumns} data={data} pageSize={5} /> 
+       <CentralizedTable columns={courseColumns(navigate)} data={filteredData} pageSize={5} /> 
     </>
   );
 }

@@ -23,11 +23,11 @@ const CourseModal: React.FC = () => {
   });
 
    
-   const { data: masterData } = useQuery({
-     queryKey: ["masterData"],
-     queryFn: getMasterData,
-   });
-
+  const { data: masterData } = useQuery({
+    queryKey: ["masterData", "sector"], 
+    queryFn: () => getMasterData("sector"), 
+  });
+  
    useEffect(() => {
      if (masterData) {
       console.log("Fetched master data:", masterData);

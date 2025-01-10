@@ -8,10 +8,10 @@ const userDetails = getUserDetails();
 const authorization = getToken();
 
 
-export const getSchemeData = async () => {
+export const getTableData = async (queryType:string) => {
   const requestData = {
     fklDepartmentId: userDetails?.departmentId,
-    queryType: "scheme",
+    queryType
   };
   const headers = {
     Authorization: `Bearer ${authorization}`,
