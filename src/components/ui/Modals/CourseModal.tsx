@@ -80,11 +80,11 @@ const CourseModal: React.FC = () => {
                 options={sectorOptions.map((option: { label: unknown; }) => option.label)} // Use labels as options
                 onSelect={(selectedValue) => {
                   const sectorID = Number(selectedValue);
-                  field.onChange(sectorID); // Update sectorID in the form
+                  field.onChange(sectorID); 
                   const selectedSector = sectorOptions.find(
                     (option: { value: number; }) => option.value === sectorID
                   );
-                  setValue("fklSectorId", selectedSector?.value || 0); // Store sectorID
+                  setValue("fklSectorId", selectedSector?.value || 0); 
                 }}
                 className={errors.fklSectorId ? "border-red-500" : ""}
               />

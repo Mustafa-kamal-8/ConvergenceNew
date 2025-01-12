@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import CentralizedTable from "../components/CentralizedTable";
-import { schemeColumns } from "../utils/tableColumns";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import CentralizedTable from "../components/CentralizedTable";
+import { schemeColumns } from "../utils/tableColumns";
 import { getTableData } from "../services/state/api/tableDataApi";
 import Dropdown from "../components/ui/Dropdown";
 import SearchInputBox from "../components/ui/SearchInputBox";
@@ -11,52 +11,56 @@ import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import CustomModal from "../components/ui/CustomModal";
+import Loader from "../components/ui/Loader";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
-  const columns = React.useMemo(() => schemeColumns(navigate), [navigate]);
+
+
+  const columns = useMemo(() => schemeColumns(navigate), [navigate]);
+
   const [searchValue, setSearchValue] = useState("");
-  const [selectedOption, setSelectedOption] = useState("All");
+  const [selectedOption, setSelectedOption] = useState<string | number>("All");
+
   const [filteredData, setFilteredData] = useState([]);
 
-  const { data: fetchedData, isSuccess } = useQuery({
-    queryKey: ["schemeData" , "scheme"],
+  const { data: fetchedData, isLoading, isSuccess } = useQuery({
+    queryKey: ["schemeData", "scheme"],
     queryFn: () => getTableData("scheme"),
   });
 
-  
-
   useEffect(() => {
-    if (isSuccess && fetchedData?.data) {
-      setFilteredData(fetchedData.data); 
+    if (isSuccess && fetchedData?.data?.data) {
+      setFilteredData(fetchedData.data.data);
     }
   }, [fetchedData, isSuccess]);
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filtered = fetchedData.data.filter((item: any) =>
+    const filtered = fetchedData?.data?.data?.filter((item: any) =>
       item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredData(filtered);
+    setFilteredData(filtered || []);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDropdownSelect = (option:any) => {
+  const handleDropdownSelect = (option: string | number ) => {
     setSelectedOption(option);
-    const filtered = fetchedData.data.filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filtered = fetchedData?.data?.data?.filter(
       (item: any) => option === "All" || item.vsSchemeType === option
     );
-    setFilteredData(filtered);
+    setFilteredData(filtered || []);
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
       <div>
         <CustomModal />
       </div>
-      <div className="">
+      <div>
         <p className="text-2xl font-bold mb-4">List Of Schemes</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">

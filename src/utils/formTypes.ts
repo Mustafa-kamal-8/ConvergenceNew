@@ -29,7 +29,7 @@ export interface CourseFormData  {
   iSpocContactNum: string,
   vsSpocName: string,
   vsTpCode: string,
-  vsState: string,
+  vsState: number,
   vsDistrict: string,
   vsBlock: string,
   vsVillage: string,

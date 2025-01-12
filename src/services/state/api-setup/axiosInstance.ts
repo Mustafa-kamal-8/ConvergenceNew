@@ -6,14 +6,14 @@ import {
   responseErrorInterceptor,
 } from "./interceptors";
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL as string; // Type assertion
+const API_BASE_URL = process.env.VITE_API_BASE_URL as string; 
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // Optional timeout
+  timeout: 10000, 
 });
 
-// Attach interceptors
+
 axiosInstance.interceptors.request.use(
   requestInterceptor,
   requestErrorInterceptor

@@ -2,22 +2,29 @@ import React from 'react';
 
 type DropdownProps = {
   options: string[]; // Array of option labels (strings)
-  onSelect: (value: number) => void; // Expect a number when an option is selected
+  onSelect: (value: string | number) => void; // Allow both string and number
   className?: string;
 };
 
 const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, className }) => {
   return (
     <select
-      onChange={(e) => onSelect(Number(e.target.value))} // Convert string to number
+      onChange={(e) => onSelect(Number(e.target.value) || e.target.value)} // Handle both string and number
       className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
     >
-      <option value="">Select an option</option>
+      <option value="" disabled selected>
+        Select an option
+      </option> {/* Placeholder option */}
       {options.map((option, index) => (
-        <option key={index} value={index}>{option}</option> // Use index as value (or sector ID if needed)
+        <option key={index} value={index + 1}>
+          {option}
+        </option> 
       ))}
     </select>
   );
 };
 
 export default Dropdown;
+
+
+

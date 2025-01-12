@@ -10,6 +10,7 @@ const Login = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [type, setType] = useState<string>("login");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -19,6 +20,7 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/department/login`, {
@@ -44,12 +46,14 @@ const Login = () => {
         navigate("/dashboard");
       } else {
         toast.error(response.data.message || "Login failed");
+        setLoading(false);
       }
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "An error occurred. Please try again.";
       toast.error(errorMessage);
       console.error(error);
+      setLoading(false);
     }
   };
   return (
@@ -107,7 +111,7 @@ const Login = () => {
                   type="submit"
                   className="w-full mt-4 px-4 py-3 text-lg font-medium text-white bg-theme-primary rounded-lg hover:bg-theme-primary-hover focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
-                  Sign In
+                  {loading ? "Signing in..." : "Sign In"}
                 </button>
               </form>
             </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getUserDetails } from "../../../utils/cookies";
 import { getToken } from "../../../utils/cookies";
-
+import axiosInstance from "../api-setup/axiosInstance";
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL;
 const userDetails = getUserDetails();
@@ -13,13 +13,11 @@ export const getTableData = async (queryType:string) => {
     fklDepartmentId: userDetails?.departmentId,
     queryType
   };
-  const headers = {
-    Authorization: `Bearer ${authorization}`,
-  };
+  // const headers = {
+  //   Authorization: `Bearer ${authorization}`,
+  // };
 
-  const response = await axios.post(`${API_BASE_URL}/get-department/`, requestData, {
-    headers,
-  });
+  const response = await axiosInstance.post("/get-department/", requestData );
   return response.data;
 };
 

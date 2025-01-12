@@ -10,6 +10,7 @@ import { TrainingPartnerFormData } from "../../../utils/formTypes";
 import { trainingPartnerSchema } from "../../../utils/validation";
 import { useQuery } from "@tanstack/react-query";
 import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
 
 const TrainingPartnerModal: React.FC = () => {
   const {
@@ -31,6 +32,13 @@ const TrainingPartnerModal: React.FC = () => {
      }
    }, [masterData]);
 
+   const stateOptions =
+   masterData?.data?.result?.states	?.map((states: { stateID: number; stateName: string }) => ({
+     label: states.stateName,
+     value: states.stateName,
+   })) || [];
+ 
+
 
   const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
@@ -39,6 +47,10 @@ const TrainingPartnerModal: React.FC = () => {
     console.log("Form submitted successfully", data);
     toast.success("Training Partner details submitted successfully!");
   };
+
+  function setValue(arg0: string, arg1: any) {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -186,12 +198,19 @@ const TrainingPartnerModal: React.FC = () => {
             name="vsState"
             control={control}
             render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select State --"
-                className={errors.vsState ? "border-red-500" : ""}
-              />
+              <Dropdown
+              {...field}
+              options={stateOptions.map((option: { label: unknown; }) => option.label)} 
+              onSelect={(selectedValue) => {
+                const vsState = String(selectedValue);
+                field.onChange(vsState); 
+                const selectedState = stateOptions.find(
+                  (option: { value: String; }) => option.value === vsState
+                );
+                setValue("vsState", selectedState?.value || 0);
+              }}
+              className={errors.vsState ? "border-red-500" : ""}
+            />
             )}
           />
           {errors.vsState && (
