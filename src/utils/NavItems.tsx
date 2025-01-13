@@ -7,6 +7,7 @@ import {
 
 
 } from "lucide-react";
+import { ElementType } from "react";
 
 interface NavSubItems {
   name?: string;
@@ -16,7 +17,7 @@ interface NavSubItems {
 interface NavItem {
   name?: string;
   link?: string;
-  icon?: unknown ; // Ensure this matches LucideIcon type
+  icon?: ElementType | undefined, 
   subItems?: NavSubItems[];
 }
 

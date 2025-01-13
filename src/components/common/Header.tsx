@@ -12,11 +12,11 @@ const Header = ({
 }) => {
   return (
     <div
-      className={`bg-white  transition-all duration-300 w-full border ${
-        isSidebarCollapsed ? "" : ""
-      }`}
-    >
-      <div className="flex items-center justify-between p-4">
+    className={`bg-white transition-all duration-300 w-full border ${
+      isSidebarCollapsed ? "" : ""
+    } sticky top-0 z-50`}
+  >
+      <div className="flex items-center justify-between p-4 sticky">
         <div className="flex-grow flex gap-4 items-center">
           {isSysAdmin ? (
             <img src={logo} className="w-16 h-16" />

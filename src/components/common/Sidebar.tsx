@@ -8,7 +8,7 @@ import '../../custom.css'
 
 const Sidebar = ({
   isCollapsed,
-  toggleSidebar,
+
 }: {
   isCollapsed: boolean;
   toggleSidebar: () => void;
