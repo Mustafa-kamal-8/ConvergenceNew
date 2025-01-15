@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { NavItems } from "../../utils/NavItems";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import logo from "../../assets/asdm_logo_w.png";
+import logo from "../../assets/ASDMLOGO.png";
 import '../../custom.css'
 
 const Sidebar = ({
@@ -100,14 +100,22 @@ const Sidebar = ({
     <div
       className={ `flex flex-col h-screen bg-gradient-to-br bg-theme-primary text-white shadow-xl border-xlg-blue-400 ${isCollapsed ? "w-20" : "w-64"} transition-all duration-300` }
     >
-      <div className="flex items-center justify flex-shrink-0 py-3 px-2">
-        <img className="h-10 w-10 flex-shrink-0" src={ logo } alt="" />
+      <div className="flex items-center justify flex-shrink-0 bg-white border-b border-gray-950 ">
+        <img className="flex-shrink-0"  style={{ height: '3.9rem', width: '3.9rem', objectFit: 'cover' }} src={ logo } alt="" />
       </div>
-
+      <div className="flex justify-end p-2 border-b border-blue-50">
+        <button
+          className="p-1 bg-theme-primary-active rounded-full hover:bg-theme-primary-hover"
+          onClick={ () => scrollSidebar("up") }
+        >
+          <ChevronUp className="w-5 h-5" />
+        </button>
+      </div>
       <div
         ref={ sidebarRef }
         className="relative flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 border-t border-b border-blue-300"
       >
+        
         { NavItems.map((item, index) => (
           <div key={ index } className={ `relative ${isCollapsed ? "group" : ""}` }>
             {/* Main Menu Item */ }

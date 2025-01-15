@@ -52,7 +52,7 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="px-4 py-2 border-r border-gray-300 text-center"
+                  className="px-4 py-2 border border-gray-300 text-center"
                 >
                   {column.render("Header")}
                 </th>
@@ -61,26 +61,34 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()} className="divide-y divide-gray-200">
-       
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className="hover:bg-gray-50 transition duration-150"
-              >
-                {row.cells.map((cell ) => (
-                  <td
-                    {...cell.getCellProps()}
-                    className="px-6 py-3 text-center whitespace-nowrap"
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
+  {data.length === 0 ? (
+    <tr>
+      <td colSpan={columns.length} className="text-center py-4 text-sm">
+        No data found
+      </td>
+    </tr>
+  ) : (
+    page.map((row) => {
+      prepareRow(row);
+      return (
+        <tr
+          {...row.getRowProps()}
+          className="hover:bg-gray-50 transition duration-150"
+        >
+          {row.cells.map((cell) => (
+            <td
+              {...cell.getCellProps()}
+              className="px-6 py-3 text-center whitespace-nowrap border border-gray-300"
+            >
+              {cell.render("Cell")}
+            </td>
+          ))}
+        </tr>
+      );
+    })
+  )}
+</tbody>
+
       </table>
 
 

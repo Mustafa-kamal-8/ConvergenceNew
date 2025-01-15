@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import Label from "../Label";
 import Input from "../Input";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -13,25 +12,11 @@ import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 
 const BatchModel : React.FC = () => {
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm<BatchFormData>({
+  const { control, handleSubmit, formState: { errors } } = useForm<BatchFormData>({
     resolver: joiResolver(batchSchema),
   });
 
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
 
-
-  const handleDateChange = (dates: [Date | null, Date | null] | Date | null) => {
-    if (Array.isArray(dates)) {
-      const [start, end] = dates;
-      setStartDate(start ?? undefined);
-      setEndDate(end ?? undefined);
-      setValue("batchDuration", [start ?? null, end ?? null]); // Update form value
-    } else {
-      setStartDate(dates ?? undefined);
-      setValue("batchDuration", [dates ?? null, null]); // Update form value
-    }
-  };
 
   const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
@@ -65,144 +50,161 @@ const BatchModel : React.FC = () => {
         <div>
           <Label text="Batch ID" />
           <Controller
-            name="batchId"
+            name="batchID"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />} 
+            render={({ field }) => <Input {...field} type="text"  className={errors.batchID ? "border-red-500" : ""}/>} 
+           
           />
-          {errors.batchId && <p className="text-red-500">{errors.batchId.message}</p>}
+          {errors.batchID && <p className="text-red-500">{errors.batchID.message}</p>}
         </div>
         <div>
           <Label text="SDMS Batch Id" />
           <Controller
-            name="sdmsBatchId"
+            name="SDMSid"
             control={control}
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => <Input {...field} type="text"  className={errors.SDMSid ? "border-red-500" : ""} />}
+          
           />
-          {errors.sdmsBatchId && <p className="text-red-500">{errors.sdmsBatchId.message}</p>}
+          {errors.SDMSid && <p className="text-red-500">{errors.SDMSid.message}</p>}
         </div>
 
-        <div>
-          <Label text="Batch Duration" />
+        <div className="col-span-1">
+          <Label text="Batch Start Date" />
           <Controller
-            name="batchDuration"
+            name="dtStartDate"
             control={control}
-            render={() => (
-              <DatePicker
-                selected={startDate}
-                onChange={handleDateChange}
-                startDate={startDate}
-                endDate={endDate}
-                selectsRange
-                dateFormat="dd-MM-yyyy"
-                className="w-full px-4 py-3 border border-gray-300 rounded-md"
-                showYearDropdown
-                scrollableYearDropdown
-                showMonthDropdown
-                value={
-                  startDate && endDate
-                    ? `${startDate.toLocaleDateString("en-GB")} - ${endDate.toLocaleDateString("en-GB")}`
-                    : ""
-                }
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                className={errors.dtStartDate ? "border-red-500" : ""}
+             
               />
             )}
           />
-          {errors.batchDuration && <p className="text-red-500">{errors.batchDuration.message}</p>}
+          {errors.dtStartDate && (
+            <p className="text-red-500">{errors.dtStartDate.message}</p>
+          )}
+        </div>
+        <div className="col-span-1">
+          <Label text="Batch End Date" />
+          <Controller
+            name="dtEndDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                className={errors.dtEndDate ? "border-red-500" : ""}
+              
+              />
+            )}
+          />
+          {errors.dtEndDate && (
+            <p className="text-red-500">{errors.dtEndDate.message}</p>
+          )}
         </div>
 
         <div>
           <Label text="Training Partner" />
           <Controller
-            name="trainingPartner"
+            name="fklTpId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.fklTpId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.trainingPartner && <p className="text-red-500">{errors.trainingPartner.message}</p>}
+          {errors.fklTpId && <p className="text-red-500">{errors.fklTpId.message}</p>}
         </div>
 
         <div>
           <Label text="Training Center" />
           <Controller
-            name="trainingCenter"
+            name="fklTcId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.fklTcId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.trainingCenter && <p className="text-red-500">{errors.trainingCenter.message}</p>}
+          {errors.fklTcId && <p className="text-red-500">{errors.fklTcId.message}</p>}
         </div>
 
         <div>
           <Label text="Trainer" />
           <Controller
-            name="trainer"
+            name="fklTrainerId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.fklTrainerId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.trainer && <p className="text-red-500">{errors.trainer.message}</p>}
+          {errors.fklTrainerId && <p className="text-red-500">{errors.fklTrainerId.message}</p>}
         </div>
 
         <div>
           <Label text="Sector" />
           <Controller
-            name="sector"
+            name="fklSectorId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.fklSectorId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.sector && <p className="text-red-500">{errors.sector.message}</p>}
+          {errors.fklSectorId && <p className="text-red-500">{errors.fklSectorId.message}</p>}
         </div>
 
         <div>
-          <Label text="Job Role" />
+          <Label text="Course" />
           <Controller
-            name="jobRole"
+            name="fklCourseId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.fklCourseId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.jobRole && <p className="text-red-500">{errors.jobRole.message}</p>}
+          {errors.fklCourseId && <p className="text-red-500">{errors.fklCourseId.message}</p>}
         </div>
 
         <div>
           <Label text="QPNOS Code" />
           <Controller
-            name="qpnosCode"
+            name="QPNOS"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 options={fundingTypes}
                 placeholder="-- Select --"
+                className={errors.QPNOS ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.qpnosCode && <p className="text-red-500">{errors.qpnosCode.message}</p>}
+          {errors.QPNOS && <p className="text-red-500">{errors.QPNOS.message}</p>}
         </div>
 
         <div className="flex items-center justify-end gap-2 bg-gray-100 p-4 rounded-xl col-span-full md:col-span-3">

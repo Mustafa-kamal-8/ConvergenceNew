@@ -25,11 +25,16 @@ const SchemeModalContent: React.FC = () => {
 
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
-    onSuccess: () => {
-      toast.success("Scheme submitted successfully!");
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data.message || "Scheme submitted successfully!");
+      } else {
+        toast.error(data.error || "An error occurred while submitting the scheme.");
+      }
     },
-    onError: () => {
-      toast.error("Error submitting scheme.");
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.error || "An unknown error occurred.";
+      toast.error(errorMessage);
     },
   });
 
@@ -46,9 +51,7 @@ const SchemeModalContent: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-      
-    
-          {/* <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
             <input
               type="radio"
               value="new"
@@ -97,7 +100,7 @@ const SchemeModalContent: React.FC = () => {
           </div>
         )} */}
 
-<div>
+        <div>
           <Label text="Scheme Name" />
           <Controller
             control={control}
@@ -109,7 +112,6 @@ const SchemeModalContent: React.FC = () => {
           )}
         </div>
 
-      
         <div>
           <Label text="Scheme Type" />
           <Controller
@@ -200,7 +202,13 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+          
+            disabled={false}
+          />
         </div>
       </form>
     </div>
@@ -208,12 +216,6 @@ const SchemeModalContent: React.FC = () => {
 };
 
 export default SchemeModalContent;
-
-
-
-
-
-
 
 // import React, { useEffect, useState } from "react";
 // import "react-datepicker/dist/react-datepicker.css";
@@ -239,7 +241,7 @@ export default SchemeModalContent;
 //   const [selectedScheme, setSelectedScheme] = useState<string>("new");
 
 //   const mutation = useMutation({
-//     mutationFn: submitSchemeForm, 
+//     mutationFn: submitSchemeForm,
 //     onSuccess: (data) => {
 //       console.log("Scheme submitted successfully:", data);
 //     },
@@ -270,9 +272,9 @@ export default SchemeModalContent;
 //   };
 
 //   const handleDateChange = (date: Date | null) => {
-//     setValue("dateOfSanction", date); 
+//     setValue("dateOfSanction", date);
 //   };
-  
+
 //   const schemeTypes = ["Type 1", "Type 2", "Type 3"];
 //   const fundingTypes = ["Type A", "Type B", "Type C"];
 

@@ -11,7 +11,7 @@ interface SchemeData {
   vsSchemeCode: string;
   vsFundName: string;
   vsSchemeFundingType: string;
-  vsSchemeFundingRatio: string;
+  vsSchemeFUndingRatio: string;
   sanctionOrderNo: string;
   dtSanctionDate: string;
   count: string;
@@ -60,7 +60,7 @@ export const schemeColumns: (
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
   { Header: "Fund Name", accessor: "vsFundName" },
   { Header: "Fund Type", accessor: "vsSchemeFundingType" },
-  { Header: "Fund Ratio", accessor: "vsSchemeFundingRatio" },
+  { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
   { Header: "Order Number", accessor: "sanctionOrderNo" },
   {
     Header: "Sanction Date",

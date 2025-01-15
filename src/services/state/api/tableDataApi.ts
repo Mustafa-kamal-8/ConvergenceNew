@@ -1,38 +1,52 @@
-import axios from "axios";
-import { getUserDetails } from "../../../utils/cookies";
-import { getToken } from "../../../utils/cookies";
+
+import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../api-setup/axiosInstance";
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL;
-const userDetails = getUserDetails();
-const authorization = getToken();
 
 
-export const getTableData = async (queryType:string) => {
-  const requestData = {
-    fklDepartmentId: userDetails?.departmentId,
-    queryType
+
+
+
+
+export const getTableData = async (
+  queryType: string,
+  searchKey?: string,
+  searchValue?: string
+) => {
+  // Properly get state here
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const requestData: any = {
+    fklDepartmentId: userDetails.departmentId, // Access departmentId
+    queryType,
   };
-  // const headers = {
-  //   Authorization: `Bearer ${authorization}`,
-  // };
 
-  const response = await axiosInstance.post("/get-department/", requestData );
+  if (searchKey && searchValue) {
+    requestData[searchKey] = searchValue;
+  }
+
+  const response = await axiosInstance.post("/get-department/", requestData);
   return response.data;
 };
 
-
 export const getTargetData = async (id: string) => {
+
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
   const requestData = {
     fklDepartmentId: userDetails?.departmentId,
     schemeId:id
   };
-  const headers = {
-    Authorization: `Bearer ${authorization}`,
-  };
-
-  const response = await axios.post(`${API_BASE_URL}/get-department/viewTargetBySchemeId`, requestData, {
-    headers,
+  
+  const response = await axiosInstance.post("/get-department/viewTargetBySchemeId", requestData, {
+    
   });
   return response.data;
 };

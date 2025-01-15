@@ -17,7 +17,7 @@ const ModalOpenButton: React.FC<ModalOpenButtonProps> = ({ modalType, modalTitle
 
   const buttonStyles =
     variant === 'table'
-      ? 'py-1 px-2 ml-4 text-xs bg-[#4F46E5]  hover:bg-[#3730A3] text-black rounded-md flex items-center gap-1'
+      ? 'py-1 px-2 ml-4 text-xs bg-[#4F46E5]  hover:bg-[#3730A3] text-white rounded-md flex items-center gap-1'
       : 'py-2 px-4 text-xs bg-theme-primary hover:bg-theme-primary-hover text-white rounded-md flex items-center gap-2';
 
   return (

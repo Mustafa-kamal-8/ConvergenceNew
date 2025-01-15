@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Logo from "../../assets/ASDMLOGO.png";
-import { setAuthCookies } from "../../utils/cookies";
+import useAuthStore from "../../utils/cookies";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -18,44 +18,47 @@ const Login = () => {
 
   console.log("api is", API_BASE_URL);
 
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
+   // Access setAuth from the Zustand store
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/department/login`, {
         type,
         user: username,
         password,
       });
-
+  
       if (response.data.success) {
         const { token, departmentId, adminLoginId, adminName, isDept } =
           response.data.data;
-        setAuthCookies(
-          token,
-          { username: adminName, departmentId, adminLoginId, isDept },
-          60
-        );
-
-        toast.success(response.data.message || "Login Successful!");
-        if (type === "create") {
-          navigate("/department-creation");
+  
+        // Store in Zustand and cookies
+        setAuth(token, { username: adminName, departmentId, adminLoginId, isDept });
+  
+        toast.success(response.data.message || 'Login Successful!');
+        if (type === 'create') {
+          navigate('/department-creation');
           return;
         }
-        navigate("/dashboard");
+        navigate('/dashboard');
       } else {
-        toast.error(response.data.message || "Login failed");
+        toast.error(response.data.message || 'Login failed');
         setLoading(false);
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "An error occurred. Please try again.";
+        error.response?.data?.message || 'An error occurred. Please try again.';
       toast.error(errorMessage);
       console.error(error);
       setLoading(false);
     }
   };
+  
   return (
     <div className="h-screen w-screen overflow-hidden">
       <div className="grid grid-cols-2 h-full">
@@ -109,7 +112,12 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className="w-full mt-4 px-4 py-3 text-lg font-medium text-white bg-theme-primary rounded-lg hover:bg-theme-primary-hover focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className={`w-full mt-4 px-4 py-3 text-lg font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-theme-primary hover:bg-theme-primary-hover"
+                  }`}
+                  disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}
                 </button>

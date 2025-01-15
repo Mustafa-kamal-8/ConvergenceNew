@@ -1,11 +1,5 @@
 import {
-  Home,
-
-
-
-  Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2
-
-
+  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2
 } from "lucide-react";
 import { ElementType } from "react";
 
@@ -33,8 +27,8 @@ export const NavItems: NavItem[] = [
     icon: Settings2,
     subItems: [
       { name: "Departments", link: "/list-buildings" },
-      { name: "Sectors", link: "/add-building" },
-      { name: "States & Districts", link: "/add-building" },
+      { name: "Sectors", link: "/Sectors" },
+      { name: "States & Districts", link: "/States" },
     ],
   },
   {

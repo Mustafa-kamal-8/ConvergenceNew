@@ -29,9 +29,14 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Import QueryClient and QueryClientProvider
+import useAuthStore from "./utils/cookies.ts";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
+
+const initializeAuth = useAuthStore.getState().initializeAuth;
+
+initializeAuth(); // Ensure state is loaded from cookies
 
 createRoot(document.getElementById("root")!).render(
   

@@ -4,7 +4,7 @@ import Button from "../Button";
 import { toast } from "react-toastify";
 import axios from "axios";
 import * as XLSX from "xlsx"; 
-import { getUserDetails } from "../../../utils/cookies";
+import useAuthStore from "../../../utils/cookies";
 
 interface BulkUploadModalProps {
   bulkName: string;
@@ -13,7 +13,7 @@ interface BulkUploadModalProps {
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
-const userDetails = getUserDetails();
+const {  userDetails } = useAuthStore.getState();
 
 console.log("user details are",userDetails)
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) => {

@@ -34,18 +34,18 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Assessor ID" />
           <Controller
-            name="assessorID"
+            name="assosserId"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.assessorID ? "border-red-500" : ""}
+                className={errors.assosserId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.assessorID && (
-            <p className="text-red-500">{errors.assessorID.message}</p>
+          {errors.assosserId && (
+            <p className="text-red-500">{errors.assosserId.message}</p>
           )}
         </div>
 
@@ -53,18 +53,18 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Assessor Name" />
           <Controller
-            name="assessorName"
+            name="vsAssosserName"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.assessorName ? "border-red-500" : ""}
+                className={errors.vsAssosserName ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.assessorName && (
-            <p className="text-red-500">{errors.assessorName.message}</p>
+          {errors.vsAssosserName && (
+            <p className="text-red-500">{errors.vsAssosserName.message}</p>
           )}
         </div>
 
@@ -72,52 +72,52 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Email" />
           <Controller
-            name="email"
+            name="vsEmail"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="email"
-                className={errors.email ? "border-red-500" : ""}
+                className={errors.vsEmail ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+          {errors.vsEmail && <p className="text-red-500">{errors.vsEmail.message}</p>}
         </div>
 
         {/* Mobile */}
         <div className="col-span-1">
           <Label text="Mobile" />
           <Controller
-            name="mobile"
+            name="vsMobile"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.mobile ? "border-red-500" : ""}
+                className={errors.vsMobile ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.mobile && <p className="text-red-500">{errors.mobile.message}</p>}
+          {errors.vsMobile && <p className="text-red-500">{errors.vsMobile.message}</p>}
         </div>
 
         {/* Assessment Agency */}
         <div className="col-span-1">
           <Label text="Assessment Agency" />
           <Controller
-            name="assessmentAgency"
+            name="vsAssesmentAgency"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.assessmentAgency ? "border-red-500" : ""}
+                className={errors.vsAssesmentAgency ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.assessmentAgency && (
-            <p className="text-red-500">{errors.assessmentAgency.message}</p>
+          {errors.vsAssesmentAgency && (
+            <p className="text-red-500">{errors.vsAssesmentAgency.message}</p>
           )}
         </div>
 
@@ -125,18 +125,18 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Valid Up To" />
           <Controller
-            name="validUpTo"
+            name="dtValidUpTo"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="date"
-                className={errors.validUpTo ? "border-red-500" : ""}
+                className={errors.dtValidUpTo ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.validUpTo && (
-            <p className="text-red-500">{errors.validUpTo.message}</p>
+          {errors.dtValidUpTo && (
+            <p className="text-red-500">{errors.dtValidUpTo.message}</p>
           )}
         </div>
 

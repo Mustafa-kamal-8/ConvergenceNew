@@ -1,19 +1,25 @@
-import axios from "axios";
+
 import { SchemeFormData, targetFormData } from "../../../utils/formTypes";
 import { CourseFormData } from "../../../utils/formTypes";
-import { getUserDetails } from "../../../utils/cookies";
+import useAuthStore from "../../../utils/cookies";
+import axiosInstance from "../api-setup/axiosInstance";
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL;
-const userDetails = getUserDetails();
+
 
 
 export const submitSchemeForm = async (data: SchemeFormData) => {
+
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
  const requestData = {
     ...data,
     fklDepartmentId: userDetails?.departmentId,
-    queryType: "scheme"
+      queryType: "scheme"
   };
-  const response = await axios.post(`${API_BASE_URL}/manual-file-upload/`, requestData);
+  const response = await axiosInstance.post("/manual-file-upload/", requestData);
   return response.data;
 };
 
@@ -22,6 +28,12 @@ export const submitSchemeForm = async (data: SchemeFormData) => {
 export const submitTargetForm = async (data: targetFormData & { fklSchemeId: string }) => {
   const { sanctionOrderNo, ...restData } = data; 
 
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
   const requestData = {
     ...restData,
     vsSanctionNo: sanctionOrderNo, 
@@ -29,7 +41,7 @@ export const submitTargetForm = async (data: targetFormData & { fklSchemeId: str
     queryType: "target",
   };
 
-  const response = await axios.post(`${API_BASE_URL}/manual-file-upload/`, requestData);
+  const response = await axiosInstance.post("/manual-file-upload/", requestData);
   return response.data;
 };
 
@@ -37,12 +49,17 @@ export const submitTargetForm = async (data: targetFormData & { fklSchemeId: str
 
 
 export const submitCourseForm =async(data: CourseFormData) =>{
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
   const requestData={
     ...data,
       fklDepartmentId: userDetails?.departmentId,
     queryType: "course"
   }
-    const response = await axios.post(`${API_BASE_URL}/manual-file-upload`,requestData);
+    const response = await axiosInstance.post("/manual-file-upload",requestData);
     return response.data
   }
 

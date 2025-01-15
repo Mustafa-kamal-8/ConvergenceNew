@@ -18,7 +18,7 @@ const NotFound: React.FC = () => {
 
                 <p>the page you are looking for not avaible!</p>
 
-                <Link to={""} className="link_404">
+                <Link to={""} className="link_404 bg-theme-primary text-white px-8 py-3 my-8 hover:bg-theme-primary-hover">
                   Go to Home
                 </Link>
               </div>

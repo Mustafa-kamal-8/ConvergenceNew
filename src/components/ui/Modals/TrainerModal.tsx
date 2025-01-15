@@ -35,18 +35,18 @@ const TrainerModalContent: React.FC = () => {
           <div className="col-span-1">
             <Label text="Trainer ID" />
             <Controller
-              name="trainerID"
+              name="trainerId"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="text"
-                  className={errors.trainerID ? "border-red-500" : ""}
+                  className={errors.trainerId ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.trainerID && (
-              <p className="text-red-500">{errors.trainerID.message}</p>
+            {errors.trainerId && (
+              <p className="text-red-500">{errors.trainerId.message}</p>
             )}
           </div>
 
@@ -54,18 +54,18 @@ const TrainerModalContent: React.FC = () => {
           <div className="col-span-1">
             <Label text="Trainer Name" />
             <Controller
-              name="trainerName"
+              name="vsTrainerName"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="text"
-                  className={errors.trainerName ? "border-red-500" : ""}
+                  className={errors.vsTrainerName ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.trainerName && (
-              <p className="text-red-500">{errors.trainerName.message}</p>
+            {errors.vsTrainerName && (
+              <p className="text-red-500">{errors.vsTrainerName.message}</p>
             )}
           </div>
 
@@ -73,35 +73,35 @@ const TrainerModalContent: React.FC = () => {
           <div className="col-span-1">
             <Label text="Mobile" />
             <Controller
-              name="mobile"
+              name="vsMobile"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="text"
-                  className={errors.mobile ? "border-red-500" : ""}
+                  className={errors.vsMobile ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.mobile && <p className="text-red-500">{errors.mobile.message}</p>}
+            {errors.vsMobile && <p className="text-red-500">{errors.vsMobile.message}</p>}
           </div>
 
           {/* Trainer Email */}
           <div className="col-span-1">
             <Label text="Trainer Email" />
             <Controller
-              name="trainerEmail"
+              name="vsEmail"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="text"
-                  className={errors.trainerEmail ? "border-red-500" : ""}
+                  className={errors.vsEmail ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.trainerEmail && (
-              <p className="text-red-500">{errors.trainerEmail.message}</p>
+            {errors.vsEmail && (
+              <p className="text-red-500">{errors.vsEmail.message}</p>
             )}
           </div>
 
@@ -109,17 +109,17 @@ const TrainerModalContent: React.FC = () => {
           <div className="col-span-1">
             <Label text="ID Card (PAN/Voter)" />
             <Controller
-              name="idCard"
+              name="vsPAN"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="text"
-                  className={errors.idCard ? "border-red-500" : ""}
+                  className={errors.vsPAN ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.idCard && <p className="text-red-500">{errors.idCard.message}</p>}
+            {errors.vsPAN && <p className="text-red-500">{errors.vsPAN.message}</p>}
           </div>
     
 

@@ -39,32 +39,33 @@ export interface CourseFormData  {
 
 
 export interface AssessorFormData {
-  assessorID: string;
-  assessorName: string;
-  email: string;
-  mobile: string;
-  assessmentAgency: string;
-  validUpTo: string;
+  assosserId: number;
+  vsAssosserName: string;
+  vsEmail: string;
+  vsMobile: string;
+  vsAssesmentAgency: string;
+  dtValidUpTo: string;
 }
 
 export interface TrainerFormData {
-  trainerID: string;
-  trainerName: string;
-  mobile: string;
-  trainerEmail: string;
-  idCard: string;
+  trainerId: string;
+  vsTrainerName: string;
+  vsMobile: string;
+  vsEmail: string;
+  vsPAN: string;
 }
 
 export interface BatchFormData {
-  batchId: string;
-  sdmsBatchId: string;
-  batchDuration: [Date | null, Date | null]; 
-  trainingPartner: string;
-  trainingCenter: string;
-  trainer: string;
-  sector: string;
-  jobRole: string;
-  qpnosCode: string;
+  batchID: number;
+  SDMSid: string;
+  dtStartDate: string;
+  dtEndDate: string;
+  fklSectorId: number;
+  QPNOS: string;
+  fklCourseId: number;
+  fklTpId: number;
+  fklTcId: number;
+  fklTrainerId: number;
 }
 
 export type AssessmentFormData = {
@@ -117,4 +118,55 @@ export interface targetFormData{
   dtSanctionDate: string
   iTotalTarget: number;
 
+}
+
+export interface candidateFormData{
+  candidateId: number;
+  vsCandidateName: string;
+  vsDOB: string;
+  iAge: string;
+  vsFatherName: string;
+  vsGender: string;
+  fklIdType: number;
+  vsUUID:string;
+  fklReligionId: number;
+  fklCategoryId: number;
+  vsMobile: string;
+  vsEmail: string;
+  vsEducationAttained: string;
+  bDisability: number;
+  bTeaTribe: number;
+  bBPLcardHolder: number;
+  bMinority: number;
+
+  //current address
+  vsRAddress: string;
+  vsRDistrict: number;
+  vsRBlock:number;
+  vsRUlb: number;
+  vsRVillageCity:string;
+  vsRPostOffice: string;
+  vsRPolice: string;
+  vsRPIN: string;
+  vsRCouncilContituency: number;
+  vsRAssemblyContituency: number;
+
+  //present address
+  vsPAddress:string;
+  vsPDistrict: number;
+  vsPBlock: number
+  vsPUlb: number;
+  vsPVillageCity:number
+  vsPPostOffice:string;
+  vsPPolice: string;
+  vsPPIN: number;
+  vsPCouncilContituency: number;
+  vsPAssemblyContituency: number;
+  vsSameAddress: number;
+
+  //bank details
+  vsBankHolderName: string;
+  vsAccountNumber: string;
+  vsBankName: string
+  vsBankIFSC: string;
 }

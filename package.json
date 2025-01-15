@@ -16,7 +16,7 @@
     "@mui/icons-material": "^6.1.10",
     "@mui/material": "^6.1.10",
     "@mui/x-date-pickers": "^7.22.3",
-    "@tanstack/react-query": "^5.60.5",
+    "@tanstack/react-query": "^5.64.1",
     "@types/js-cookie": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.9",

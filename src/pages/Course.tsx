@@ -28,8 +28,8 @@ const { data: fetchedData, isSuccess } = useQuery({
 });
 
  useEffect(() => {
-    if (isSuccess && fetchedData?.data) {
-      setFilteredData(fetchedData.data); 
+    if (isSuccess && fetchedData?.data?.data) {
+      setFilteredData(fetchedData.data.data); 
     }
   }, [fetchedData, isSuccess]);
 

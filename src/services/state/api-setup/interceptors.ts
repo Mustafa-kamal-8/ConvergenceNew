@@ -1,10 +1,10 @@
 import { InternalAxiosRequestConfig, AxiosResponse, AxiosHeaders } from "axios";
-import { getToken } from "../../../utils/cookies";
+import useAuthStore from "../../../utils/cookies";
 
 export const requestInterceptor = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  const token = getToken();
+  const token = useAuthStore.getState().token; // Access token from Zustand store
 
   if (token) {
     if (!(config.headers instanceof AxiosHeaders)) {
