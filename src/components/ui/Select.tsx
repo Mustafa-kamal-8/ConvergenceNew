@@ -1,7 +1,12 @@
 import React from 'react';
 
+interface Option {
+  label: string;
+  value: string;
+}
+
 interface SelectProps {
-  options: string[]; // Array of options for the dropdown
+  options: string[] | Option[]; // This now accepts either a string array or an array of objects with 'label' and 'value'
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; // onChange handler for selection
   placeholder?: string; // Optional placeholder text
   className?: string; // Optional className for custom styling
@@ -16,11 +21,22 @@ const Select: React.FC<SelectProps> = ({ options, onChange, placeholder = '-- Se
       <option value="" disabled>
         {placeholder}
       </option>
-      {options.map((option, index) => (
-        <option key={index} value={option}>
-          {option}
-        </option>
-      ))}
+      {Array.isArray(options) && options.map((option, index) => {
+        if (typeof option === 'string') {
+          return (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          );
+        } else {
+          // If it's an object with 'label' and 'value'
+          return (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          );
+        }
+      })}
     </select>
   );
 };

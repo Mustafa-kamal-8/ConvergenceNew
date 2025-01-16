@@ -116,11 +116,8 @@ export const trainingPartnerSchema = Joi.object({
     "string.empty": "SPOC Name is required.",
     "any.required": "SPOC Name is required.",
   }),
-  vsTpCode: Joi.string().required().label("TP Code").messages({
-    "string.empty": "Partner ID is required.",
-    "any.required": "Partner ID is required.",
-  }),
-  vsState: Joi.string().required().label("State").messages({
+ 
+  vsState: Joi.number().required().label("State").messages({
     "string.empty": "State is required.",
     "any.required": "State is required.",
   }),
@@ -143,18 +140,11 @@ export const trainingPartnerSchema = Joi.object({
       "any.required": "Email is required.",
     }),
   
-    vsDistrict: Joi.string().required().label("Address").messages({
+    vsDistrict: Joi.number().required().label("Address").messages({
     "string.empty": "District is required.",
     "any.required": "District is required.",
   }),
-  vsBlock: Joi.string().required().label("Block").messages({
-    "string.empty": "Block is required.",
-    "any.required": "Block is required.",
-  }),
-  vsVillage: Joi.string().required().label("Village").messages({
-    "string.empty": "Village is required.",
-    "any.required": "Village is required.",
-  }),
+ 
   vsAddress: Joi.string().required().label("Address").messages({
     "string.empty": "Address is required.",
     "any.required": "Address is required.",
@@ -163,6 +153,53 @@ export const trainingPartnerSchema = Joi.object({
     "string.empty": "Smart ID is required.",
     "any.required": "Smart ID is required.",
   }),
+  isVillageCity: Joi.string()
+    .required()
+    .label("Is Village City")
+    .messages({
+      "string.empty": "Village/City is required.",
+      "any.required": "Village/City is required.",
+    }),
+
+  vsCity: Joi.string()
+    .when("isVillageCity", {
+      is: "City",
+      then: Joi.required().label("City").messages({
+        "string.empty": "City is required.",
+        "any.required": "City is required.",
+      }),
+      otherwise: Joi.optional(),
+    }),
+
+  vsULB: Joi.number()
+    .when("isVillageCity", {
+      is: "City",
+      then: Joi.required().label("Village").messages({
+        "string.empty": "ULB is required.",
+        "any.required": "ULB is required.",
+      }),
+      otherwise: Joi.optional(),
+    }),
+
+  vsBlock: Joi.number()
+    .when("isVillageCity", {
+      is: "Village",
+      then: Joi.required().label("Block").messages({
+        "string.empty": "Block is required.",
+        "any.required": "Block is required.",
+      }),
+      otherwise: Joi.optional(),
+    }),
+
+  vsVillage: Joi.string()
+    .when("isVillageCity", {
+      is: "Village",
+      then: Joi.required().label("Village").messages({
+        "string.empty": "Village is required.",
+        "any.required": "Village is required.",
+      }),
+      otherwise: Joi.optional(),
+    }),
 });
 
 

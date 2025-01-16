@@ -1,54 +1,129 @@
-import React, { useEffect } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Button from "../../ui/SubmitButton";
 import Label from "../Label";
-import Select from "../Select";
 import Input from "../Input";
 import { toast } from "react-toastify";
 import { TrainingPartnerFormData } from "../../../utils/formTypes";
 import { trainingPartnerSchema } from "../../../utils/validation";
-import { useQuery } from "@tanstack/react-query";
-import { getMasterData } from "../../../services/state/api/masterApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getDistrictByState,
+  getMasterData,
+  getULBblockByDistrict,
+} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
+import { submitTrainingPartnerForm } from "../../../services/state/api/FormApi";
 
 const TrainingPartnerModal: React.FC = () => {
   const {
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<TrainingPartnerFormData>({
     resolver: joiResolver(trainingPartnerSchema),
   });
 
+  const [stateId, setStateId] = useState<number | null>(null);
+  const [districtId, setDistrictId] = useState<number | null>(null);
+
+  console.log(districtId);
+
   const { data: masterData } = useQuery({
-    queryKey: ["masterData", "state"], 
-    queryFn: () => getMasterData("state"), 
+    queryKey: ["masterData", "state"],
+    queryFn: () => getMasterData("state"),
+  });
+
+  const { data: districtData } = useQuery({
+    queryKey: ["masterData", "district", stateId],
+    queryFn: () => getDistrictByState(stateId, "district"),
+  });
+
+  const { data: ULBblockData } = useQuery({
+    queryKey: ["masterData", "districtId", districtId],
+    queryFn: () => getULBblockByDistrict(districtId, "ULBblock"),
+  });
+
+  useEffect(() => {
+    if (masterData) {
+      console.log("Fetched master data:", masterData);
+    }
+  }, [masterData]);
+
+  useEffect(() => {
+    if (districtData) {
+      console.log("Fetched master data:", districtData);
+    }
+  }, [districtData]);
+
+  useEffect(() => {
+    if (ULBblockData) {
+      console.log("Fetched master data:", ULBblockData);
+    }
+  }, [ULBblockData]);
+
+  const stateOptions =
+    masterData?.data?.result?.states?.map(
+      (states: { stateID: number; stateName: string }) => ({
+        label: states.stateName,
+        value: states.stateID,
+      })
+    ) || [];
+
+  const districtOptions =
+    districtData?.data?.result?.districts?.map(
+      (districts: { districtID: number; districtName: string }) => ({
+        label: districts.districtName,
+        value: districts.districtID,
+      })
+    ) || [];
+
+  const ULBblockOptions =
+    ULBblockData?.data?.result?.blocks?.map(
+      (blocks: { blockId: number; blockName: string }) => ({
+        label: blocks.blockName,
+        value: blocks.blockId,
+      })
+    ) || [];
+
+  const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
+
+  const isCityVillage = [
+    { label: "Village", value: "Village" },
+    { label: "City", value: "City" },
+  ];
+
+  const mutation = useMutation({
+    mutationFn: submitTrainingPartnerForm,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(
+          data.message || "Training Partner submitted successfully!"
+        );
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the scheme."
+        );
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage); 
+    },
   });
   
-   useEffect(() => {
-     if (masterData) {
-      console.log("Fetched master data:", masterData);
-     }
-   }, [masterData]);
 
-   const stateOptions =
-   masterData?.data?.result?.states	?.map((states: { stateID: number; stateName: string }) => ({
-     label: states.stateName,
-     value: states.stateName,
-   })) || [];
- 
-
-
-  const fundingTypes = ["Option 1", "Option 2", "Option 3"];
-
-  const onSubmit: SubmitHandler<TrainingPartnerFormData> = (data) => {
-    // Mock API call or mutation
-    console.log("Form submitted successfully", data);
-    toast.success("Training Partner details submitted successfully!");
+  const onSubmit: SubmitHandler<TrainingPartnerFormData> = (
+    data: TrainingPartnerFormData
+  ) => {
+    mutation.mutate(data);
   };
-
-  function setValue(arg0: string, arg1: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function setValue(_arg0: string, _arg1: any) {
     throw new Error("Function not implemented.");
   }
 
@@ -58,25 +133,6 @@ const TrainingPartnerModal: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-        {/* Partner ID */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Label text="Partner ID" />
-          <Controller
-            name="vsTpCode"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsTpCode ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsTpCode && (
-            <p className="text-red-500">{errors.vsTpCode.message}</p>
-          )}
-        </div>
-
         {/* Name */}
         <div className="col-span-2">
           <Label text="Name" />
@@ -91,7 +147,7 @@ const TrainingPartnerModal: React.FC = () => {
               />
             )}
           />
-           {errors.vsTpName && (
+          {errors.vsTpName && (
             <p className="text-red-500">{errors.vsTpName.message}</p>
           )}
         </div>
@@ -129,7 +185,7 @@ const TrainingPartnerModal: React.FC = () => {
               />
             )}
           />
-             {errors.vsSmartId && (
+          {errors.vsSmartId && (
             <p className="text-red-500">{errors.vsSmartId.message}</p>
           )}
         </div>
@@ -148,7 +204,7 @@ const TrainingPartnerModal: React.FC = () => {
               />
             )}
           />
-           {errors.iSpocContactNum && (
+          {errors.iSpocContactNum && (
             <p className="text-red-500">{errors.iSpocContactNum.message}</p>
           )}
         </div>
@@ -167,7 +223,7 @@ const TrainingPartnerModal: React.FC = () => {
               />
             )}
           />
-        {errors.vsSpocEmail && (
+          {errors.vsSpocEmail && (
             <p className="text-red-500">{errors.vsSpocEmail.message}</p>
           )}
         </div>
@@ -186,7 +242,7 @@ const TrainingPartnerModal: React.FC = () => {
               />
             )}
           />
-            {errors.vsAddress && (
+          {errors.vsAddress && (
             <p className="text-red-500">{errors.vsAddress.message}</p>
           )}
         </div>
@@ -199,18 +255,18 @@ const TrainingPartnerModal: React.FC = () => {
             control={control}
             render={({ field }) => (
               <Dropdown
-              {...field}
-              options={stateOptions.map((option: { label: unknown; }) => option.label)} 
-              onSelect={(selectedValue) => {
-                const vsState = String(selectedValue);
-                field.onChange(vsState); 
-                const selectedState = stateOptions.find(
-                  (option: { value: String; }) => option.value === vsState
-                );
-                setValue("vsState", selectedState?.value || 0);
-              }}
-              className={errors.vsState ? "border-red-500" : ""}
-            />
+                {...field}
+                options={stateOptions} // Pass full objects with label and value
+                getOptionLabel={(option) => option.label} // Display the `label`
+                getOptionValue={(option) => option.value} // Use the `value` (stateID)
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); // Update form with selected stateID
+                  setStateId(selectedOption.value); // Update the stateID in local state
+                  setValue("vsState", selectedOption.value); // Sync form value
+                }}
+                className={errors.vsState ? "border-red-500" : ""}
+                placeholder="-- Select State --"
+              />
             )}
           />
           {errors.vsState && (
@@ -225,62 +281,158 @@ const TrainingPartnerModal: React.FC = () => {
             name="vsDistrict"
             control={control}
             render={({ field }) => (
-              <Select
+              <Dropdown
                 {...field}
-                options={fundingTypes}
+                options={districtOptions}
+                getOptionLabel={(option: { label: string }) => option.label}
+                getOptionValue={(option: { value: number }) => option.value}
+                onSelect={(selectedValue: { label: string; value: number }) => {
+                  field.onChange(selectedValue.value);
+                  setDistrictId(selectedValue.value);
+                  setValue("vsDistrict", selectedValue.value);
+                }}
                 placeholder="-- Select District --"
                 className={errors.vsDistrict ? "border-red-500" : ""}
               />
             )}
           />
-        {errors.vsDistrict && (
+          {errors.vsDistrict && (
             <p className="text-red-500">{errors.vsDistrict.message}</p>
           )}
         </div>
 
-        {/* Block/ULB */}
         <div className="col-span-1">
-          <Label text="Block/ULB" />
-          <Controller
-            name="vsBlock"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select Block/ULB --"
-                className={errors.vsBlock ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsBlock && (
-            <p className="text-red-500">{errors.vsBlock.message}</p>
-          )}
-        </div>
+  <Label text="Village/City" />
+  <Controller
+    name="isVillageCity"
+    control={control}
+    defaultValue="" // Ensure the initial value is an empty string
+    render={({ field }) => (
+      <select
+        {...field}
+        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+          errors.isVillageCity ? "border-red-500" : ""
+        }`}
+      >
+        <option value="" disabled>
+          -- Select Village/City --
+        </option>
+        {isCityVillage.map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    )}
+  />
+  {errors.isVillageCity && (
+    <p className="text-red-500">{errors.isVillageCity.message}</p>
+  )}
+</div>
 
-        {/* Village/City */}
-        <div className="col-span-1">
-          <Label text="Village/City" />
-          <Controller
-            name="vsVillage"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select Village/City --"
-                className={errors.vsVillage ? "border-red-500" : ""}
+
+        {selectedVillageCity === "Village" && (
+          <>
+            <div className="col-span-1">
+              <Label text="Block" />
+              <Controller
+                name="vsBlock"
+                control={control}
+                render={({ field }) => (
+                  <Dropdown
+                    {...field}
+                    options={ULBblockOptions} // Pass the full array of options
+                    getOptionLabel={(option) => option.label} // Display the label
+                    getOptionValue={(option) => option.value} // Use the blockID as the value
+                    onSelect={(selectedOption) => {
+                      field.onChange(selectedOption.value); // Update form with selected blockID
+                      setValue("vsBlock", selectedOption.value); // Sync form value with selected blockID
+                    }}
+                    className={errors.vsBlock ? "border-red-500" : ""}
+                    placeholder="-- Select Block --"
+                  />
+                )}
               />
-            )}
-          />
-         {errors.vsVillage && (
-            <p className="text-red-500">{errors.vsVillage.message}</p>
-          )}
-        </div>
+              {errors.vsBlock && (
+                <p className="text-red-500">{errors.vsBlock.message}</p>
+              )}
+            </div>
+
+            <div className="col-span-2">
+              <Label text="Village" />
+              <Controller
+                name="vsVillage"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="text"
+                    className={errors.vsVillage ? "border-red-500" : ""}
+                  />
+                )}
+              />
+              {errors.vsVillage && (
+                <p className="text-red-500">{errors.vsVillage.message}</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {selectedVillageCity === "City" && (
+          <>
+            <div className="col-span-1">
+              <Label text="ULB" />
+              <Controller
+                name="vsULB"
+                control={control}
+                render={({ field }) => (
+                  <Dropdown
+                    {...field}
+                    options={ULBblockOptions} // Pass the full array of options with `label` and `value`
+                    getOptionLabel={(option) => option.label} // Display the label (ULB name)
+                    getOptionValue={(option) => option.value} // Use the ULB ID as the value
+                    onSelect={(selectedOption) => {
+                      field.onChange(selectedOption.value); // Update the form with selected ULB ID
+                      setValue("vsULB", selectedOption.value); // Sync form value with selected ULB ID
+                    }}
+                    className={errors.vsULB ? "border-red-500" : ""}
+                    placeholder="-- Select ULB --"
+                  />
+                )}
+              />
+              {errors.vsULB && (
+                <p className="text-red-500">{errors.vsULB.message}</p>
+              )}
+            </div>
+
+            <div className="col-span-2">
+              <Label text="City" />
+              <Controller
+                name="vsCity"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="text"
+                    className={errors.vsCity ? "border-red-500" : ""}
+                  />
+                )}
+              />
+              {errors.vsCity && (
+                <p className="text-red-500">{errors.vsCity.message}</p>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Submit Button */}
-        <div className="col-span-full flex justify-end gap-4 bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+            disabled={false}
+          />
         </div>
       </form>
     </div>

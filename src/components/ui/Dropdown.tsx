@@ -1,30 +1,49 @@
-import React from 'react';
+import React from "react";
 
-type DropdownProps = {
-  options: string[]; // Array of option labels (strings)
-  onSelect: (value: string | number) => void; // Allow both string and number
-  className?: string;
+type DropdownOption = {
+  label: string;
+  value: number;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, className }) => {
+type DropdownProps = {
+  options: DropdownOption[];
+  getOptionLabel?: (option: DropdownOption) => string; // Function to customize option label
+  getOptionValue?: (option: DropdownOption) => number; // Function to customize option value
+  onSelect: (selectedValue: DropdownOption) => void; // Callback for selection
+  className?: string;
+  placeholder?: string;
+};
+
+const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  getOptionLabel = (option) => option.label, // Default to `label` property
+  getOptionValue = (option) => option.value, // Default to `value` property
+  onSelect,
+  className,
+  placeholder = "Select an option",
+}) => {
   return (
     <select
-      onChange={(e) => onSelect(Number(e.target.value) || e.target.value)} // Handle both string and number
+      onChange={(e) => {
+        const selectedOption = options.find(
+          (option) => getOptionValue(option) === Number(e.target.value)
+        );
+        if (selectedOption) {
+          onSelect(selectedOption); // Pass the selected option object
+        }
+      }}
       className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
     >
       <option value="" disabled selected>
-        Select an option
-      </option> {/* Placeholder option */}
+        {placeholder}
+      </option>
       {options.map((option, index) => (
-        <option key={index} value={index + 1}>
-          {option}
-        </option> 
+        <option key={index} value={getOptionValue(option)}>
+          {getOptionLabel(option)}
+        </option>
       ))}
     </select>
   );
 };
 
 export default Dropdown;
-
-
-

@@ -25,6 +25,7 @@ const Scheme: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
+  const [totalCount , setTotalCount] = useState([])
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -43,6 +44,7 @@ const Scheme: React.FC = () => {
     if (isSuccess) {
       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
         setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count)
       } else {
         setFilteredData([]);
       }
@@ -52,7 +54,7 @@ const Scheme: React.FC = () => {
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
-    setSearchValue(""); // Reset search input when a new dropdown value is selected
+    setSearchValue(""); 
   };
   
 
@@ -128,7 +130,9 @@ const Scheme: React.FC = () => {
               id={""}
             />
           </div>
+       
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>

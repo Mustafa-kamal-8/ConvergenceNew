@@ -154,29 +154,28 @@ export const courseColumns = (
 
 interface TrainingPartnerData {
   id: string;
-  Centeres: string;
-  PartnerId: string;
-  Name: string;
-  SPOCName: string;
-  SmartId: string;
-  Mobile: string;
-  Email: string;
-  Address: string;
-  State: string;
-  District: string;
-  Block: string;
-  Village: string;
-  gftg: string;
-  Action: unknown;
+  vsTpName: string;
+  vsSpocEmail: string;
+  iSpocContactNum: string;
+  vsSpocName: string;
+  vsState: number;
+  vsDistrict: number;
+  vsBlock: number;
+  vsVillage: string;
+  vsAddress: string;
+  vsSmartId: string;
+  isVillageCity: string;
+  vsCity: string;
+  vsULB: number;
 }
 
-export const trainingColumns = (
+export const trainingColumns: (
   navigate: ReturnType<typeof useNavigate>
-): Column<TrainingPartnerData>[] => [
-  { Header: "ID", accessor: "id" },
+) => Column<TrainingPartnerData>[] = (navigate) => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Centers",
-    accessor: "Centeres",
+    accessor: "id", 
     Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
       <div
         style={{
@@ -195,11 +194,11 @@ export const trainingColumns = (
             navigate(`/TrainingPartner/Centeres/${row.original.id}`)
           }
         >
-          {row.original.Centeres}
+          View Centers
         </span>
         <ModalOpenButton
           modalType={12}
-          modalTitle="Add Centeres"
+          modalTitle="Add Centers"
           bulkName="trainingCenter"
           Icon={Plus}
           id={row.original.id}
@@ -208,50 +207,16 @@ export const trainingColumns = (
       </div>
     ),
   },
-  { Header: "Partner ID", accessor: "PartnerId" },
-  { Header: "Name", accessor: "Name" },
-  { Header: "SPOC Name", accessor: "SPOCName" },
-  { Header: "Mobile ", accessor: "Mobile" },
-  { Header: "Email", accessor: "Email" },
-  { Header: "Address ", accessor: "Address" },
-  { Header: "State", accessor: "State" },
-  { Header: "District", accessor: "District" },
-  { Header: "Block/ULB", accessor: "Block" },
-  { Header: "Village/City", accessor: "Village" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <button
-          style={{
-            cursor: "pointer",
-            color: "blue",
-            textDecoration: "underline",
-          }}
-          onClick={() =>
-            navigate(`/TrainingPartner/Centeres/${row.original.id}`)
-          }
-        >
-          {row.original.Centeres}
-        </button>
-        <ModalOpenButton
-          modalType={12}
-          modalTitle="Add Centeres"
-          bulkName="trainingCenter"
-          Icon={Plus}
-          id={row.original.id}
-          variant="table"
-        />
-      </div>
-    ),
-  },
+  { Header: "Partner Name", accessor: "vsTpName" },
+  { Header: "SPOC Name", accessor: "vsSpocName" },
+  { Header: "SPOC Email", accessor: "vsSpocEmail" },
+  { Header: "SPOC Contact", accessor: "iSpocContactNum" },
+  { Header: "Address", accessor: "vsAddress" },
+  { Header: "State", accessor: "vsState" },
+  { Header: "District", accessor: "vsDistrict" },
+  { Header: "Block", accessor: "vsBlock" },
+  { Header: "ULB", accessor: "vsULB" },
+ 
 ];
 
 interface BatchData {

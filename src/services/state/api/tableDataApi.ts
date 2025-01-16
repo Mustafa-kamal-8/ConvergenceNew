@@ -4,10 +4,6 @@ import axiosInstance from "../api-setup/axiosInstance";
 
 
 
-
-
-
-
 export const getTableData = async (
   queryType: string,
   searchKey?: string,
@@ -20,6 +16,7 @@ export const getTableData = async (
     throw new Error("User details are not available in the store.");
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const requestData: any = {
     fklDepartmentId: userDetails.departmentId, // Access departmentId
     queryType,
@@ -32,6 +29,8 @@ export const getTableData = async (
   const response = await axiosInstance.post("/get-department/", requestData);
   return response.data;
 };
+
+
 
 export const getTargetData = async (id: string) => {
 

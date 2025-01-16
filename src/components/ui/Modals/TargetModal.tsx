@@ -183,8 +183,14 @@ const TargetModal: React.FC<TargetModalProps> = ({ id }) => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex items-center justify-end gap-2 bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+          
+            disabled={false}
+          />
         </div>
       </form>
     </div>

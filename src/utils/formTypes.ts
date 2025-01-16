@@ -28,13 +28,15 @@ export interface CourseFormData  {
   vsSpocEmail: string,
   iSpocContactNum: string,
   vsSpocName: string,
-  vsTpCode: string,
   vsState: number,
-  vsDistrict: string,
-  vsBlock: string,
+  vsDistrict: number,
+  vsBlock: number,
   vsVillage: string,
   vsAddress: string,
   vsSmartId: string,
+  isVillageCity: string;
+  vsCity: string;
+  vsULB: number;
   }
 
 

@@ -1,5 +1,5 @@
 
-import { SchemeFormData, targetFormData } from "../../../utils/formTypes";
+import { SchemeFormData, targetFormData, TrainerFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
 import { CourseFormData } from "../../../utils/formTypes";
 import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../api-setup/axiosInstance";
@@ -18,6 +18,22 @@ export const submitSchemeForm = async (data: SchemeFormData) => {
     ...data,
     fklDepartmentId: userDetails?.departmentId,
       queryType: "scheme"
+  };
+  const response = await axiosInstance.post("/manual-file-upload/", requestData);
+  return response.data;
+};
+
+export const submitTrainingPartnerForm = async (data: TrainingPartnerFormData) => {
+
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+ const requestData = {
+    ...data,
+    fklDepartmentId: userDetails?.departmentId,
+      queryType: "TP"
   };
   const response = await axiosInstance.post("/manual-file-upload/", requestData);
   return response.data;
