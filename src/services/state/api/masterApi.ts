@@ -75,4 +75,19 @@ export const getSchemeById = async (schemeId: string) => {
   )
     return response.data;
   };
+
+  export const getPartnerById = async (tpId: string) => {
+
+    const { userDetails } = useAuthStore.getState();
+  
+    if (!userDetails) {
+      throw new Error("User details are not available in the store.");
+    }
+      const response = await axiosInstance.post("/get-department/getTp/id",   {
+        fklDepartmentId: userDetails.departmentId,
+        tpId, 
+      },
+    )
+      return response.data;
+    };
   

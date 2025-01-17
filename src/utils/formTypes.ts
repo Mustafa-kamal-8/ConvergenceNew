@@ -39,6 +39,27 @@ export interface CourseFormData  {
   vsULB: number;
   }
 
+  export interface TrainingCenterFormData {
+    vsTpName: string,
+    partnerCode: string;
+    vsTcName: string;
+    vsTcCode: string;
+    vsSpocEmail: string;
+    vsSpocName: string;
+    iSpocContactNum: string;
+    smartId: string;
+    vsState: number;
+    vsULB:number;
+    vsCity:number;
+    vsDistrict: number;
+    vsBlock: number;
+    vsVillage: string;
+    vsAddress: string;
+    isVillageCity: string; 
+    fklAssemblyConstituencyId: number;
+    fklLoksabhaConstituencyId:number;
+    }
+
 
 export interface AssessorFormData {
   assosserId: number;

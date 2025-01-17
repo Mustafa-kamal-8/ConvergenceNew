@@ -167,6 +167,8 @@ interface TrainingPartnerData {
   isVillageCity: string;
   vsCity: string;
   vsULB: number;
+  pklTpId:string;
+  count: number;
 }
 
 export const trainingColumns: (
@@ -175,7 +177,7 @@ export const trainingColumns: (
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Centers",
-    accessor: "id", 
+    accessor: "count", 
     Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
       <div
         style={{
@@ -187,21 +189,21 @@ export const trainingColumns: (
         <span
           style={{
             cursor: "pointer",
-            color: "blue",
+            color: "red",
             textDecoration: "underline",
           }}
           onClick={() =>
-            navigate(`/TrainingPartner/Centeres/${row.original.id}`)
+            navigate(`/TrainingPartner/Centeres/${row.original.pklTpId}`)
           }
         >
-          View Centers
+           {row.original.count || "N/A"}
         </span>
         <ModalOpenButton
           modalType={12}
           modalTitle="Add Centers"
           bulkName="trainingCenter"
           Icon={Plus}
-          id={row.original.id}
+          id={row.original.pklTpId}
           variant="table"
         />
       </div>
@@ -214,8 +216,6 @@ export const trainingColumns: (
   { Header: "Address", accessor: "vsAddress" },
   { Header: "State", accessor: "vsState" },
   { Header: "District", accessor: "vsDistrict" },
-  { Header: "Block", accessor: "vsBlock" },
-  { Header: "ULB", accessor: "vsULB" },
  
 ];
 

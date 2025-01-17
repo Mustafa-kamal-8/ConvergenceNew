@@ -203,6 +203,97 @@ export const trainingPartnerSchema = Joi.object({
 });
 
 
+export const trainingCenterSchema = Joi.object({
+  vsTpName: Joi.string().required().label("Training Partner Name").messages({
+    "string.empty": "Training Partner Name is required.",
+    "any.required": "Training Partner Name is required.",
+  }),
+  partnerCode: Joi.string().required().label("Partner Code").messages({
+    "string.empty": "Partner Code is required.",
+    "any.required": "Partner Code is required.",
+  }),
+  vsTcName: Joi.string().required().label("Training Center Name").messages({
+    "string.empty": "Training Center Name is required.",
+    "any.required": "Training Center Name is required.",
+  }),
+  vsTcCode: Joi.string().required().label("Training Center Code").messages({
+    "string.empty": "Training Center Code is required.",
+    "any.required": "Training Center Code is required.",
+  }),
+  vsSpocEmail: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .label("SPOC Email")
+    .messages({
+      "string.empty": "SPOC Email is required.",
+      "string.email": "SPOC Email must be a valid email address.",
+      "any.required": "SPOC Email is required.",
+    }),
+  vsSpocName: Joi.string().required().label("SPOC Name").messages({
+    "string.empty": "SPOC Name is required.",
+    "any.required": "SPOC Name is required.",
+  }),
+  vsState: Joi.number().required().label("State").messages({
+    "string.empty": "State is required.",
+    "any.required": "State is required.",
+  }),
+  vsDistrict: Joi.number().required().label("District").messages({
+    "string.empty": "District is required.",
+    "any.required": "District is required.",
+  }),
+  vsBlock: Joi.number()
+    .when("isVillageCity", {
+      is: "Village",
+      then: Joi.required().label("Block").messages({
+        "string.empty": "Block is required for villages.",
+        "any.required": "Block is required for villages.",
+      }),
+      otherwise: Joi.optional(),
+    }),
+  vsVillage: Joi.string()
+    .when("isVillageCity", {
+      is: "Village",
+      then: Joi.required().label("Village").messages({
+        "string.empty": "Village is required.",
+        "any.required": "Village is required.",
+      }),
+      otherwise: Joi.optional(),
+    }),
+  vsAddress: Joi.string().required().label("Address").messages({
+    "string.empty": "Address is required.",
+    "any.required": "Address is required.",
+  }),
+  isVillageCity: Joi.string()
+    .valid("Village", "City")
+    .required()
+    .label("Village/City Indicator")
+    .messages({
+      "string.empty": "Please specify whether it is a Village or City.",
+      "any.required": "Village/City Indicator is required.",
+    }),
+    fklAssemblyConstituencyId: Joi.number().required().label("Constituency").messages({
+    "string.empty": "Constituency is required.",
+    "any.required": "Constituency is required.",
+  }),
+  fklLoksabhaConstituencyId: Joi.number().required().label("Constituency").messages({
+    "string.empty": "Constituency is required.",
+    "any.required": "Constituency is required.",
+  }),
+  iSpocContactNum: Joi.string()
+    .pattern(/^[0-9]{10}$/)
+    .required()
+    .label("Mobile")
+    .messages({
+      "string.empty": "Mobile number is required.",
+      "string.pattern.base": "Mobile number must be 10 digits.",
+      "any.required": "Mobile number is required.",
+    }),
+  smartId: Joi.string().required().label("Smart ID").messages({
+    "string.empty": "Smart ID is required.",
+    "any.required": "Smart ID is required.",
+  }),
+});
+
 
 export const assessorSchema = Joi.object({
   assosserId: Joi.number().required().label("Assessor ID").messages({
