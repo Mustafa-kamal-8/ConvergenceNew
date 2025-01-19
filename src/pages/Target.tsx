@@ -3,85 +3,63 @@ import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import Dropdown from "../components/ui/Dropdown";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { DownloadCloud, UploadCloud } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTargetData } from "../services/state/api/tableDataApi";
 import { targetColumns } from "../utils/tableColumns";
-
-interface TargetData {
-  id: string;
-  SchemeCode: string;
-  SanctionOrderNumber: string;
-  DateOfSanction: string;
-  TotalTarget: string;
-  Action: unknown;
-}
+import useDebounce from "../services/state/useDebounce";
+import SearchDropdown from "../components/ui/SearchDropdown";
+import Loader from "../components/ui/Loader";
 
 const Target: React.FC = () => {
-  const { id } = useParams<{ id:string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [data, setData] = useState<TargetData[]>([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedOption, setSelectedOption] = useState<string>("All");
+  const [searchKey, setSearchKey] = useState<string>("");
+  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
 
-  const dropdownOptions = ["All", "Option1", "Option2"];
+  const debouncedSearchValue = useDebounce(searchValue, 1000);
 
-  const { data: fetchedData, isSuccess, isLoading, isError, error } = useQuery({
-    queryKey: ["targetData", id],
-    queryFn: () => getTargetData(id!), // Fetch data using the ID
-    enabled: !!id, // Fetch only if `id` exists
+  const {
+    data: fetchedData,
+    isSuccess,
+    isLoading,
+  } = useQuery({
+    queryKey: ["targetData", id, searchKey, debouncedSearchValue],
+    queryFn: () =>
+      getTargetData(id!, "target", searchKey, debouncedSearchValue), // Fetch data using the ID
+    enabled: !!id, 
   });
 
-  // Update the data when fetchedData changes
   useEffect(() => {
-    if (isSuccess && fetchedData?.data) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const formattedData = fetchedData.data.map((item: any) => ({
-        id: item.pklTargetId.toString(),
-        SchemeCode: item.vsSchemeCode,
-        SanctionOrderNumber: item.vsSanctionNo,
-        DateOfSanction: new Date(item.dtSanctionDate).toLocaleDateString(),
-        TotalTarget: item.iTotalTarget.toString(),
-        Action: null, // Placeholder for action buttons
-      }));
-      setData(formattedData);
+    if (isSuccess) {
+      if (fetchedData?.data && fetchedData.data.length > 0) {
+        setFilteredData(fetchedData.data);
+      } else {
+        setFilteredData([]);
+      }
     }
   }, [fetchedData, isSuccess]);
 
-  // Handle search functionality
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    const filteredData = fetchedData?.data.filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (target: any) =>
-        (selectedOption === "All" || target.vsSchemeCode === selectedOption) &&
-        target.vsSchemeCode.toLowerCase().includes(value.toLowerCase())
-    );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedData = filteredData?.map((item: any) => ({
-      id: item.pklTargetId,
-      SchemeCode: item.vsSchemeCode,
-      SanctionOrderNumber: item.vsSanctionNo,
-      DateOfSanction: new Date(item.dtSanctionDate).toLocaleDateString(),
-      TotalTarget: item.iTotalTarget.toString(),
-      Action: null,
-    }));
-    setData(formattedData || []);
-  };
+
 
   // Handle dropdown selection
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDropdownSelect = (option: any) => {
-    setSelectedOption(option);
-    handleSearch(searchValue); // Reapply search after changing dropdown
+  const handleDropdownSelect = (option: { label: string; value: string }) => {
+    setSearchKey(option.value);
+    setSearchKeyLabel(option.label);
+    setSearchValue("");
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+  };
 
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <div>
@@ -91,17 +69,40 @@ const Target: React.FC = () => {
         <p className="text-2xl font-bold mb-4">List Of Target</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <Dropdown
-              options={dropdownOptions}
-            
+            <SearchDropdown
+              options={[
+                { label: "All", value: "" },
+                { label: "Scheme Name", value: "vsSchemeName" },
+                { label: "Scheme Code", value: "vsSchemeCode" },
+                { label: "Scheme Type", value: "vsSchemeType" },
+                { label: "Fund Name", value: "vsFundName" },
+                {
+                  label: "Sanction Date (yyyy/mm/dd)",
+                  value: "dtSanctionDate",
+                },
+              ]}
               onSelect={handleDropdownSelect}
+              selected={searchKey}
             />
-            {selectedOption && (
-              <SearchInputBox
-                value={searchValue}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search by name..."
-              />
+            {searchKey && (
+              <>
+                <SearchInputBox
+                  value={searchValue}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder={`Enter ${searchKeyLabel}`}
+                />
+                <button
+                  className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                  onClick={() => {
+                    setSearchValue("");
+                    setSearchKey("");
+                    setSearchKeyLabel("");
+                    setFilteredData(fetchedData?.data || []);
+                  }}
+                >
+                  Clear
+                </button>
+              </>
             )}
           </div>
           <div className="flex gap-1">
@@ -124,7 +125,7 @@ const Target: React.FC = () => {
 
       <CentralizedTable
         columns={targetColumns(navigate)}
-        data={data}
+        data={filteredData}
         pageSize={5}
       />
     </>

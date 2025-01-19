@@ -9,6 +9,8 @@ import Label from "../Label";
 import Button from "../SubmitButton"; 
 import { TrainerFormData } from "../../../utils/formTypes"; 
 import { trainerSchema } from"../../../utils/validation"; 
+import { useMutation } from "@tanstack/react-query";
+import { submitTrainerForm } from "../../../services/state/api/FormApi";
 
 const TrainerModalContent: React.FC = () => {
   const {
@@ -19,10 +21,31 @@ const TrainerModalContent: React.FC = () => {
     resolver: joiResolver(trainerSchema),
   });
 
-  const onSubmit: SubmitHandler<TrainerFormData> = (data) => {
-    console.log("Form submitted successfully", data);
-    toast.success("Training Partner details submitted successfully!");
-  };
+  const mutation = useMutation({
+    mutationFn: submitTrainerForm,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(
+          data.message || "Trainer submitted successfully!"
+        );
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Trainer."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage); 
+    },
+  });
+  
+
+   const onSubmit: SubmitHandler<TrainerFormData> = (data:TrainerFormData) => {
+      mutation.mutate(data);
+    };
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -124,8 +147,14 @@ const TrainerModalContent: React.FC = () => {
     
 
         {/* Submit Button */}
-        <div className="col-span-full flex justify-end gap-4 bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+          
+            disabled={false}
+          />
         </div>
       </form>
     </div>

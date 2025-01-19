@@ -7,6 +7,8 @@ import Button from "../SubmitButton";
 import { toast } from "react-toastify";
 import { assessorSchema } from "../../../utils/validation"; 
 import { AssessorFormData } from "../../../utils/formTypes";
+import { submitAssessorForm } from "../../../services/state/api/FormApi";
+import { useMutation } from "@tanstack/react-query";
 
 const AssessorsModal: React.FC = () => {
 
@@ -18,12 +20,31 @@ const AssessorsModal: React.FC = () => {
     resolver: joiResolver(assessorSchema),
   });
 
- const onSubmit: SubmitHandler<AssessorFormData> = (data) => {
-    // Mock API call or mutation
-    console.log("Form submitted successfully", data);
-    toast.success("Training Partner details submitted successfully!");
-  };
+ const mutation = useMutation({
+    mutationFn: submitAssessorForm,
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(
+          data.message || "Training Partner submitted successfully!"
+        );
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Training Partner."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage); 
+    },
+  });
+  
 
+   const onSubmit: SubmitHandler<AssessorFormData> = (data:AssessorFormData) => {
+      mutation.mutate(data);
+    };
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
       <form
@@ -141,8 +162,14 @@ const AssessorsModal: React.FC = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="col-span-full flex justify-end gap-4 bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+          
+            disabled={false}
+          />
         </div>
       </form>
     </div>

@@ -70,10 +70,11 @@ export const schemeColumns: (
 ];
 
 interface TargetData {
-  id: number;
-  SchemeCode: string;
-  SanctionOrderNumber: string;
-  DateOfSanction: string;
+  pklTargetId: number;
+  vsSchemeCode: string;
+  iTotalTarget: string;
+  dtSanctionDate: string;
+  vsSanctionNo: number;
   TotalTarget: string;
   Action: unknown;
 }
@@ -82,16 +83,18 @@ export const targetColumns = (
   navigate: (path: string) => void
 ): Column<TargetData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Scheme Code", accessor: "SchemeCode" },
-  { Header: "Sanction Order Number", accessor: "SanctionOrderNumber" },
-  { Header: "Date Of Sanction", accessor: "DateOfSanction" },
-  { Header: "Total Target", accessor: "TotalTarget" },
+  { Header: "Scheme Code", accessor: "vsSchemeCode" },
+  { Header: "Sanction Order Number", accessor: "vsSanctionNo"
+   
+   },
+  { Header: "Date Of Sanction", accessor: "dtSanctionDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD") },
+  { Header: "Total Target", accessor: "iTotalTarget" },
   {
     Header: "Action",
     accessor: "Action",
     Cell: ({ row }) => (
       <button
-        onClick={() => navigate(`/target/${row.original.id}`)}
+        onClick={() => navigate(`/target/${row.original.pklTargetId}`)}
         className="text-blue-500 hover:underline"
       >
         View
@@ -219,6 +222,38 @@ export const trainingColumns: (
  
 ];
 
+
+interface TrainingCenterData {
+  id: number;
+  SchemeCode: string;
+  SanctionOrderNumber: string;
+  DateOfSanction: string;
+  TotalTarget: string;
+  Action: unknown;
+}
+
+export const centerColumns = (
+  navigate: (path: string) => void
+): Column<TrainingCenterData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Scheme Code", accessor: "SchemeCode" },
+  { Header: "Sanction Order Number", accessor: "SanctionOrderNumber" },
+  { Header: "Date Of Sanction", accessor: "DateOfSanction" },
+  { Header: "Total Target", accessor: "TotalTarget" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/target/${row.original.id}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
+];
+
 interface BatchData {
   id: string;
   BatchId: string;
@@ -251,47 +286,78 @@ export const batchColumns: Column<BatchData>[] = [
 ];
 
 interface AssessorsData {
-  id: string;
-  AssessorId: string;
-  Name: string;
-  Email: string;
+  id: number;
+  vsAssosserName: string;
+  vsEmail: string;
   Mobile: string;
-  AssessorAgency: string;
-  ValidUpto: string;
+  vsMobile: string;
+  vsAssesmentAgency: string;
+  dtValidUpTo: string
   Action: unknown;
 }
 
-export const assessorsColumns: Column<AssessorsData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Assessor ID", accessor: "AssessorId" },
-  { Header: "Name", accessor: "Name" },
-  { Header: "Email", accessor: "Email" },
-  { Header: "Mobile ", accessor: "Mobile" },
-  { Header: "Assessor Agency", accessor: "AssessorAgency" },
-  { Header: "Valid Upto ", accessor: "ValidUpto" },
-  { Header: "Action", accessor: "Action" },
+export const assessorsColumns = (
+  navigate: (path: string) => void
+): Column<AssessorsData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Assessor Name", accessor: "vsAssosserName" },
+  { Header: "Name", accessor: "vsEmail" },
+ 
+  { Header: "Mobile", accessor: "vsMobile" },
+  { Header: "Assessor Agency", accessor: "vsAssesmentAgency" },
+  {
+    Header: "Valid Upto",
+    accessor: "dtValidUpTo",
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+  },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/assessors/${row.original.id}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
+
 
 interface TrainerData {
-  id: string;
-  TrainerId: string;
-  TrainerName: string;
-
-  Mobile: string;
-  Email: string;
-  IDCard: string;
+  pklConvTrainerId: number;
+  trainerId: string;
+  vsTrainerName: string;
+  vsEmail: string;
+  vsMobile: string;
+  vsPAN: string;
   Action: unknown;
 }
 
-export const trainerColumns: Column<TrainerData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Trainer ID", accessor: "TrainerId" },
-  { Header: "Trainer Name", accessor: "TrainerName" },
-  { Header: "Mobile", accessor: "Mobile" },
-  { Header: "Email ", accessor: "Email" },
-  { Header: "IDCard ", accessor: "IDCard" },
-  { Header: "Action", accessor: "Action" },
+export const trainerColumns = (
+  navigate: (path: string) => void
+): Column<TrainerData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Trainer ID", accessor: "trainerId" },
+  { Header: "Trainer Name", accessor: "vsTrainerName" },
+  { Header: "Mobile", accessor: "vsMobile" },
+  { Header: "Email", accessor: "vsEmail" },
+  { Header: "IDCard", accessor: "vsPAN" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
+
 
 interface AssessmentData {
   id: string;
@@ -433,43 +499,7 @@ export const invoiceColumns: Column<InvoiceData>[] = [
   { Header: "Action", accessor: "Action" },
 ];
 
-interface CenterData {
-  id: string;
-  TpId: string;
-  PartnerId: string;
-  Name: string;
-  CenterId: string;
-  SmartId: string;
-  spocName: string;
-  Mobile: string;
-  Email: string;
-  Address: string;
-  State: string;
-  District: string;
-  Block: string;
-  Village: string;
-  Constituency: string;
-  Action: unknown;
-}
 
-export const centerColumns: Column<CenterData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "TP ID", accessor: "TpId" },
-  { Header: "Partner ID", accessor: "PartnerId" },
-  { Header: "Center Name", accessor: "Name" },
-  { Header: "Center ID", accessor: "CenterId" },
-  { Header: "Samrt ID", accessor: "SmartId" },
-  { Header: "SPOC Name", accessor: "spocName" },
-  { Header: "SPOC Mobile", accessor: "Mobile" },
-  { Header: "SPOC Email", accessor: "Email" },
-  { Header: "Address", accessor: "Address" },
-  { Header: "State", accessor: "State" },
-  { Header: "District", accessor: "District" },
-  { Header: "Block", accessor: "Block" },
-  { Header: "Village", accessor: "Village" },
-  { Header: "Constituency", accessor: "Constituency" },
-  { Header: "Action", accessor: "Action" },
-];
 
 interface CandidateData {
   id: string;
