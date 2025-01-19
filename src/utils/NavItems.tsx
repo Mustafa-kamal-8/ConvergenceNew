@@ -11,7 +11,7 @@ interface NavSubItems {
 interface NavItem {
   name?: string;
   link?: string;
-  icon?: ElementType | undefined, 
+  icon?: ElementType , 
   subItems?: NavSubItems[];
 }
 
