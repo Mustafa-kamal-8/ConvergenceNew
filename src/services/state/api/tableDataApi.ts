@@ -75,7 +75,7 @@ export const getCenterData = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const requestData: any = {
     fklDepartmentId: userDetails?.departmentId,
-    partnerId:id,
+    tp:id,
     queryType
   };
   if (searchKey && searchValue) {

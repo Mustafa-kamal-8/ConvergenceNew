@@ -224,11 +224,11 @@ export const trainingColumns: (
 
 
 interface TrainingCenterData {
-  id: number;
-  SchemeCode: string;
-  SanctionOrderNumber: string;
-  DateOfSanction: string;
-  TotalTarget: string;
+  pklTcId: number;
+  vsTcName: string;
+  vsTcCode: string;
+  vsSpocName: string;
+  iPartnerCode: string;
   Action: unknown;
 }
 
@@ -236,16 +236,16 @@ export const centerColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Scheme Code", accessor: "SchemeCode" },
-  { Header: "Sanction Order Number", accessor: "SanctionOrderNumber" },
-  { Header: "Date Of Sanction", accessor: "DateOfSanction" },
-  { Header: "Total Target", accessor: "TotalTarget" },
+  { Header: "Name", accessor: "vsTcName" },
+  { Header: "TC Code", accessor: "vsTcCode" },
+  { Header: "SPOC Name", accessor: "vsSpocName" },
+  { Header: "Partner Code", accessor: "iPartnerCode" },
   {
     Header: "Action",
     accessor: "Action",
     Cell: ({ row }) => (
       <button
-        onClick={() => navigate(`/target/${row.original.id}`)}
+        onClick={() => navigate(`/target/${row.original.pklTcId}`)}
         className="text-blue-500 hover:underline"
       >
         View

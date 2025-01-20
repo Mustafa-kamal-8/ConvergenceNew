@@ -28,7 +28,7 @@ const TrainingCenter: React.FC = () => {
 
   const { data: fetchedData, isSuccess , isLoading } = useQuery({
     queryKey: ["centerData", id, searchKey, debouncedSearchValue],
-    queryFn: () => getCenterData(id!,"tc", searchKey, debouncedSearchValue), 
+    queryFn: () => getCenterData(id!,"tp", searchKey, debouncedSearchValue), 
     enabled: !!id, 
   });
 
