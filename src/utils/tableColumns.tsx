@@ -255,34 +255,32 @@ export const centerColumns = (
 ];
 
 interface BatchData {
-  id: string;
-  BatchId: string;
-  SDMSBatchId: string;
-  BatchDuration: string;
-  TrainingPartner: string;
-  TrainingCenter: string;
-  Trainer: string;
 
-  Sector: string;
-  JobRole: string;
-  QPNOSCode: string;
-
+  pklBatchId: string;
+  SDMSid: string;
+  iBatchNumber: string;
   Action: unknown;
 }
 
-export const batchColumns: Column<BatchData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Batch ID", accessor: "BatchId" },
-  { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
-  { Header: "Batch Duration", accessor: "BatchDuration" },
-  { Header: "Training Partner ", accessor: "TrainingPartner" },
-  { Header: "Training Center", accessor: "TrainingCenter" },
-  { Header: "Trainer ", accessor: "Trainer" },
-
-  { Header: "Sector", accessor: "Sector" },
-  { Header: "Job Role", accessor: "JobRole" },
-  { Header: "QPNOSCode", accessor: "QPNOSCode" },
-  { Header: "Action", accessor: "Action" },
+export const batchColumns = (
+  navigate: (path: string) => void
+): Column<BatchData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Batch ID", accessor: "pklBatchId" },
+  { Header: "SDMS  ID", accessor: "SDMSid" },
+  { Header: "Batch Name", accessor: "iBatchNumber" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/batch/${row.original.pklBatchId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
 
 interface AssessorsData {

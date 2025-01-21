@@ -1,5 +1,5 @@
 
-import { AssessorFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
+import { AssessorFormData, BatchFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
 import { CourseFormData } from "../../../utils/formTypes";
 import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../api-setup/axiosInstance";
@@ -136,3 +136,20 @@ export const submitCourseForm =async(data: CourseFormData) =>{
         const response = await axiosInstance.post("/manual-file-upload",requestData);
         return response.data
       }
+
+
+      export const submitBatchForm = async (data: BatchFormData) => {
+
+        const { userDetails } = useAuthStore.getState();
+      
+        if (!userDetails) {
+          throw new Error("User details are not available in the store.");
+        }
+       const requestData = {
+          ...data,
+          fklDepartmentId: userDetails?.departmentId,
+            queryType: "batch"
+        };
+        const response = await axiosInstance.post("/manual-file-upload/", requestData);
+        return response.data;
+      };

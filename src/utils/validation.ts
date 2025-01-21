@@ -356,7 +356,7 @@ export const trainerSchema = Joi.object({
 });
 
 export const batchSchema = Joi.object({
-  batchID: Joi.number().required().label("Batch ID").messages({
+  iBatchNumber: Joi.number().required().label("Batch ID").messages({
     "string.empty": "Batch ID is required.",
   }),
   SDMSid: Joi.string().required().label("SDMS ID").messages({
@@ -654,7 +654,7 @@ export const candidateSchema = Joi.object({
     "any.required": "Current Assembly Constituency is required.",
   }),
 
-  vsSameAddress: Joi.number().valid(0, 1).required().label("Is Permanent Same as Present Adress").messages({
+  iSameAddress: Joi.number().valid(0, 1).required().label("Is Permanent Same as Present Adress").messages({
     "any.only": "Disability must be 0 or 1.",
     "any.required": "Disability is required.",
   }),

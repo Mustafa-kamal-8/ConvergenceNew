@@ -79,7 +79,7 @@ export interface TrainerFormData {
 }
 
 export interface BatchFormData {
-  batchID: number;
+  iBatchNumber: number;
   SDMSid: string;
   dtStartDate: string;
   dtEndDate: string;
@@ -185,7 +185,7 @@ export interface candidateFormData{
   vsPPIN: number;
   vsPCouncilContituency: number;
   vsPAssemblyContituency: number;
-  vsSameAddress: number;
+  iSameAddress: number;
 
   //bank details
   vsBankHolderName: string;

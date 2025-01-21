@@ -599,9 +599,9 @@ const CandidateModal: React.FC = () => {
 
         {/* Toggle for Same Address */}
         <div>
-      <Label text="Is current address same as present address" />
+      <Label text="Is present address same as Permanent  address" />
       <Controller
-        name="vsSameAddress"
+        name="iSameAddress"
         control={control}
         render={({ field }) => (
           <div>
@@ -632,8 +632,8 @@ const CandidateModal: React.FC = () => {
           </div>
         )}
       />
-      {errors.vsSameAddress && (
-        <p className="text-red-500">{errors.vsSameAddress.message}</p>
+      {errors.iSameAddress && (
+        <p className="text-red-500">{errors.iSameAddress.message}</p>
       )}
         </div>
 

@@ -43,7 +43,41 @@ export const getDistrictByState = async (stateId: number|null, queryType: string
   return response.data;
 };
 
-//getULBblockByDistrict
+export const getTcByTp = async (fklTpId: number|null, queryType: string) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    fklTpId, 
+    queryType
+  });
+
+  return response.data;
+};
+
+
+export const getCourses = async (fklTpId: number|null, queryType: string , fklSectorId: number| null) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    fklTpId, 
+    fklSectorId,
+    queryType
+  });
+
+  return response.data;
+};
+
+
 
 export const getULBblockByDistrict = async (districtId: number|null, queryType: string) => {
   const { userDetails } = useAuthStore.getState();

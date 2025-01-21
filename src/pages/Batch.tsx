@@ -1,83 +1,63 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { candidateColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import Dropdown from "../components/ui/Dropdown";
-import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
-import Input from "../components/ui/Input";
+import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { batchColumns } from "../utils/tableColumns";
+import { getTableData } from "../services/state/api/tableDataApi";
+import SearchDropdown from "../components/ui/SearchDropdown";
+import Loader from "../components/ui/Loader";
+import useDebounce from "../services/state/useDebounce";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
-interface BatchData {
-  id: string;
-  BatchId: string;
-  SDMSBatchId: string;
-  BatchDuration: string;
-  TrainingPartner: string;
-  TrainingCenter: string;
-  Trainer: string;
- 
-  Sector: string;
-  JobRole: string;
-  QPNOSCode: string;
- 
-  Action: any;
-}
+
   
   const Batch: React.FC = () => {
-    const [data, setData] = useState<BatchData[]>([
-      {
-        id: "1",
-        BatchId: "1",
-        SDMSBatchId: "12",
-        BatchDuration: "8",
-        TrainingPartner: "guio",
-        TrainingCenter: "hghg",
-        Trainer: "jhgjhg",
+
+    const [searchValue, setSearchValue] = useState<string>("");
+ const [filteredData, setFilteredData] = useState([]);
+  const navigate = useNavigate();
+    const [searchKey, setSearchKey] = useState<string>("");
+ const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const debouncedSearchValue = useDebounce(searchValue, 1000);
+
+
+    const { data: fetchedData, isSuccess , isLoading } = useQuery({
+      queryKey: ["courseData" , "batch", searchKey, debouncedSearchValue],
+      queryFn: () => getTableData("batch",searchKey, debouncedSearchValue),
+    });
+    
+     useEffect(() => {
+        if (isSuccess && fetchedData?.data?.data) {
+          setFilteredData(fetchedData.data.data); 
+        }
+      }, [fetchedData, isSuccess]);
+
+
+      const handleSearch = (value: string) => {
+        setSearchValue(value);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const filtered = fetchedData.data.filter((item: any) =>
+          item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredData(filtered);
+      };
       
-        Sector: "huighui",
-        JobRole: "huighui",
-        QPNOSCode: "554gefg565",
-       
-      
-        Action: (
-          <button className="py-1 px-3 text-white bg-blue-500 rounded">
-            View
-          </button>
-        ),
-      },
-     
-    ]);
+       const handleDropdownSelect = (option: { label: string; value: string }) => {
+        setSearchKey(option.value);
+        setSearchKeyLabel(option.label);
+        setSearchValue(""); 
+      };
 
-const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
-const [selectedOption, setSelectedOption] = useState<string>("All");
-const [searchValue, setSearchValue] = useState<string>("");
+      if (isLoading) {
+        return <Loader />;
+      }
 
-// Handle search logic
-const handleSearch = (searchValue: string) => {
-  setSearchValue(searchValue);
-  const filteredData = data.filter(
-    (candidate) =>
-      (selectedOption === "All" || candidate.SDMSBatchId === selectedOption) &&
-      candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
-  );
-  setData(filteredData);
-};
-
-// Handle dropdown selection
-const handleDropdownSelect = (option: string) => {
-  setSelectedOption(option);
-  const filteredData = data.filter(
-    (candidate) =>
-      (option === "All" || candidate.SDMSBatchId === option) &&
-      candidate.SDMSBatchId.toLowerCase().includes(searchValue.toLowerCase())
-  );
-  setData(filteredData);
-};
 
   return (
     <>
@@ -88,16 +68,37 @@ const handleDropdownSelect = (option: string) => {
         <p className="text-2xl font-bold mb-4">List Of Batches</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-            <Dropdown
-              options={dropdownOptions}
+          <SearchDropdown
+              options={[
+                { label: "All", value: "" },
+                { label: "Scheme Name", value: "vsSchemeName" },
+                { label: "Scheme Code", value: "vsSchemeCode" },
+                { label: "Scheme Type", value: "vsSchemeType" },  
+                { label: "Fund Name", value: "vsFundName" },
+                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
+              ]}
               onSelect={handleDropdownSelect}
+              selected={searchKey}
             />
-            {selectedOption && (
-              <SearchInputBox
-                value={searchValue}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search by name..."
-              />
+            {searchKey && (
+              <>
+                <SearchInputBox
+                  value={searchValue}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder={`Enter ${searchKeyLabel}`}
+                />
+                <button
+                  className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                  onClick={() => {
+                    setSearchValue("");
+                    setSearchKey("");
+                    setSearchKeyLabel("");
+                    setFilteredData(fetchedData?.data?.data || []);
+                  }}
+                >
+                  Clear
+                </button>
+              </>
             )}
           </div>
           <div className="flex gap-1">
@@ -125,7 +126,7 @@ const handleDropdownSelect = (option: string) => {
         </div>
       </div>
 
-       <CentralizedTable columns={batchColumns} data={data} pageSize={5} /> 
+      <CentralizedTable columns={batchColumns(navigate)} data={filteredData} pageSize={5} /> 
     </>
   );
 }
