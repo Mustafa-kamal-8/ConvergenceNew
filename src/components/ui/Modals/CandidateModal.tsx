@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Input from "../Input";
@@ -7,16 +7,107 @@ import Button from "../SubmitButton";
 import { toast } from "react-toastify";
 import { candidateSchema } from "../../../utils/validation";
 import { candidateFormData } from "../../../utils/formTypes";
+import { useQuery } from "@tanstack/react-query";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
 
 const CandidateModal: React.FC = () => {
   const [isSameAddress, setIsSameAddress] = useState(true);
   const {
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
   });
+
+
+  const { data: genderData } = useQuery({
+    queryKey: ["genderData", "gender"], 
+    queryFn: () => getMasterData("gender"), 
+  });
+  
+   useEffect(() => {
+     if (genderData) {
+      console.log("Fetched master data:", genderData);
+     }
+   }, [genderData]);
+
+   const genderOptions =
+   genderData?.data?.result?.gender?.map(
+     (gender: { pklGenderId: number; vsGenderName: string }) => ({
+       label: gender.vsGenderName,
+       value: gender.pklGenderId,
+     })
+   ) || [];
+
+
+   const { data: religionData } = useQuery({
+    queryKey: ["religionData", "religion"], 
+    queryFn: () => getMasterData("religion"), 
+  });
+  
+   useEffect(() => {
+     if (religionData) {
+      console.log("Fetched master data:", religionData);
+     }
+   }, [religionData]);
+
+   const religionOptions =
+   religionData?.data?.result?.religion?.map(
+     (religion: { pklReligionId: number; vsReligionName: string }) => ({
+       label: religion.vsReligionName,
+       value: religion.pklReligionId,
+     })
+   ) || [];
+
+
+   const { data: idTypeData } = useQuery({
+    queryKey: ["idTypeData", "id_type"], 
+    queryFn: () => getMasterData("id_type"), 
+  });
+  
+   useEffect(() => {
+     if (idTypeData) {
+      console.log("Fetched master data:", idTypeData);
+     }
+   }, [idTypeData]);
+
+   const idTypeOptions =
+   idTypeData?.data?.result?.idType?.map(
+     (idType: { pklIdType: number; vsIdTypeDisplayName: string }) => ({
+       label: idType.vsIdTypeDisplayName,
+       value: idType.pklIdType,
+     })
+   ) || [];
+
+   const { data: categoryData } = useQuery({
+    queryKey: ["categoryData", "category"], 
+    queryFn: () => getMasterData("category"), 
+  });
+  
+   useEffect(() => {
+     if (categoryData) {
+      console.log("Fetched master data:", categoryData);
+     }
+   }, [categoryData]);
+
+   const categoryOptions =
+   categoryData?.data?.result?.category?.map(
+     (category: { pklCasteId: number; vsCasteName: string }) => ({
+       label: category.vsCasteName,
+       value: category.pklCasteId,
+     })
+   ) || [];
+
+   const isRCityVillage = [
+    { label: "Village", value: "Village" },
+    { label: "City", value: "City" },
+  ];
+
+  const selectedRVillageCity = watch("isRCityVillage", "") as unknown as string;
 
   const onSubmit: SubmitHandler<candidateFormData> = (data) => {
     // Mock API call or mutation
@@ -119,40 +210,49 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Gender" />
           <Controller
             name="vsGender"
             control={control}
             render={({ field }) => (
-              <select
+              <Dropdown
                 {...field}
-                className={`form-select ${
-                  errors.vsGender ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
+                options={genderOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                
+                  setValue("vsGender", selectedOption.value); 
+                }}
+                className={errors.vsGender ? "border-red-500" : ""}
+                placeholder="-- Select Gender --"
+              />
             )}
           />
           {errors.vsGender && (
             <p className="text-red-500">{errors.vsGender.message}</p>
           )}
         </div>
-
-        <div>
-          <Label text="ID type" />
+        <div className="col-span-1">
+          <Label text="ID Type" />
           <Controller
             name="fklIdType"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="number"
+                options={idTypeOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                
+                  setValue("fklIdType", selectedOption.value); 
+                }}
                 className={errors.fklIdType ? "border-red-500" : ""}
+                placeholder="-- Select ID Type--"
               />
             )}
           />
@@ -179,16 +279,24 @@ const CandidateModal: React.FC = () => {
         </div>
 
       
-        <div>
+        <div className="col-span-1">
           <Label text="Religion" />
           <Controller
             name="fklReligionId"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="number"
+                options={religionOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                
+                  setValue("fklReligionId", selectedOption.value); 
+                }}
                 className={errors.fklReligionId ? "border-red-500" : ""}
+                placeholder="-- Select Religion --"
               />
             )}
           />
@@ -197,16 +305,24 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
-          <Label text="Category ID" />
+        <div className="col-span-1">
+          <Label text="Category" />
           <Controller
             name="fklCategoryId"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="number"
+                options={categoryOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                
+                  setValue("fklCategoryId", selectedOption.value); 
+                }}
                 className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select ID Type--"
               />
             )}
           />
@@ -478,23 +594,34 @@ const CandidateModal: React.FC = () => {
         </div>
 
         {/* Present Village/City */}
-        <div>
-          <Label text="Present Village/City" />
-          <Controller
-            name="vsRVillageCity"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsRVillageCity ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsRVillageCity && (
-            <p className="text-red-500">{errors.vsRVillageCity.message}</p>
-          )}
-        </div>
+        <div className="col-span-1">
+  <Label text="Village/City" />
+  <Controller
+    name="isRCityVillage"
+    control={control}
+    defaultValue="" // Ensure the initial value is an empty string
+    render={({ field }) => (
+      <select
+        {...field}
+        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+          errors.isRCityVillage ? "border-red-500" : ""
+        }`}
+      >
+        <option value="" disabled>
+          -- Select Village/City --
+        </option>
+        {isRCityVillage.map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    )}
+  />
+  {errors.isRCityVillage && (
+    <p className="text-red-500">{errors.isRCityVillage.message}</p>
+  )}
+</div>
 
         {/* Present Post Office */}
         <div>

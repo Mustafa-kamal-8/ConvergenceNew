@@ -554,6 +554,9 @@ export const candidateSchema = Joi.object({
   vsCandidateName: Joi.string().required().label("Candidate Name").messages({
     "string.empty": "Candidate Name is required.",
   }),
+  isRCityVillage: Joi.string().required().label("Village/City").messages({
+    "string.empty": "Village/City is required.",
+  }),
   vsDOB: Joi.date().required().label("Date of Birth").messages({
     "date.base": "Date of Birth must be a valid date.",
     "any.required": "Date of Birth is required.",
@@ -566,7 +569,7 @@ export const candidateSchema = Joi.object({
   vsFatherName: Joi.string().required().label("Father's Name").messages({
     "string.empty": "Father's Name is required.",
   }),
-  vsGender: Joi.string().valid("Male", "Female", "Other").required().label("Gender").messages({
+  vsGender: Joi.number().valid("Male", "Female", "Other").required().label("Gender").messages({
     "any.only": "Gender must be Male, Female, or Other.",
     "any.required": "Gender is required.",
   }),

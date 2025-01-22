@@ -81,13 +81,8 @@ const TrainingPartnerModal: React.FC = () => {
       })
     ) || [];
 
-  const ULBblockOptions =
-    ULBblockData?.data?.result?.blocks?.map(
-      (blocks: { blockId: number; blockName: string }) => ({
-        label: blocks.blockName,
-        value: blocks.blockId,
-      })
-    ) || [];
+  
+  
 
   const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
@@ -95,6 +90,22 @@ const TrainingPartnerModal: React.FC = () => {
     { label: "Village", value: "Village" },
     { label: "City", value: "City" },
   ];
+
+  const ULBblockOptions = selectedVillageCity === "Village"
+  ? ULBblockData?.data?.result?.blocks?.map(
+      (blocks: { blockId: number; blockName: string }) => ({
+        label: blocks.blockName,
+        value: blocks.blockId,
+      })
+    ) || []
+  : selectedVillageCity === "City"
+  ? ULBblockData?.data?.result?.ulbs?.map(
+      (ulbs: { ulbId: number; ulbName: string }) => ({
+        label: ulbs.ulbName,
+        value: ulbs.ulbId,
+      })
+    ) || []
+  : [];
 
   const mutation = useMutation({
     mutationFn: submitTrainingPartnerForm,

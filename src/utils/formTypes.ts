@@ -149,7 +149,7 @@ export interface candidateFormData{
   vsDOB: string;
   iAge: string;
   vsFatherName: string;
-  vsGender: string;
+  vsGender: number;
   fklIdType: number;
   vsUUID:string;
   fklReligionId: number;
@@ -167,7 +167,7 @@ export interface candidateFormData{
   vsRDistrict: number;
   vsRBlock:number;
   vsRUlb: number;
-  vsRVillageCity:string;
+  isRCityVillage:string;
   vsRPostOffice: string;
   vsRPolice: string;
   vsRPIN: string;
