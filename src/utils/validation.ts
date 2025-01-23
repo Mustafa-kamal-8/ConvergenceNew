@@ -569,7 +569,7 @@ export const candidateSchema = Joi.object({
   vsFatherName: Joi.string().required().label("Father's Name").messages({
     "string.empty": "Father's Name is required.",
   }),
-  vsGender: Joi.number().valid("Male", "Female", "Other").required().label("Gender").messages({
+  vsGender: Joi.number().required().label("Gender").messages({
     "any.only": "Gender must be Male, Female, or Other.",
     "any.required": "Gender is required.",
   }),
@@ -601,6 +601,9 @@ export const candidateSchema = Joi.object({
       "string.empty": "Email is required.",
       "string.email": "Email must be a valid email address.",
     }),
+    batchId: Joi.number().required().label("ID Type").messages({
+      "any.required": "ID Type is required.",
+    }),
   vsEducationAttained: Joi.string().required().label("Education Attained").messages({
     "string.empty": "Education Attained is required.",
   }),
@@ -620,42 +623,60 @@ export const candidateSchema = Joi.object({
     "any.only": "Minority must be 0 or 1.",
     "any.required": "Minority is required.",
   }),
-  // Current Address
-  vsRAddress: Joi.string().required().label("Current Address").messages({
-    "string.empty": "Current Address is required.",
+  // Present Address
+  vsRAddress: Joi.string().required().label("Present Address").messages({
+    "string.empty": "Present Address is required.",
   }),
-  vsRDistrict: Joi.number().required().label("Current District").messages({
-    "any.required": "Current District is required.",
+  vsRState: Joi.number().required().label("State").messages({
+    "string.empty": "State is required.",
+    "any.required": "State is required.",
   }),
-  vsRBlock: Joi.number().required().label("Current Block").messages({
-    "any.required": "Current Block is required.",
+  vsRDistrict: Joi.number().required().label("Present District").messages({
+    "any.required": "Present District is required.",
   }),
-  vsRUlb: Joi.number().required().label("Current ULB").messages({
-    "any.required": "Current ULB is required.",
+  vsRBlock: Joi.number()
+  .when("vsRVillageCity", {
+    is: "Village",
+    then: Joi.required().label("Village").messages({
+      "string.empty": "Block is required.",
+      "any.required": "Block is required.",
+    }),
+    otherwise: Joi.optional(),
   }),
-  vsRVillageCity: Joi.string().required().label("Current Village/City").messages({
-    "string.empty": "Current Village/City is required.",
+  vsRULB: Joi.number()
+  .when("vsRVillageCity", {
+    is: "City",
+    then: Joi.required().label("Village").messages({
+      "string.empty": "ULB is required.",
+      "any.required": "ULB is required.",
+    }),
+    otherwise: Joi.optional(),
   }),
-  vsRPostOffice: Joi.string().required().label("Current Post Office").messages({
-    "string.empty": "Current Post Office is required.",
+
+  vsRVillageCity : Joi.string().required().label("Present Village/City").messages({
+    "string.empty": "Present Village/City is required.",
   }),
-  vsRPolice: Joi.string().required().label("Current Police Station").messages({
-    "string.empty": "Current Police Station is required.",
+  vsRPostOffice: Joi.string().required().label("Present Post Office").messages({
+    "string.empty": "Present Post Office is required.",
+  }),
+  vsRPolice: Joi.string().required().label("Present Police Station").messages({
+    "string.empty": "Present Police Station is required.",
   }),
   vsRPIN: Joi.string()
     .pattern(/^\d{6}$/)
     .required()
-    .label("Current PIN")
+    .label("Present PIN")
     .messages({
       "string.pattern.base": "PIN must be 6 digits.",
-      "string.empty": "Current PIN is required.",
+      "string.empty": "Present PIN is required.",
     }),
-  vsRCouncilContituency: Joi.number().required().label("Current Council Constituency").messages({
-    "any.required": "Current Council Constituency is required.",
+  vsRCouncilContituency: Joi.number().required().label("Present Council Constituency").messages({
+    "any.required": "Present Council Constituency is required.",
   }),
-  vsRAssemblyContituency: Joi.number().required().label("Current Assembly Constituency").messages({
-    "any.required": "Current Assembly Constituency is required.",
+  vsRAssemblyContituency: Joi.number().required().label("Present Assembly Constituency").messages({
+    "any.required": "Present Assembly Constituency is required.",
   }),
+ 
 
   iSameAddress: Joi.number().valid(0, 1).required().label("Is Permanent Same as Present Adress").messages({
     "any.only": "Disability must be 0 or 1.",
@@ -678,25 +699,43 @@ export const candidateSchema = Joi.object({
     otherwise: Joi.optional(),
   }),
   vsPBlock: Joi.when('vsSameAddress', {
-    is: 0,
-    then: Joi.number().required().label("Present Block").messages({
-      "any.required": "Present Block is required.",
+    is: 0, 
+    then: Joi.when('vsPVillageCity', {
+      is: 'Village', 
+      then: Joi.number().required().label("Present Block").messages({
+        "any.required": "Present Block is required.",
+      }),
+      otherwise: Joi.optional(), 
     }),
-    otherwise: Joi.optional(),
+    otherwise: Joi.optional(), 
   }),
+  
   vsPUlb: Joi.when('vsSameAddress', {
-    is: 0,
-    then: Joi.number().required().label("Present ULB").messages({
-      "any.required": "Present ULB is required.",
+    is: 0, 
+    then: Joi.when('vsPVillageCity', {
+      is: 'City', 
+      then: Joi.number().required().label("Present ULB").messages({
+        "any.required": "Present ULB is required.",
+      }),
+      otherwise: Joi.optional(), 
     }),
-    otherwise: Joi.optional(),
+    otherwise: Joi.optional(), 
   }),
+  
   vsPVillageCity: Joi.when('vsSameAddress', {
     is: 0,
     then: Joi.string().required().label("Present Village/City").messages({
       "string.empty": "Present Village/City is required.",
     }),
     otherwise: Joi.optional(),
+  }),
+  vsPState: Joi.when('vsSameAddress', {
+    is: 0, // If vsSameAddress is 0, then vsPState is required
+    then: Joi.number().required().label("State").messages({
+      "string.empty": "State is required.",
+      "any.required": "State is required.",
+    }),
+    otherwise: Joi.optional(), // If vsSameAddress is not 0, then vsPState is optional
   }),
   vsPPostOffice: Joi.when('vsSameAddress', {
     is: 0,
@@ -750,8 +789,11 @@ export const candidateSchema = Joi.object({
       "string.pattern.base": "Account Number must be numeric.",
       "string.empty": "Account Number is required.",
     }),
-  vsBankName: Joi.string().required().label("Bank Name").messages({
+  vsBankName: Joi.number().required().label("Bank Name").messages({
     "string.empty": "Bank Name is required.",
+  }),
+  vsBranchName: Joi.number().required().label("Branch Name").messages({
+    "string.empty": "Branch Name is required.",
   }),
   vsBankIFSC: Joi.string()
     .pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)

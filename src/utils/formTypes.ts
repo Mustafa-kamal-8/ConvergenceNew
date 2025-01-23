@@ -161,9 +161,11 @@ export interface candidateFormData{
   bTeaTribe: number;
   bBPLcardHolder: number;
   bMinority: number;
+  batchId: number;
 
   //current address
   vsRAddress: string;
+  vsRState: number,
   vsRDistrict: number;
   vsRBlock:number;
   vsRUlb: number;
@@ -173,23 +175,28 @@ export interface candidateFormData{
   vsRPIN: string;
   vsRCouncilContituency: number;
   vsRAssemblyContituency: number;
+  vsRVillageCity : string
 
   //present address
   vsPAddress:string;
   vsPDistrict: number;
   vsPBlock: number
   vsPUlb: number;
-  vsPVillageCity:number
+  vsPVillageCity:string;
   vsPPostOffice:string;
   vsPPolice: string;
   vsPPIN: number;
   vsPCouncilContituency: number;
   vsPAssemblyContituency: number;
   iSameAddress: number;
+  vsPState : number;
+ 
 
   //bank details
   vsBankHolderName: string;
+
   vsAccountNumber: string;
-  vsBankName: string
+  vsBankName: number;
+  vsBranchName: number;
   vsBankIFSC: string;
 }

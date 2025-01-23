@@ -124,4 +124,36 @@ export const getSchemeById = async (schemeId: string) => {
     )
       return response.data;
     };
+
+    export const getBranchByBank = async (fklBankId: number|null, queryType: string) => {
+      const { userDetails } = useAuthStore.getState();
+    
+      if (!userDetails) {
+        throw new Error("User details are not available in the store.");
+      }
+    
+      const response = await axiosInstance.post("/master/get", {
+        fklDepartmentId: userDetails.departmentId,
+        fklBankId, 
+        queryType
+      });
+    
+      return response.data;
+    };
+
+    export const getIfscByBranch = async (pklBranchId: number|null, queryType: string) => {
+      const { userDetails } = useAuthStore.getState();
+    
+      if (!userDetails) {
+        throw new Error("User details are not available in the store.");
+      }
+    
+      const response = await axiosInstance.post("/master/get", {
+        fklDepartmentId: userDetails.departmentId,
+        pklBranchId, 
+        queryType
+      });
+    
+      return response.data;
+    };
   
