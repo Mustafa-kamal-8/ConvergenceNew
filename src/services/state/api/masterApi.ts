@@ -59,6 +59,22 @@ export const getTcByTp = async (fklTpId: number|null, queryType: string) => {
   return response.data;
 };
 
+export const getsdmsByBatch = async (pklBatchId: number|null, queryType: string) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    pklBatchId, 
+    queryType
+  });
+
+  return response.data;
+};
+
 
 export const getCourses = async (fklTpId: number|null, queryType: string , fklSectorId: number| null) => {
   const { userDetails } = useAuthStore.getState();
@@ -71,6 +87,23 @@ export const getCourses = async (fklTpId: number|null, queryType: string , fklSe
     fklDepartmentId: userDetails.departmentId,
     fklTpId, 
     fklSectorId,
+    queryType
+  });
+
+  return response.data;
+};
+
+export const getBatch = async (fklTpId: number|null, queryType: string , fklTcId: number| null) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    fklTpId, 
+    fklTcId,
     queryType
   });
 

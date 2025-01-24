@@ -25,13 +25,14 @@ const Dropdown: React.FC<DropdownProps> = ({
   return (
     <select
       onChange={(e) => {
-        const selectedOption = options.find(
-          (option) => getOptionValue(option) === Number(e.target.value)
-        );
+        const selectedOption = options.find((option) => {
+          const optionValue = getOptionValue(option);
+          return String(optionValue) === e.target.value;
+        });
         if (selectedOption) {
           onSelect(selectedOption); // Pass the selected option object
         }
-      }}
+      }}  
       className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
     >
       <option value="" disabled selected>

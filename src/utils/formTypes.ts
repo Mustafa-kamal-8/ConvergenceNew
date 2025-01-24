@@ -92,23 +92,29 @@ export interface BatchFormData {
 }
 
 export type AssessmentFormData = {
-  batchId: string;
-  sdmsBatchId: string;
+  batchId: number;
+ 
   candidateId: string;
-  assessedId: string;
-  assessmentDate: string;
-  agency: string;
-  agencyMobile: string;
-  agencyEmail: string;
+ 
+  dtAssessmentDate: string;
+  // agency: string;
+  // agencyMobile: string;
+  // agencyEmail: string;
   accessorId: string;
-  accessorName: string;
-  result: string;
-  resultDate: string;
-  certificationStatus: string;
-  totalMarks: number;
+  vsAccessorName: string;
+  vsResult: string;
+  dtResultDate: string;
+  vsCertificationStatus: string;
+  vsTotalMarks: string;
   obtainedMarks: number;
   marksheetUrl: string;
   certificateUrl: string;
+  fklTpId: number;
+  fklTcId: number;
+  SDMSBatchId: string;
+  vsObtainedMarks: string;
+  vsMarksheetUrl: string;
+  vsCertificateUrl: string;
 };
 
 

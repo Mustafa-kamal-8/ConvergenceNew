@@ -394,50 +394,61 @@ export const batchSchema = Joi.object({
 
 
 export const assessmentValidationSchema = Joi.object({
-  batchId: Joi.string().required().messages({
-    "string.base": `"Batch ID" should be a type of 'text'`,
-    "any.required": `"Batch ID" is a required field`,
+  batchId: Joi.number().required().label("Batch ID").messages({
+    "string.empty": "Batch ID is required.",
   }),
-  sdmsBatchId: Joi.string().required().messages({
-    "string.base": `"sdmsBatchId" should be a type of 'text'`,
-    "any.required": `"sdmsBatchId" is a required field`,
-  }),
+
+  
   candidateId: Joi.string().required().messages({
     "string.base": `"candidateId" should be a type of 'text'`,
     "any.required": `"candidateId" is a required field`,
   }),
-  assessedId: Joi.string().required().messages({
+  accessorId: Joi.string().required().messages({
     "string.base": `"assessedId" should be a type of 'text'`,
     "any.required": `"assessedId" is a required field`,
   }),
-  assessmentDate: Joi.date().required().messages({
-    "string.base": `"assessmentDate" should be a type of 'text'`,
-    "any.required": `"assessmentDate" is a required field`,
+  dtAssessmentDate: Joi.date().required().messages({
+    "string.base": `"dtAssessmentDate" should be a type of 'text'`,
+    "any.required": `"dtAssessmentDate" is a required field`,
   }),
-  agency: Joi.string().required().messages({
-    "string.base": `"agency" should be a type of 'text'`,
-    "any.required": `"agency" is a required field`,
+  // agency: Joi.string().required().messages({
+  //   "string.base": `"agency" should be a type of 'text'`,
+  //   "any.required": `"agency" is a required field`,
+  // }),
+  // agencyMobile: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
+  //   "string.pattern.base": "Mobile number must be 10 digits.",
+  //   "any.required": "Mobile number is required.",
+  // }),
+  //   agencyEmail: Joi.string()
+  //   .email({ tlds: { allow: false } }) 
+  //   .required()
+  //   .label("Email")
+  //   .messages({
+  //     "string.empty": "Email is required.",
+  //     "string.email": "Email must be a valid email address.",
+  //     "any.required": "Email is required.",
+  //   }),
+  vsResult: Joi.string().required().messages({
+    "string.base": `"vsResult" should be a type of 'text'`,
+    "any.required": `"vsResult" is a required field`,
   }),
-  agencyMobile: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
-    "string.pattern.base": "Mobile number must be 10 digits.",
-    "any.required": "Mobile number is required.",
+  dtResultDate: Joi.date().required().messages({
+    "string.base": `"dtResultDate" should be a type of 'text'`,
+    "any.required": `"dtResultDate" is a required field`,
   }),
-    agencyEmail: Joi.string()
-    .email({ tlds: { allow: false } }) 
-    .required()
-    .label("Email")
-    .messages({
-      "string.empty": "Email is required.",
-      "string.email": "Email must be a valid email address.",
-      "any.required": "Email is required.",
-    }),
-  result: Joi.string().required().messages({
-    "string.base": `"result" should be a type of 'text'`,
-    "any.required": `"result" is a required field`,
+  vsTotalMarks: Joi.date().required().messages({
+    "string.base": `"vsTotalMarks" should be a type of 'text'`,
+    "any.required": `"vsTotalMarks" is a required field`,
   }),
-  resultDate: Joi.date().required().messages({
-    "string.base": `"resultDate" should be a type of 'text'`,
-    "any.required": `"resultDate" is a required field`,
+ 
+  fklTcId: Joi.number().required().label("Training Center ID").messages({
+    "string.empty": "Training Center ID is required.",
+  }),
+  SDMSBatchId: Joi.string().optional().label("SDMS ID").messages({
+    "string.empty": "SDMS ID is required."
+  }),
+  fklTpId: Joi.number().optional().label("SDMS ID").messages({
+    "string.empty": "SDMS ID is required."
   }),
 });
 

@@ -17,6 +17,7 @@ import { submitBatchForm } from "../../../services/state/api/FormApi";
 const BatchModel : React.FC = () => {
 
  const [fklTpId, setTpId] = useState<number | null>(null);
+
  
  const [fklSectorId, setSectorId] = useState<number | null>(null);
 
