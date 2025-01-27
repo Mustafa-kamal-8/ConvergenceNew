@@ -94,6 +94,23 @@ const CourseModal: React.FC = () => {
             <p className="text-red-500">{errors.fklSectorId.message}</p>
           )}
         </div>
+        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+          <Label text="Job Role Name" />
+          <Controller
+            name="vsCourseName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsCourseName ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsCourseName && (
+            <p className="text-red-500">{errors.vsCourseName.message}</p>
+          )}
+        </div>
         {/* QPNOS Code */}
         <div className="col-span-1 sm:col-span-1">
           <Label text="QPNOS Code" />
@@ -113,24 +130,8 @@ const CourseModal: React.FC = () => {
           )}
         </div>
 
-        {/* Job Role Name */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Label text="Job Role Name" />
-          <Controller
-            name="vsCourseName"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsCourseName ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsCourseName && (
-            <p className="text-red-500">{errors.vsCourseName.message}</p>
-          )}
-        </div>
+      
+      
 
         {/* Total Theory and Practical Hours */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">

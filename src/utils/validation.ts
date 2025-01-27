@@ -216,10 +216,10 @@ export const trainingCenterSchema = Joi.object({
     "string.empty": "Training Center Name is required.",
     "any.required": "Training Center Name is required.",
   }),
-  vsTcCode: Joi.string().required().label("Training Center Code").messages({
-    "string.empty": "Training Center Code is required.",
-    "any.required": "Training Center Code is required.",
-  }),
+  // vsTcCode: Joi.string().required().label("Training Center Code").messages({
+  //   "string.empty": "Training Center Code is required.",
+  //   "any.required": "Training Center Code is required.",
+  // }),
   vsSpocEmail: Joi.string()
     .email({ tlds: { allow: false } })
     .required()
@@ -296,9 +296,9 @@ export const trainingCenterSchema = Joi.object({
 
 
 export const assessorSchema = Joi.object({
-  assosserId: Joi.number().required().label("Assessor ID").messages({
-    "string.empty": "Assessor ID is required.",
-  }),
+  // assosserId: Joi.number().required().label("Assessor ID").messages({
+  //   "string.empty": "Assessor ID is required.",
+  // }),
   vsAssosserName: Joi.string().required().label("Assessor Name").messages({
     "string.empty": "Assessor Name is required.",
   }),
@@ -328,10 +328,10 @@ export const assessorSchema = Joi.object({
 
 
 export const trainerSchema = Joi.object({
-  trainerId: Joi.string().required().messages({
-    "string.empty": "Trainer ID is required.",
-    "any.required": "Trainer ID is required.",
-  }),
+  // trainerId: Joi.string().required().messages({
+  //   "string.empty": "Trainer ID is required.",
+  //   "any.required": "Trainer ID is required.",
+  // }),
   vsTrainerName: Joi.string().required().messages({
     "string.empty": "Trainer Name is required.",
     "any.required": "Trainer Name is required.",
@@ -454,83 +454,98 @@ export const assessmentValidationSchema = Joi.object({
 
 
 export const placementValidationSchema = Joi.object({
-  batchId: Joi.string().required().messages({
+  batchId: Joi.number().required().messages({
     "string.base": `"Batch ID" should be a type of 'text'`,
     "any.required": `"Batch ID" is a required field`,
   }),
-  candidateId: Joi.string().required().messages({
+  candidateId: Joi.number().required().messages({
     "string.base": `"Candidate ID" should be a type of 'text'`,
     "any.required": `"Candidate ID" is a required field`,
   }),
-  isCandidatePlaced: Joi.string().valid("yes", "no").required().messages({
+  bIsCandidatePlaced: Joi.number().required().messages({
     "string.base": `"Is Cnadidate Placed" should be a type of 'text'`,
     "any.required": `"Is Cnadidate Placed"" is a required field`,
   }),
-  placementType: Joi.string().required().messages({
+  vsPlacementType: Joi.string().required().messages({
     "string.base": `"Placement Type" should be a type of 'text'`,
     "any.required": `"Placement Type" is a required field`,
   }),
-  employerName: Joi.string().required().messages({
+  vsEmployeerName: Joi.string().required().messages({
     "string.base": `"Employe Name" should be a type of 'text'`,
     "any.required": `"Employe Name" is a required field`,
   }),
-  employerContactNumber: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
-    "string.pattern.base": "Mobile number must be 10 digits.",
+  vsEmployeerContactNumber: Joi.number()
+  .integer()
+  .min(1000000000) // Minimum 10-digit number
+  .max(9999999999) // Maximum 10-digit number
+  .required()
+  .messages({
+    "number.base": "Mobile number must be a number.",
+    "number.min": "Mobile number must be 10 digits.",
+    "number.max": "Mobile number must be 10 digits.",
     "any.required": "Mobile number is required.",
   }),
-  placementState: Joi.string().required().messages({
+
+  vsPlacementState: Joi.number().required().messages({
     "string.base": `"Placement State" should be a type of 'text'`,
     "any.required": `"Placement State" is a required field`,
   }),
-  placementDistrict: Joi.string().required().messages({
+  vsPlacementDistrict: Joi.number().required().messages({
     "string.base": `"Placement District" should be a type of 'text'`,
     "any.required": `"Placement District" is a required field`,
   }),
-  monthlySalary: Joi.string().required().messages({
+  vsMonthlySalary: Joi.number().required().messages({
     "string.base": `"Monthly Salary" should be a type of 'text'`,
     "any.required": `"Monthly Salary" is a required field`,
+  }),
+  fklTcId: Joi.number().required().label("Training Center ID").messages({
+    "string.empty": "Training Center ID is required.",
+  }),
+  fklTpId: Joi.number().optional().label("SDMS ID").messages({
+    "string.empty": "SDMS ID is required."
   }),
 });
 
 
 export const invoiceValidationSchema = Joi.object({
-  batchId: Joi.string().required().messages({
+
+  fklInvoiceType: Joi.number().required().messages({
+    "string.base": `"Invoice Type" should be a type of 'text'`,
+    "any.required": `"Invoice Type" is a required field`,
+  }),
+  vsInvoiceTranche: Joi.string().required().messages({
+    "string.base": `"Invoice Tranche" should be a type of 'text'`,
+    "any.required": `"Invoice Tranche" is a required field`,
+  }),
+  vsInvoiceNo: Joi.string().required().messages({
     "string.base": `"Monthly Salary" should be a type of 'text'`,
     "any.required": `"Monthly Salary" is a required field`,
   }),
-  invoiceType: Joi.string().required().messages({
-    "string.base": `"Monthly Salary" should be a type of 'text'`,
-    "any.required": `"Monthly Salary" is a required field`,
-  }),
-  invoiceTranche: Joi.string().required().messages({
-    "string.base": `"Monthly Salary" should be a type of 'text'`,
-    "any.required": `"Monthly Salary" is a required field`,
-  }),
-  invoiceNumber: Joi.string().required().messages({
-    "string.base": `"Monthly Salary" should be a type of 'text'`,
-    "any.required": `"Monthly Salary" is a required field`,
-  }),
-  invoiceDate: Joi.date()
+  vsInvoiceDate: Joi.date()
     .required()
     .messages({
       "any.required": "Date of Invoice is required.",
       "date.base": "Invalid date format.",
     }),
-  noOfCandidates: Joi.string()
-    .pattern(/^\d+$/)
+    iTotalCandidate: Joi.number()
+    .integer()
+    .min(0) 
     .required()
     .messages({
-      "string.empty": "No of Candidates is required",
-      "string.pattern.base": "No of Candidates must be a valid number",
+      "number.base": "No of Candidates must be a valid number.",
+      "number.integer": "No of Candidates must be an integer.",
+      "number.min": "No of Candidates cannot be negative.",
+      "any.required": "No of Candidates is required.",
     }),
-  rate: Joi.string()
+  
+    fRate: Joi.string()
     .pattern(/^\d+(\.\d{1,2})?$/)
     .required()
     .messages({
       "string.empty": "Rate is required",
       "string.pattern.base": "Rate must be a valid number",
     }),
-  amount: Joi.string()
+    fAmount: Joi.string()
     .pattern(/^\d+(\.\d{1,2})?$/)
     .required()
     .messages({

@@ -59,6 +59,22 @@ export const getTcByTp = async (fklTpId: number|null, queryType: string) => {
   return response.data;
 };
 
+export const getCandidateByBatch = async (batchId: number|null, queryType: string) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    batchId, 
+    queryType
+  });
+
+  return response.data;
+};
+
 export const getsdmsByBatch = async (pklBatchId: number|null, queryType: string) => {
   const { userDetails } = useAuthStore.getState();
 

@@ -61,7 +61,7 @@ export const schemeColumns: (
   { Header: "Fund Name", accessor: "vsFundName" },
   { Header: "Fund Type", accessor: "vsSchemeFundingType" },
   { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
-  { Header: "Order Number", accessor: "sanctionOrderNo" },
+  { Header: "Sanction Order Number", accessor: "sanctionOrderNo" },
   {
     Header: "Sanction Date",
     accessor: "dtSanctionDate",
@@ -112,7 +112,7 @@ interface CourseData {
   JobRoleName: string;
   iTheoryDurationInHours: string;
   iPracticalDurationInHours: string;
-  dtcreatedAt: string;
+  
   vsSectorName: string;
   Action: unknown;
 }
@@ -122,6 +122,7 @@ export const courseColumns = (
 ): Column<CourseData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Sector Name", accessor: "vsSectorName" },
+  { Header: "Job Role Name", accessor: "vsCourseName" },
   { Header: "QPNOS Code", accessor: "vsCourseCode" },
   {
     Header: "From Date",
@@ -133,14 +134,10 @@ export const courseColumns = (
     accessor: "dtToDate",
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
-  { Header: "Job Role Name", accessor: "vsCourseName" },
+ 
   { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
   { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
-  {
-    Header: "Created At",
-    accessor: "dtcreatedAt",
-    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
-  },
+ 
   {
     Header: "Action",
     accessor: "Action",
@@ -325,7 +322,7 @@ export const assessorsColumns = (
 
 interface TrainerData {
   pklConvTrainerId: number;
-  trainerId: string;
+  // trainerId: string;
   vsTrainerName: string;
   vsEmail: string;
   vsMobile: string;
@@ -337,7 +334,7 @@ export const trainerColumns = (
   navigate: (path: string) => void
 ): Column<TrainerData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Trainer ID", accessor: "trainerId" },
+  // { Header: "Trainer ID", accessor: "trainerId" },
   { Header: "Trainer Name", accessor: "vsTrainerName" },
   { Header: "Mobile", accessor: "vsMobile" },
   { Header: "Email", accessor: "vsEmail" },
@@ -358,76 +355,114 @@ export const trainerColumns = (
 
 
 interface AssessmentData {
-  id: string;
-  BatchId: string;
+  pklConvAssessmentId: string;
+  batchId: string;
   SDMSBatchId: string;
-  CandidateId: string;
-  AssessedId: string;
-  AssesmentDate: string;
-  Agency: string;
-  AgencyMobile: string;
-  AgencyEmail: string;
-  AccessorId: string;
-  AccessorName: string;
-  Result: string;
-  ResultDate: string;
-  CertificationStatus: string;
-  TotalMarks: string;
-  ObtainedMarks: string;
-  MarksheetURL: string;
-  CertificateURL: string;
+  candidateId: string;
+  dtAssessmentDate: string;
+  vsAgency: string;
+  vsTotalMarks: string;
+  vsObtainedMarks: string;
+  vsMarksheetUrl: string;
+  vsCertificateUrl: string;
+  vsAccessorName: string;
+  vsResult: string;
+  dtResultDate: string;
   Action: unknown;
 }
 
-export const assessmentColumns: Column<AssessmentData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Batch ID", accessor: "BatchId" },
+export const assessmentColumns = (
+  navigate: (path: string) => void
+): Column<AssessmentData>[] => [
+  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Batch ID", accessor: "batchId" },
   { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
-  { Header: "Candidate ID", accessor: "CandidateId" },
-  { Header: "Assessed ID ", accessor: "AssessedId" },
-  { Header: "Assesment Date ", accessor: "AssesmentDate" },
-  { Header: "Agency", accessor: "Agency" },
-  { Header: "Agency Mobile", accessor: "AgencyMobile" },
-  { Header: "AgencyEmail", accessor: "AgencyEmail" },
-  { Header: "Accessor ID", accessor: "AccessorId" },
-  { Header: "Accessor Name ", accessor: "AccessorName" },
-  { Header: "Result ", accessor: "Result" },
-  { Header: "ResultDate ", accessor: "ResultDate" },
-  { Header: "Certification Status", accessor: "CertificationStatus" },
-  { Header: "Total Marks", accessor: "TotalMarks" },
-  { Header: "Obtained Marks ", accessor: "ObtainedMarks" },
-  { Header: "Marksheet URL", accessor: "MarksheetURL" },
-  { Header: "Certificate URL", accessor: "CertificateURL" },
-  { Header: "Action", accessor: "Action" },
+  { Header: "Candidate ID", accessor: "candidateId" },
+  { Header: "Assessment Date", accessor: "dtAssessmentDate",  Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A", },
+  { Header: "Agency", accessor: "vsAgency" },
+ 
+  { Header: "Accessor Name", accessor: "vsAccessorName" },
+  { Header: "Result", accessor: "vsResult" },
+  { Header: "Result Date", accessor: "dtResultDate" ,  Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",},
+ 
+  {
+    Header: "Marksheet",
+    accessor: "vsMarksheetUrl",
+    Cell: ({ row }) => (
+      <a
+        href={row.original.vsMarksheetUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </a>
+    ),
+  },
+  {
+    Header: "Certificate",
+    accessor: "vsCertificateUrl",
+    Cell: ({ row }) => (
+      <a
+        href={row.original.vsCertificateUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </a>
+    ),
+  },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/assessment/${row.original.pklConvAssessmentId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
 
 interface PlacementData {
-  id: string;
-  BatchId: string;
-  CandidateId: string;
-  IsPlaced: string;
-  PlacementType: string;
-  EmployerName: string;
-  EmployerContact: string;
-  PlacementState: string;
-  PlacementDistrict: string;
-  MonthlySalary: string;
+  pklConvPlacementId: string;
+  batchId: string;
+  candidateId: string;
+  bIsCandidatePlaced: string;
+  vsEmployeerName: string;
+  vsPlacementType: string;
+ 
   Action: unknown;
 }
 
-export const placementColumns: Column<PlacementData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Batch ID", accessor: "BatchId" },
-  { Header: "Candidate ID", accessor: "CandidateId" },
-  { Header: "Is Placed ", accessor: "IsPlaced" },
-  { Header: "Placement Type ", accessor: "PlacementType" },
-  { Header: "Employer Name", accessor: "EmployerName" },
-  { Header: "Employer Contact", accessor: "EmployerContact" },
-  { Header: "Placement State", accessor: "PlacementState" },
-  { Header: "PlacementDistrict", accessor: "PlacementDistrict" },
-  { Header: "Monthly Salary", accessor: "MonthlySalary" },
-  { Header: "Action", accessor: "Action" },
+export const placementColumns = (
+  navigate: (path: string) => void
+): Column<PlacementData>[] => [
+  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Batch ID", accessor: "batchId"},
+  { Header: "Candidate ID", accessor: "candidateId" },
+  { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
+  { Header: "Placement Type", accessor: "vsPlacementType" },
+  { Header: "Employer Name", accessor: "vsEmployeerName" },
+ 
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/placement/${row.original.pklConvPlacementId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
+
+
 
 interface DepartmentListData {
   id: string;
@@ -473,28 +508,39 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
 ];
 
 interface InvoiceData {
-  id: string;
-  BatchId: string;
-  InvoiceType: string;
-
-  InvoiceNumber: string;
-  InvoiceDate: string;
-  NoOfCandidates: string;
-  Rate: string;
-  Amount: string;
+  pklConvInvoiceId: string;
+  vsInvoiceTranche: string;
+  vsInvoiceDate: string;
+  vsInvoiceNo: string;
+  fAmount: string;
+  fRate: string;
+  iTotalCandidate: string;
+ 
   Action: unknown;
 }
 
-export const invoiceColumns: Column<InvoiceData>[] = [
-  { Header: "ID", accessor: "id" },
-  { Header: "Batch ID", accessor: "BatchId" },
-  { Header: "Invoice Type", accessor: "InvoiceType" },
-  { Header: "Invoice Number", accessor: "InvoiceNumber" },
-  { Header: "Invoice Date ", accessor: "InvoiceDate" },
-  { Header: "No OF Candidates ", accessor: "NoOfCandidates" },
-  { Header: "Rate", accessor: "Rate" },
-  { Header: "Amount", accessor: "Amount" },
-  { Header: "Action", accessor: "Action" },
+export const invoiceColumns = (
+  navigate: (path: string) => void
+): Column<InvoiceData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
+  { Header: "Date", accessor: "vsInvoiceDate" , Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A"},
+  { Header: "Invoice Number", accessor: "vsInvoiceNo" },
+  { Header: "Amount", accessor: "fAmount" },
+  { Header: "Rate", accessor: "fRate" },
+  { Header: "Total Candidate", accessor: "iTotalCandidate" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/invoice/${row.original.pklConvInvoiceId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
 
 
@@ -512,8 +558,10 @@ interface CandidateData {
   Action: unknown;
 }
 
-export const candidateColumns: Column<CandidateData>[] = [
-  { Header: "ID", accessor: "id" },
+export const candidateColumns = (
+  navigate: (path: string) => void
+): Column<CandidateData>[] => [
+  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "BatchId" },
   { Header: "Candidate ID", accessor: "CandidateId" },
   { Header: "Candidate Name", accessor: "CandidateName" },
@@ -522,5 +570,17 @@ export const candidateColumns: Column<CandidateData>[] = [
   { Header: "Date of Birth", accessor: "DOB" },
   { Header: "Age", accessor: "Age" },
   { Header: "Gender", accessor: "Gender" },
-  { Header: "Action", accessor: "Action" },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => (
+      <button
+        onClick={() => navigate(`/candidate/${row.original.CandidateId}`)}
+        className="text-blue-500 hover:underline"
+      >
+        View
+      </button>
+    ),
+  },
 ];
+

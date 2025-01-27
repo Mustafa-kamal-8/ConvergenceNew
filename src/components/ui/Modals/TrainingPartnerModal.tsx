@@ -163,6 +163,25 @@ const TrainingPartnerModal: React.FC = () => {
           )}
         </div>
 
+          {/* Smart ID */}
+          <div className="col-span-1">
+          <Label text="Smart ID" />
+          <Controller
+            name="vsSmartId"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsSmartId ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsSmartId && (
+            <p className="text-red-500">{errors.vsSmartId.message}</p>
+          )}
+        </div>
+
         {/* SPOC Name */}
         <div className="col-span-2">
           <Label text="SPOC Name" />
@@ -182,24 +201,7 @@ const TrainingPartnerModal: React.FC = () => {
           )}
         </div>
 
-        {/* Smart ID */}
-        <div className="col-span-1">
-          <Label text="Smart ID" />
-          <Controller
-            name="vsSmartId"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsSmartId ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsSmartId && (
-            <p className="text-red-500">{errors.vsSmartId.message}</p>
-          )}
-        </div>
+      
 
         {/* Mobile */}
         <div className="col-span-1">

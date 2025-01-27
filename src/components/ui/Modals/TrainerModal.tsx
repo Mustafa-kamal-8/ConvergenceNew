@@ -55,7 +55,7 @@ const TrainerModalContent: React.FC = () => {
       >
      
           {/* Trainer ID */}
-          <div className="col-span-1">
+          {/* <div className="col-span-1">
             <Label text="Trainer ID" />
             <Controller
               name="trainerId"
@@ -71,7 +71,7 @@ const TrainerModalContent: React.FC = () => {
             {errors.trainerId && (
               <p className="text-red-500">{errors.trainerId.message}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Trainer Name */}
           <div className="col-span-1">

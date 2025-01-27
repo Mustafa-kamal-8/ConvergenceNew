@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import DropInput from "../DropInput";
 import Button from "../Button";
 import { toast } from "react-toastify";
-import axios from "axios";
+
 import * as XLSX from "xlsx"; 
 import useAuthStore from "../../../utils/cookies";
+import axiosInstance from "../../../services/state/api-setup/axiosInstance";
 
 interface BulkUploadModalProps {
   bulkName: string;
   schemeId: string;
 }
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
-const {  userDetails } = useAuthStore.getState();
+
+const { userDetails } = useAuthStore.getState();
 
 console.log("user details are",userDetails)
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) => {
@@ -30,7 +31,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       toast.error("Please select a file before uploading.");
       return;
     }
-    if (!userDetails || !userDetails.departmentId) {
+    if (!userDetails || !userDetails?.departmentId) {
       toast.error("User details or department ID is missing.");
       console.error("User details are invalid or missing departmentId.");
       return;
@@ -46,7 +47,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       const data = e.target?.result;
       if (data instanceof ArrayBuffer) {
         if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel") {
-          // If the file is an Excel file
+      
           const workbook = XLSX.read(data, { type: "binary" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
@@ -57,7 +58,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
           const updatedData = jsonData.map((row: any) => {
             return {
               ...row,
-              'schemeId': parseInt(schemeId), // Add or overwrite the 'scheme id' value
+              'schemeId': parseInt(schemeId), 
             };
           });
   
@@ -77,16 +78,14 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", bulkName); 
-      formData.append("fklDepartmentId", userDetails.departmentId.toString());
+      formData.append("fklDepartmentId", userDetails?.departmentId);
       if(schemeId){
         formData.append("fklSchemeId",  (schemeId))
 
       }
     
-      const { data: resData } = await axios.post(`${API_BASE_URL}/file-upload/upload`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const { data: resData } = await axiosInstance.post(`/file-upload/upload`, formData, {
+       
       });
 
       if (resData.success) {

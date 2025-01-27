@@ -1,73 +1,75 @@
-import React, { useState } from "react";
-import CentralizedTable from "../components/CentralizedTable";
-import { candidateColumns } from "../utils/tableColumns";
-import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
-import SearchInputBox from "../components/ui/SearchInputBox";
-import Dropdown from "../components/ui/Dropdown";
-import { Plus, DownloadCloud, UploadCloud, X } from "lucide-react";
-import Input from "../components/ui/Input";
+import React, { useEffect, useMemo, useState } from "react";
+ import ModalOpenButton from "../components/ui/ModelOpenButton";
+ import CustomModal from "../components/ui/CustomModal";
+import { DownloadCloud, UploadCloud,  } from "lucide-react";
 import { Add } from "@mui/icons-material";
-import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+ import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
+import Loader from "../components/ui/Loader";
+import { getTableData } from "../services/state/api/tableDataApi";
+import { useQuery } from "@tanstack/react-query";
+import useDebounce from "../services/state/useDebounce";
 import { invoiceColumns } from "../utils/tableColumns";
+import { useNavigate } from "react-router-dom";
+import CentralizedTable from "../components/CentralizedTable";
+import SearchDropdown from "../components/ui/SearchDropdown";
+import SearchInputBox from "../components/ui/SearchInputBox";
 
-interface InvoiceData {
-  id: string;
-  BatchId: string;
-  InvoiceType: string;
-  InvoiceNumber: string;
-  InvoiceDate: string;
-  NoOfCandidates: string;
-  Rate: string;
-  Amount: string;
-  Action: any;
-}
 
-const Invoice: React.FC = () => {
-  const [data, setData] = useState<InvoiceData[]>([
-    {
-      id: "1",
-      BatchId: "B001",
-      InvoiceType: "Standard",
-      InvoiceNumber: "INV001",
-      InvoiceDate: "2023-02-15",
-      NoOfCandidates: "30",
-      Rate: "5000",
-      Amount: "150000",
-      Action: (
-        <button className="py-1 px-3 text-white bg-blue-500 rounded">
-          View
-        </button>
-      ),
-    },
-  ]);
 
-  const [dropdownOptions] = useState<string[]>(["All", "Active", "Inactive"]);
-  const [selectedOption, setSelectedOption] = useState<string>("All");
+
+ const Invoice: React.FC = () => {
+
+  const navigate = useNavigate();
+
+  
+
+  const columns = useMemo(() => invoiceColumns(navigate), [navigate]);
+
+  const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [totalCount , setTotalCount] = useState([])
 
-  // Handle search logic
-  const handleSearch = (searchValue: string) => {
-    setSearchValue(searchValue);
-    const filteredData = data.filter(
-      (candidate) =>
-        (selectedOption === "All" ||
-          candidate.InvoiceType === selectedOption) &&
-        candidate.InvoiceType.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setData(filteredData);
+  const debouncedSearchValue = useDebounce(searchValue, 1000);
+
+  const {
+    data: fetchedData,
+    isLoading,
+    isSuccess,
+   
+  } = useQuery({
+    queryKey: ["invoicewData", searchKey, debouncedSearchValue],
+    queryFn: () => getTableData("invoice", searchKey, debouncedSearchValue),
+   
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count)
+      } else {
+        setFilteredData([]);
+      }
+    }
+  }, [fetchedData, isSuccess]);
+
+  const handleDropdownSelect = (option: { label: string; value: string }) => {
+    setSearchKey(option.value);
+    setSearchKeyLabel(option.label);
+    setSearchValue(""); 
+  };
+  
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+   
   };
 
-  // Handle dropdown selection
-  const handleDropdownSelect = (option: string) => {
-    setSelectedOption(option);
-    const filteredData = data.filter(
-      (candidate) =>
-        (option === "All" || candidate.InvoiceType === option) &&
-        candidate.InvoiceType.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setData(filteredData);
-  };
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -77,17 +79,38 @@ const Invoice: React.FC = () => {
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Invoices</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
-          <div className="flex items-center space-x-4">
-            <Dropdown
-              options={dropdownOptions}
+        <div className="flex items-center space-x-4">
+            <SearchDropdown
+              options={[
+                { label: "All", value: "" },
+                { label: "Scheme Name", value: "vsSchemeName" },
+                { label: "Scheme Code", value: "vsSchemeCode" },
+                { label: "Scheme Type", value: "vsSchemeType" },  
+                { label: "Fund Name", value: "vsFundName" },
+                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
+              ]}
               onSelect={handleDropdownSelect}
+              selected={searchKey}
             />
-            {selectedOption && (
-              <SearchInputBox
-                value={searchValue}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search by name..."
-              />
+            {searchKey && (
+              <>
+                <SearchInputBox
+                  value={searchValue}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder={`Enter ${searchKeyLabel}`}
+                />
+                <button
+                  className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                  onClick={() => {
+                    setSearchValue("");
+                    setSearchKey("");
+                    setSearchKeyLabel("");
+                    setFilteredData(fetchedData?.data?.data || []);
+                  }}
+                >
+                  Clear
+                </button>
+              </>
             )}
           </div>
           <div className="flex gap-1">
@@ -113,9 +136,10 @@ const Invoice: React.FC = () => {
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
 
-     <CentralizedTable columns={invoiceColumns} data={data} pageSize={5} /> 
+      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>
   );
 };

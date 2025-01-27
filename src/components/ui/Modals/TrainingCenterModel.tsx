@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
 
 interface CenterProps {
-  id: string;
+  id: string | null;
 }
 
 
@@ -240,6 +240,24 @@ const TrainingCenterModel: React.FC<CenterProps> = ({ id }) => {
         </div>
 
         <div>
+          <Label text="SPOC Name" />
+          <Controller
+            name="vsSpocName"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsSpocEmail ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsSpocName && (
+            <p className="text-red-500">{errors.vsSpocName.message}</p>
+          )}
+        </div>
+
+        {/* <div>
           <Label text="Center Code" />
           <Controller
             name="vsTcCode"
@@ -255,7 +273,7 @@ const TrainingCenterModel: React.FC<CenterProps> = ({ id }) => {
           {errors.vsTcCode && (
             <p className="text-red-500">{errors.vsTcCode.message}</p>
           )}
-        </div>
+        </div> */}
 
         <div>
           <Label text="SPOC Email" />
@@ -275,23 +293,7 @@ const TrainingCenterModel: React.FC<CenterProps> = ({ id }) => {
           )}
         </div>
 
-        <div>
-          <Label text="SPOC Name" />
-          <Controller
-            name="vsSpocName"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.vsSpocEmail ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.vsSpocName && (
-            <p className="text-red-500">{errors.vsSpocName.message}</p>
-          )}
-        </div>
+      
 
         <div>
           <Label text="SPOC Contact" />

@@ -1,5 +1,5 @@
 
-import { AssessmentFormData, AssessorFormData, BatchFormData, candidateFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
+import { AssessmentFormData, AssessorFormData, BatchFormData, candidateFormData, InvoiceFormData, PlacementFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
 import { CourseFormData } from "../../../utils/formTypes";
 import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../api-setup/axiosInstance";
@@ -97,7 +97,6 @@ export const submitCourseForm =async(data: CourseFormData) =>{
     export const submitAssesmentForm =async(data:AssessmentFormData) =>{
       const { userDetails } = useAuthStore.getState();
 
-      console.log("------",data);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {fklTcId, fklTpId, ...filteredData } = data;
     
@@ -113,10 +112,43 @@ export const submitCourseForm =async(data: CourseFormData) =>{
         return response.data
       }
   
+      export const submitPlacementForm =async(data:PlacementFormData) =>{
+        const { userDetails } = useAuthStore.getState();
+  
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {fklTcId, fklTpId, ...filteredData } = data;
+      
+        if (!userDetails) {
+          throw new Error("User details are not available in the store.");
+        }
+        const requestData={
+          ...filteredData,
+            fklDepartmentId: userDetails?.departmentId,
+          queryType: "placement"
+        }
+          const response = await axiosInstance.post("/manual-file-upload",requestData);
+          return response.data
+        }
+
+        export const submitInvoiceForm =async(data:InvoiceFormData) =>{
+          const { userDetails } = useAuthStore.getState();
+         
+          if (!userDetails) {
+            throw new Error("User details are not available in the store.");
+          }
+          const requestData={
+            ...data,
+              fklDepartmentId: userDetails?.departmentId,
+            queryType: "invoice"
+          }
+            const response = await axiosInstance.post("/manual-file-upload",requestData);
+            return response.data
+          }
+    
 
 
 
-  export const submitTraningCenterForm = async (data: TrainingCenterFormData & { fklTpId: string }) => {
+  export const submitTraningCenterForm = async (data: TrainingCenterFormData & { fklTpId: string| null }) => {
     const { userDetails } = useAuthStore.getState();
   
     if (!userDetails) {

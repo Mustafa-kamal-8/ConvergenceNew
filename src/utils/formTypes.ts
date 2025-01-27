@@ -43,7 +43,7 @@ export interface CourseFormData  {
     vsTpName: string,
     partnerCode: string;
     vsTcName: string;
-    vsTcCode: string;
+    // vsTcCode: string;
     vsSpocEmail: string;
     vsSpocName: string;
     iSpocContactNum: string;
@@ -62,7 +62,7 @@ export interface CourseFormData  {
 
 
 export interface AssessorFormData {
-  assosserId: number;
+  // assosserId: number;
   vsAssosserName: string;
   vsEmail: string;
   vsMobile: string;
@@ -71,7 +71,7 @@ export interface AssessorFormData {
 }
 
 export interface TrainerFormData {
-  trainerId: string;
+  // trainerId: string;
   vsTrainerName: string;
   vsMobile: string;
   vsEmail: string;
@@ -119,26 +119,28 @@ export type AssessmentFormData = {
 
 
 export interface PlacementFormData {
-  batchId: string;
-  candidateId: string;
-  isCandidatePlaced: "yes" | "no" | "";
-  placementType: string;
-  employerName: string;
-  employerContactNumber: string;
-  placementState: string;
-  placementDistrict: string;
-  monthlySalary: string;
+  batchId: number;
+  fklTpId: number;
+  fklTcId: number;
+  candidateId: number;
+  bIsCandidatePlaced: number;
+  vsPlacementType: string;
+  vsEmployeerName: string;
+  vsEmployeerContactNumber: number;
+  vsPlacementState: number;
+  vsPlacementDistrict: number;
+  vsMonthlySalary: number;
 }
 
 export interface InvoiceFormData {
-  batchId: string;
-  invoiceType: string;
-  invoiceTranche: string;
-  invoiceNumber: string;
-  invoiceDate: string;
-  noOfCandidates: string;
-  rate: string;
-  amount: string;
+
+  fklInvoiceType: number;
+  vsInvoiceTranche: string;
+  vsInvoiceNo: string;
+  vsInvoiceDate: string;
+  iTotalCandidate: number;
+  fRate: string;
+  fAmount: string;
 }
 
 export interface targetFormData{

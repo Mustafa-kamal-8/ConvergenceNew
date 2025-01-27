@@ -1,31 +1,70 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import { invoiceValidationSchema } from "../../../utils/validation";
 import { InvoiceFormData } from "../../../utils/formTypes";
 import Label from "../Label";
 import Input from "../Input";
-import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
 import "../../../custom.css";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
+import { submitInvoiceForm } from "../../../services/state/api/FormApi";
 
 const InvoiceModal: React.FC = () => {
-  const fundingTypes = ["Option 1", "Option 2", "Option 3"];
+ 
+
+
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<InvoiceFormData>({
     resolver: joiResolver(invoiceValidationSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (data: InvoiceFormData) => {
-    console.log("Form submitted successfully", data);
-    toast.success("Form submitted successfully!");
-  };
+  const { data: masterData } = useQuery({
+    queryKey: ["masterData", "invoiceType"],
+    queryFn: () => getMasterData("invoiceType"),
+  });
+
+  const invoiceTOptions =
+    masterData?.data?.result?.invoice_type?.map(
+      (tp: { pklInvoiceTypeId: number; vsInvoiceType: string }) => ({
+        label: tp.vsInvoiceType,
+        value: tp.pklInvoiceTypeId,
+      })
+    ) || [];
+
+    const mutation = useMutation({
+      mutationFn: submitInvoiceForm,
+      onSuccess: (data) => {
+        if (data?.success) {
+          toast.success(data.message || "Assesment submitted successfully!");
+        } else {
+          toast.error(
+            data.message || "An error occurred while submitting the Trainer."
+          );
+        }
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        const errorMessage =
+          error?.response?.data?.message || "An unknown error occurred.";
+        toast.error(errorMessage);
+      },
+    });
+  
+    const onSubmit: SubmitHandler<InvoiceFormData> = (
+      data: InvoiceFormData
+    ) => {
+      mutation.mutate(data);
+    };
 
   return (
     <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -33,112 +72,105 @@ const InvoiceModal: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-        {/* Batch ID */}
-        <div className="col-span-1">
-          <Label text="Batch ID" />
-          <Controller
-            name="batchId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={fundingTypes}
-                placeholder="-- Select --"
-                className={errors.batchId ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.batchId && <p className="text-red-500">{errors.batchId.message}</p>}
-        </div>
+     
 
         {/* Invoice Type */}
         <div className="col-span-1">
-          <Label text="Invoice Type" />
+          <Label text="Training Partner" />
           <Controller
-            name="invoiceType"
+            name="fklInvoiceType"
             control={control}
             render={({ field }) => (
-              <Select
+              <Dropdown
                 {...field}
-                options={fundingTypes}
-                placeholder="-- Select --"
-                className={errors.invoiceType ? "border-red-500" : ""}
+                options={invoiceTOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                 
+                  setValue("fklInvoiceType", selectedOption.value);
+                }}
+                className={errors.fklInvoiceType ? "border-red-500" : ""}
+                placeholder="-- Select Invoice Type--"
               />
             )}
           />
-          {errors.invoiceType && <p className="text-red-500">{errors.invoiceType.message}</p>}
+          {errors.fklInvoiceType && (
+            <p className="text-red-500">{errors.fklInvoiceType.message}</p>
+          )}
         </div>
 
         {/* Invoice Tranche */}
         <div className="col-span-1">
           <Label text="Invoice Tranche" />
           <Controller
-            name="invoiceTranche"
+            name="vsInvoiceTranche"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
                 placeholder="Enter Invoice Tranche"
-                className={`w-full ${errors.invoiceTranche ? "border-red-500" : ""}`}
+                className={`w-full ${errors.vsInvoiceTranche ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.invoiceTranche && <p className="text-red-500">{errors.invoiceTranche.message}</p>}
+          {errors.vsInvoiceTranche && <p className="text-red-500">{errors.vsInvoiceTranche.message}</p>}
         </div>
 
         {/* Invoice Number */}
         <div className="col-span-1">
           <Label text="Invoice Number" />
           <Controller
-            name="invoiceNumber"
+            name="vsInvoiceNo"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
                 placeholder="Enter Invoice Number"
-                className={`w-full ${errors.invoiceNumber ? "border-red-500" : ""}`}
+                className={`w-full ${errors.vsInvoiceNo ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.invoiceNumber && <p className="text-red-500">{errors.invoiceNumber.message}</p>}
+          {errors.vsInvoiceNo && <p className="text-red-500">{errors.vsInvoiceNo.message}</p>}
         </div>
 
         {/* Invoice Date */}
         <div className="col-span-1">
           <Label text="Invoice Date" />
           <Controller
-            name="invoiceDate"
+            name="vsInvoiceDate"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="date"
-                className={`w-full ${errors.invoiceDate ? "border-red-500" : ""}`}
+                className={`w-full ${errors.vsInvoiceDate ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.invoiceDate && <p className="text-red-500">{errors.invoiceDate.message}</p>}
+          {errors.vsInvoiceDate && <p className="text-red-500">{errors.vsInvoiceDate.message}</p>}
         </div>
 
         {/* No of Candidates */}
         <div className="col-span-1">
           <Label text="No of Candidates" />
           <Controller
-            name="noOfCandidates"
+            name="iTotalCandidate"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
                 placeholder="Enter number of candidates"
-                className={`w-full ${errors.noOfCandidates ? "border-red-500" : ""}`}
+                className={`w-full ${errors.iTotalCandidate ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.noOfCandidates && (
-            <p className="text-red-500">{errors.noOfCandidates.message}</p>
+          {errors.iTotalCandidate && (
+            <p className="text-red-500">{errors.iTotalCandidate.message}</p>
           )}
         </div>
 
@@ -146,41 +178,46 @@ const InvoiceModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Rate" />
           <Controller
-            name="rate"
+            name="fRate"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
                 placeholder="Enter Rate"
-                className={`w-full ${errors.rate ? "border-red-500" : ""}`}
+                className={`w-full ${errors.fRate ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.rate && <p className="text-red-500">{errors.rate.message}</p>}
+          {errors.fRate && <p className="text-red-500">{errors.fRate.message}</p>}
         </div>
 
         {/* Amount */}
         <div className="col-span-1">
           <Label text="Amount" />
           <Controller
-            name="amount"
+            name="fAmount"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
                 placeholder="Enter Amount"
-                className={`w-full ${errors.amount ? "border-red-500" : ""}`}
+                className={`w-full ${errors.fAmount ? "border-red-500" : ""}`}
               />
             )}
           />
-          {errors.amount && <p className="text-red-500">{errors.amount.message}</p>}
+          {errors.fAmount && <p className="text-red-500">{errors.fAmount.message}</p>}
         </div>
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
-          <Button text="Submit" />
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+            disabled={false}
+          />
         </div>
       </form>
     </div>

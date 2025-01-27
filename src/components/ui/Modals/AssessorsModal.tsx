@@ -52,7 +52,7 @@ const AssessorsModal: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* Assessor ID */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Assessor ID" />
           <Controller
             name="assosserId"
@@ -68,7 +68,7 @@ const AssessorsModal: React.FC = () => {
           {errors.assosserId && (
             <p className="text-red-500">{errors.assosserId.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Assessor Name */}
         <div className="col-span-1">
