@@ -14,7 +14,7 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     let data: string[][];
 
     if (templateType === 0) {
-      data = [['User Name', 'Password']];
+      data = [['Sl No', 'Scheme Funding Type','Scheme Funding Ratio','Sanction Order No','Date of Sanction','Scheme Type','Fund Name','Scheme','Scheme Code' ]];
     } else if (templateType === 1) {
       data = [['sanction no', 'scheme code','total target','sanction date']];
     } else {
