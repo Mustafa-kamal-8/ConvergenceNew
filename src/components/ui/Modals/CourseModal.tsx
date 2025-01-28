@@ -22,45 +22,40 @@ const CourseModal: React.FC = () => {
     resolver: joiResolver(courseSchema),
   });
 
-   
   const { data: masterData } = useQuery({
-    queryKey: ["masterData", "sector"], 
-    queryFn: () => getMasterData("sector"), 
+    queryKey: ["masterData", "sector"],
+    queryFn: () => getMasterData("sector"),
   });
-  
-   useEffect(() => {
-     if (masterData) {
-      console.log("Fetched master data:", masterData);
-     }
-   }, [masterData]);
 
- 
+  useEffect(() => {
+    if (masterData) {
+      console.log("Fetched master data:", masterData);
+    }
+  }, [masterData]);
 
   const mutation = useMutation({
     mutationFn: submitCourseForm,
     onSuccess: (data) => {
-        toast.success("Course submitted successfully!");
+      toast.success("Course submitted successfully!");
       console.log("Course submitted successfully", data);
     },
     onError: (error) => {
-      toast.error("Error while submmiting courses")
+      toast.error("Error while submmiting courses");
       console.error("Error while submitting the form", error);
     },
-  })
+  });
 
-  const onSubmit: SubmitHandler<CourseFormData> = (data:CourseFormData) => {
+  const onSubmit: SubmitHandler<CourseFormData> = (data: CourseFormData) => {
     mutation.mutate(data);
   };
 
-
   const sectorOptions =
-  masterData?.data?.result?.sectors?.map((sector: { sectorID: number; sectorName: string }) => ({
-    label: sector.sectorName,
-    value: sector.sectorID,
-  })) || [];
-
-
-
+    masterData?.data?.result?.sectors?.map(
+      (sector: { sectorID: number; sectorName: string }) => ({
+        label: sector.sectorName,
+        value: sector.sectorID,
+      })
+    ) || [];
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -69,7 +64,7 @@ const CourseModal: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* Sector Name */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+        <div className="col-span-1">
           <Label text="Sector Name" />
           <Controller
             name="fklSectorId"
@@ -77,16 +72,15 @@ const CourseModal: React.FC = () => {
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={sectorOptions.map((option: { label: unknown; }) => option.label)} // Use labels as options
-                onSelect={(selectedValue) => {
-                  const sectorID = Number(selectedValue);
-                  field.onChange(sectorID); 
-                  const selectedSector = sectorOptions.find(
-                    (option: { value: number; }) => option.value === sectorID
-                  );
-                  setValue("fklSectorId", selectedSector?.value || 0); 
+                options={sectorOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("fklSectorId", selectedOption.value.toString());
                 }}
                 className={errors.fklSectorId ? "border-red-500" : ""}
+                placeholder="-- Select Sector --"
               />
             )}
           />
@@ -94,6 +88,7 @@ const CourseModal: React.FC = () => {
             <p className="text-red-500">{errors.fklSectorId.message}</p>
           )}
         </div>
+
         <div className="col-span-1 sm:col-span-2 lg:col-span-1">
           <Label text="Job Role Name" />
           <Controller
@@ -121,7 +116,7 @@ const CourseModal: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-                 className={errors.vsCourseCode ? "border-red-500" : ""}
+                className={errors.vsCourseCode ? "border-red-500" : ""}
               />
             )}
           />
@@ -129,9 +124,6 @@ const CourseModal: React.FC = () => {
             <p className="text-red-500">{errors.vsCourseCode.message}</p>
           )}
         </div>
-
-      
-      
 
         {/* Total Theory and Practical Hours */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
@@ -144,12 +136,16 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="text"
-                  className={errors.iTheoryDurationInHours ? "border-red-500" : ""}
+                  className={
+                    errors.iTheoryDurationInHours ? "border-red-500" : ""
+                  }
                 />
               )}
             />
             {errors.iTheoryDurationInHours && (
-              <p className="text-red-500">{errors.iTheoryDurationInHours.message}</p>
+              <p className="text-red-500">
+                {errors.iTheoryDurationInHours.message}
+              </p>
             )}
           </div>
           <div>
@@ -161,12 +157,16 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="text"
-                  className={errors.iPracticalDurationInHours ? "border-red-500" : ""}
+                  className={
+                    errors.iPracticalDurationInHours ? "border-red-500" : ""
+                  }
                 />
               )}
             />
             {errors.iPracticalDurationInHours && (
-              <p className="text-red-500">{errors.iPracticalDurationInHours.message}</p>
+              <p className="text-red-500">
+                {errors.iPracticalDurationInHours.message}
+              </p>
             )}
           </div>
         </div>
@@ -215,7 +215,6 @@ const CourseModal: React.FC = () => {
             text="Submit"
             loadingText="Submitting..."
             loading={mutation.isPending}
-          
             disabled={false}
           />
         </div>

@@ -122,14 +122,14 @@ if(isLoading){
               modalTitle="Bulk Upload"
               bulkName="trainingPartner"
               Icon={UploadCloud}
-              id={''}
+            
             />
             <ModalOpenButton
               modalType={3}
               modalTitle="Add Training Partner"
               bulkName="trainingPartner"
               Icon={Add}
-              id= {''}
+            
             />
          
           </div>

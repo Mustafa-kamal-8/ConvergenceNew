@@ -125,14 +125,14 @@ const Placement: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="placement"
               Icon={UploadCloud}
-              id= {''}
+            
             />
             <ModalOpenButton
               modalType={9}
               modalTitle="Add Placement"
               bulkName="Placement"
               Icon={Add}
-              id= {''}
+            
             />
           </div>
         </div>

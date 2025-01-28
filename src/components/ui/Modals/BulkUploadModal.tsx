@@ -9,14 +9,14 @@ import axiosInstance from "../../../services/state/api-setup/axiosInstance";
 
 interface BulkUploadModalProps {
   bulkName: string;
-  schemeId: string;
+ 
 }
 
 
 
 
 
-const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) => {
+const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -58,7 +58,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
           const updatedData = jsonData.map((row: any) => {
             return {
               ...row,
-              'schemeId': parseInt(schemeId), 
+             
             };
           });
   
@@ -79,10 +79,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       formData.append("file", file);
       formData.append("type", bulkName); 
       formData.append("fklDepartmentId", userDetails?.departmentId);
-      if(schemeId){
-        formData.append("fklSchemeId",  (schemeId))
-
-      }
+   
     
       const { data: resData } = await axiosInstance.post(`/file-upload/upload`, formData, {
        

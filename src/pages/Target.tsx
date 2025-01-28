@@ -4,8 +4,8 @@ import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
-import { DownloadCloud, UploadCloud } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { DownloadCloud, Plus, UploadCloud } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTargetData } from "../services/state/api/tableDataApi";
 import { targetColumns } from "../utils/tableColumns";
@@ -14,7 +14,6 @@ import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 
 const Target: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -28,10 +27,8 @@ const Target: React.FC = () => {
     isSuccess,
     isLoading,
   } = useQuery({
-    queryKey: ["targetData", id, searchKey, debouncedSearchValue],
-    queryFn: () =>
-      getTargetData(id!, "target", searchKey, debouncedSearchValue), // Fetch data using the ID
-    enabled: !!id, 
+    queryKey: ["targetData", searchKey, debouncedSearchValue],
+    queryFn: () => getTargetData("target", searchKey, debouncedSearchValue), // Fetch data using the ID
   });
 
   useEffect(() => {
@@ -43,8 +40,6 @@ const Target: React.FC = () => {
       }
     }
   }, [fetchedData, isSuccess]);
-
-
 
   // Handle dropdown selection
   const handleDropdownSelect = (option: { label: string; value: string }) => {
@@ -116,8 +111,12 @@ const Target: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="target"
               Icon={UploadCloud}
-              id={""}
-              schemeId={id}
+            />
+            <ModalOpenButton
+              modalType={1}
+              modalTitle="Add Target"
+              bulkName="target"
+              Icon={Plus}
             />
           </div>
         </div>

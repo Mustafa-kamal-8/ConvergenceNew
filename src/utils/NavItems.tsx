@@ -1,5 +1,6 @@
 import {
-  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2
+  Home, Table2, Book, Building2, User2, Users2, Group, FileSignature, Spline, Receipt,Settings2,
+  Target
 } from "lucide-react";
 import { ElementType } from "react";
 
@@ -32,13 +33,23 @@ export const NavItems: NavItem[] = [
     ],
   },
   {
-    name: "Schemes & Targets",
+    name: "Schemes",
     link: "/Scheme",
     icon: Table2,
     // subItems: [
     //   { name: "Manual", link: "/SchemeForm" },
     //   { name: "Bulk Upload", link: "/SchemeExcel" },
     // ],
+  },
+
+  {
+    name: "Targets",
+    link: "/Target",
+    icon: Target,
+ //   subItems: [
+ //     { name: "View Goals", link: "/view-goals" },
+ //     { name: "Add Goals", link: "/add-goals" },
+  //  ],
   },
   {
     name: "Courses",
@@ -50,8 +61,17 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Partners & Centeres",
+    name: "Training Partners",
     link: "/TrainingPartner",
+    icon: Building2,
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
+  },
+  {
+    name: "Training centeres",
+    link: "/TrainingCenter",
     icon: Building2,
     // subItems: [
     //   { name: "Manage Users", link: "/manage-users" },
@@ -70,15 +90,7 @@ export const NavItems: NavItem[] = [
     ],
   },
   
-  // {
-  //   name: "Target",
-  //   link: "/Target",
-  //   icon: Target,
-  //   subItems: [
-  //     { name: "View Goals", link: "/view-goals" },
-  //     { name: "Add Goals", link: "/add-goals" },
-  //   ],
-  // },
+  
  
   
   {

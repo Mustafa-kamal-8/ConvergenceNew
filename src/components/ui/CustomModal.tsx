@@ -20,7 +20,7 @@ import LoginCreationModal from './Modals/LoginCreationModal';
 
 
 const CustomModal: React.FC = () => {
-  const { isOpen, modalType, modalTitle, bulkName, id, closeModal, schemeId } = useModalStore();
+  const { isOpen, modalType, modalTitle, bulkName,  closeModal} = useModalStore();
 
 
   const renderModalContent = () => {
@@ -28,7 +28,7 @@ const CustomModal: React.FC = () => {
       case 0:
         return <Scheme />;
       case 1:
-        return <Traget id={id ?? ''} />;
+        return <Traget />;
       case 2:
         return <CourseModal />;
       case 3:
@@ -48,9 +48,9 @@ const CustomModal: React.FC = () => {
       case 10:
         return <InvoiceModal />;
       case 11:
-        return <BulkUploadModal bulkName={bulkName} schemeId={schemeId ?? ''} />;
+        return <BulkUploadModal bulkName={bulkName}  />;
       case 12:
-        return <TrainingCenterModel id={id} />;
+        return <TrainingCenterModel />;
       case 13:
         return <LoginCreationModal />;
 

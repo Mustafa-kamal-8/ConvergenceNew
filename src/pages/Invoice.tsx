@@ -125,14 +125,14 @@ import SearchInputBox from "../components/ui/SearchInputBox";
               modalTitle="Bulk Upload"
               bulkName="invoice"
               Icon={UploadCloud}
-              id= {''}
+            
             />
             <ModalOpenButton
               modalType={10}
               modalTitle="Add Invoice"
               bulkName="Invoice"
               Icon={Add}
-              id= {''}
+            
             />
           </div>
         </div>

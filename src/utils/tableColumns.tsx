@@ -1,7 +1,5 @@
 import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
-import ModalOpenButton from "../components/ui/ModelOpenButton";
-import { Plus } from "lucide-react";
 import moment from "moment";
 
 interface SchemeData {
@@ -19,42 +17,14 @@ interface SchemeData {
 
 export const schemeColumns: (
   navigate: ReturnType<typeof useNavigate>
-) => Column<SchemeData>[] = (navigate) => [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+) => Column<SchemeData>[] = (_navigate) => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme", accessor: "vsSchemeName" },
   {
     Header: "Targets",
     accessor: "count",
-    Cell: ({ row }: { row: { original: SchemeData } }) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span
-          style={{
-            cursor: "pointer",
-            color: "red",
-            textDecoration: "underline",
-          }}
-          onClick={() =>
-            navigate(`/Scheme/Targets/${row.original.pklSchemeId}`)
-          }
-        >
-          {row.original.count || "N/A"}
-        </span>
-        <ModalOpenButton
-          modalType={1}
-          modalTitle="Add Target"
-          bulkName="target"
-          Icon={Plus}
-          id={row.original.pklSchemeId}
-          variant="table"
-        />
-      </div>
-    ),
+  
   },
   { Header: "Scheme Type", accessor: "vsSchemeType" },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
@@ -173,41 +143,13 @@ interface TrainingPartnerData {
 
 export const trainingColumns: (
   navigate: ReturnType<typeof useNavigate>
-) => Column<TrainingPartnerData>[] = (navigate) => [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+) => Column<TrainingPartnerData>[] = (_navigate) => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Centers",
     accessor: "count", 
-    Cell: ({ row }: { row: { original: TrainingPartnerData } }) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span
-          style={{
-            cursor: "pointer",
-            color: "red",
-            textDecoration: "underline",
-          }}
-          onClick={() =>
-            navigate(`/TrainingPartner/Centeres/${row.original.pklTpId}`)
-          }
-        >
-           {row.original.count || "N/A"}
-        </span>
-        <ModalOpenButton
-          modalType={12}
-          modalTitle="Add Centers"
-          bulkName="trainingCenter"
-          Icon={Plus}
-          id={row.original.pklTpId}
-          variant="table"
-        />
-      </div>
-    ),
+  
   },
   { Header: "Partner Name", accessor: "vsTpName" },
   { Header: "SPOC Name", accessor: "vsSpocName" },

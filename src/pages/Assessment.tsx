@@ -1,5 +1,5 @@
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
+
 import {  DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
@@ -72,9 +72,7 @@ import CentralizedTable from "../components/CentralizedTable";
 
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+     
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Assessment</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -125,14 +123,14 @@ import CentralizedTable from "../components/CentralizedTable";
               modalTitle="Bulk Upload"
               bulkName="assessment"
               Icon={UploadCloud}
-              id= {''}
+             
             />
             <ModalOpenButton
               modalType={8}
               modalTitle="Add Assessment"
               bulkName="Assessment"
               Icon={Add}
-              id= {''}
+           
             />
           </div>
         </div>

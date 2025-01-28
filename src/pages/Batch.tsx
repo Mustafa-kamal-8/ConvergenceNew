@@ -113,14 +113,14 @@ import { useQuery } from "@tanstack/react-query";
               modalTitle="Bulk Upload"
               bulkName="batch"
               Icon={UploadCloud}
-              id= {''}
+           
             />
             <ModalOpenButton
               modalType={4}
               modalTitle="Add Batch"
               bulkName="Batch"
               Icon={Add}
-              id= {''}
+           
             />
           </div>
         </div>

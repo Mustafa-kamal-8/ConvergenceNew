@@ -8,17 +8,15 @@ import Label from "../Label";
 import Input from "../Input";
 import { TrainingCenterFormData } from "../../../utils/formTypes";
 import { trainingCenterSchema } from "../../../utils/validation";
-import { getDistrictByState, getMasterData, getPartnerById, getULBblockByDistrict } from "../../../services/state/api/masterApi";
+import { getDistrictByState, getMasterData, getULBblockByDistrict } from "../../../services/state/api/masterApi";
 import { submitTraningCenterForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
 
-interface CenterProps {
-  id: string | null;
-}
 
 
-const TrainingCenterModel: React.FC<CenterProps> = ({ id }) => {
+
+const TrainingCenterModel: React.FC = () => {
  const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
  
@@ -113,32 +111,25 @@ const TrainingCenterModel: React.FC<CenterProps> = ({ id }) => {
       ];
 
 
-      const fetchPartnerData = useMutation({
-        mutationFn: (id: string) => getPartnerById(id),
-        onSuccess: (response) => {
-          const data = response?.data?.[0];
-          if (data && data.vsTpName) {
-            setValue("vsTpName", data.vsTpName); // Set only the vsTpName field
-          }
-        },
-        onError: (error) => {
-          console.error("Error fetching partner data:", error);
-        },
-      });
+      // const fetchPartnerData = useMutation({
+      //   mutationFn: (id: string) => getPartnerById(id),
+      //   onSuccess: (response) => {
+      //     const data = response?.data?.[0];
+      //     if (data && data.vsTpName) {
+      //       setValue("vsTpName", data.vsTpName); // Set only the vsTpName field
+      //     }
+      //   },
+      //   onError: (error) => {
+      //     console.error("Error fetching partner data:", error);
+      //   },
+      // });
       
   
 
-  useEffect(() => {
-    if (id) {
-      fetchPartnerData.mutate(id);
-    }
-  
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
+ 
 
  const submitMutation = useMutation({
-    mutationFn: (data: TrainingCenterFormData) => submitTraningCenterForm({ ...data, fklTpId: id }), 
+    mutationFn: (data: TrainingCenterFormData) => submitTraningCenterForm({ ...data }), 
     onSuccess: (response) => {
      
       const successMessage = response?.message || "Target submitted successfully!";

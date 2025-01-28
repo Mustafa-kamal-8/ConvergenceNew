@@ -4,35 +4,35 @@ import { centerColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import {  DownloadCloud, UploadCloud } from "lucide-react";
+import { DownloadCloud, Plus, UploadCloud } from "lucide-react";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getCenterData } from "../services/state/api/tableDataApi";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 
 const TrainingCenter: React.FC = () => {
-  
-
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const columns = useMemo(() => centerColumns(navigate), [navigate]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
-  const { id } = useParams<{ id:string }>();
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
-  const { data: fetchedData, isSuccess , isLoading } = useQuery({
-    queryKey: ["centerData", id, searchKey, debouncedSearchValue],
-    queryFn: () => getCenterData(id!,"tp", searchKey, debouncedSearchValue), 
-    enabled: !!id, 
+  const {
+    data: fetchedData,
+    isSuccess,
+    isLoading,
+  } = useQuery({
+    queryKey: ["centerData", searchKey, debouncedSearchValue],
+    queryFn: () => getCenterData("tp", searchKey, debouncedSearchValue),
   });
 
- useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data && fetchedData.data.length > 0) {
         setFilteredData(fetchedData.data);
@@ -64,7 +64,6 @@ const TrainingCenter: React.FC = () => {
         <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-        
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
@@ -112,7 +111,12 @@ const TrainingCenter: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="trainingPartner"
               Icon={UploadCloud}
-              id={""}
+            />
+            <ModalOpenButton
+              modalType={12}
+              modalTitle="Add Centers"
+              bulkName="trainingCenter"
+              Icon={Plus}
             />
           </div>
         </div>

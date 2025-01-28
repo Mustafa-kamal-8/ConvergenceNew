@@ -215,3 +215,10 @@ export interface candidateFormData{
   vsBranchName: number;
   vsBankIFSC: string;
 }
+
+export  interface departmentCreationFormData{
+departmentName: string;
+loginName: string;
+password: string;
+phoneNumber: string;
+}

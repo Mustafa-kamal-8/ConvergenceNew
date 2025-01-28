@@ -10,7 +10,6 @@ import ModalOpenButton from "../components/ui/ModelOpenButton";
 import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
-import CustomModal from "../components/ui/CustomModal";
 import Loader from "../components/ui/Loader";
 import useDebounce from "../services/state/useDebounce";
 
@@ -69,9 +68,7 @@ const Scheme: React.FC = () => {
 
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+    
       <div>
         <p className="text-2xl font-bold mb-4">List Of Schemes</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -120,14 +117,14 @@ const Scheme: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="scheme"
               Icon={UploadCloud}
-              id={""}
+             
             />
             <ModalOpenButton
               modalType={0}
               modalTitle="Add scheme"
               bulkName="scheme"
               Icon={Add}
-              id={""}
+             
             />
           </div>
        

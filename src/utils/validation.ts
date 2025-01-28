@@ -830,3 +830,24 @@ export const candidateSchema = Joi.object({
       "string.empty": "Bank IFSC is required.",
     }),
 });
+
+
+export const departmentCreationSchema = Joi.object({
+  departmentName: Joi.string().required().label("Department Name").messages({
+    "string.empty": "Department Name is required.",
+  }),
+  loginName: Joi.string().required().label("Login Name").messages({
+    "string.empty": "Login Name is required.",
+  }),
+  password: Joi.string().required().label("Password").messages({
+    "string.empty": "Password is required.",
+  }),
+  phoneNumber: Joi.string()
+    .pattern(/^\d{10}$/)
+    .required()
+    .label("Phone Number")
+    .messages({
+      "string.empty": "Phone Number is required.",
+      "string.pattern.base": "Phone Number must be a valid 10-digit number.",
+    }),
+});

@@ -1,5 +1,5 @@
 
-import { AssessmentFormData, AssessorFormData, BatchFormData, candidateFormData, InvoiceFormData, PlacementFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
+import { AssessmentFormData, AssessorFormData, BatchFormData, candidateFormData, departmentCreationFormData, InvoiceFormData, PlacementFormData, SchemeFormData, targetFormData,  TrainerFormData,  TrainingCenterFormData, TrainingPartnerFormData } from "../../../utils/formTypes";
 import { CourseFormData } from "../../../utils/formTypes";
 import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../api-setup/axiosInstance";
@@ -41,7 +41,7 @@ export const submitTrainingPartnerForm = async (data: TrainingPartnerFormData) =
 
 
 
-export const submitTargetForm = async (data: targetFormData & { fklSchemeId: string }) => {
+export const submitTargetForm = async (data: targetFormData ) => {
   const { sanctionOrderNo, ...restData } = data; 
 
   const { userDetails } = useAuthStore.getState();
@@ -144,11 +144,26 @@ export const submitCourseForm =async(data: CourseFormData) =>{
             const response = await axiosInstance.post("/manual-file-upload",requestData);
             return response.data
           }
+
+          export const submitDCreationForm =async(data:departmentCreationFormData) =>{
+            const { userDetails } = useAuthStore.getState();
+           
+            if (!userDetails) {
+              throw new Error("User details are not available in the store.");
+            }
+            const requestData={
+              ...data,
+                fklDepartmentId: userDetails?.departmentId,
+                bEnable: 1
+            }
+              const response = await axiosInstance.post("/manual-file-upload",requestData);
+              return response.data
+            }
     
 
 
 
-  export const submitTraningCenterForm = async (data: TrainingCenterFormData & { fklTpId: string| null }) => {
+  export const submitTraningCenterForm = async (data: TrainingCenterFormData ) => {
     const { userDetails } = useAuthStore.getState();
   
     if (!userDetails) {

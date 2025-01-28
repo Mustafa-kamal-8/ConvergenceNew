@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "../api-setup/axiosInstance";
 import { ENDPOINTS } from "../../../api-endpoints/endpoints";
 

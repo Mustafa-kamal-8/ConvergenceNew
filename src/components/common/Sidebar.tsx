@@ -18,7 +18,7 @@ const Sidebar = ({
     left: number;
   } | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const menuRefs = useRef<(HTMLDivElement | null)[]>([]); // Ref array for menu items
+  const menuRefs = useRef<(HTMLDivElement | null)[]>([]); 
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,7 +44,6 @@ const Sidebar = ({
   const handleMenuClick = (item: (typeof NavItems)[0]) => {
     if (item.subItems) {
       setActiveMenu(activeMenu === item.name ? null : item.name || null);
-      // calculateSubMenuPosition(index); // Recalculate position when menu is clicked
     } else if (item.link) {
       navigate(item.link);
     }
@@ -57,12 +56,11 @@ const Sidebar = ({
   };
 
   const calculateSubMenuPosition = (index: number) => {
-    // Check if the menuRef for the current item is available
     if (menuRefs.current[index]) {
       const { top, left } = menuRefs.current[index]!.getBoundingClientRect();
       setSubMenuPosition({
-        top: top + window.scrollY, // Position at the top of the parent item
-        left: left + window.scrollX + (isCollapsed ? 60 : 0), // Adjusting left for submenu
+        top: top + window.scrollY,
+        left: left + window.scrollX + (isCollapsed ? 60 : 0), 
       });
     }
   };
@@ -114,9 +112,8 @@ const Sidebar = ({
       >
         {NavItems.map((item, index) => (
           <div key={index} className={`relative ${isCollapsed ? "group" : ""}`}>
-            {/* Main Menu Item */}
             <div
-              ref={(el) => (menuRefs.current[index] = el)} // Assigning the ref
+              ref={(el) => (menuRefs.current[index] = el)}
               onMouseEnter={() => calculateSubMenuPosition(index)}
               className={`flex items-center p-4 cursor-pointer hover:bg-theme-primary-hover ${
                 (item.link === location.pathname ||
@@ -126,7 +123,7 @@ const Sidebar = ({
                     ))) &&
                 "bg-theme-primary-active"
               }`}
-              onClick={() => handleMenuClick(item)} // Pass index to calculate position
+              onClick={() => handleMenuClick(item)} 
             >
               <div className="h-6 w-6 overflow-hidden">
                 {item.icon && <item.icon className="w-6 h-6" />}
@@ -150,8 +147,8 @@ const Sidebar = ({
                 style={
                   subMenuPosition
                     ? {
-                        top: `${subMenuPosition.top}px`, // Dynamically calculated top
-                        left: `${subMenuPosition.left}px`, // Adjusted left for submenu
+                        top: `${subMenuPosition.top}px`, 
+                        left: `${subMenuPosition.left}px`, 
                       }
                     : {}
                 }
@@ -169,7 +166,6 @@ const Sidebar = ({
               </div>
             )}
 
-            {/* Sub-Menu for Expanded Sidebar */}
             {item.subItems && !isCollapsed && activeMenu === item.name && (
               <div className="transition-all duration-300 ease-in-out overflow-hidden max-h-60">
                 {item.subItems.map((subItem, subIndex) => (

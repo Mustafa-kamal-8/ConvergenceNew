@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Button from "../../ui/SubmitButton";
 import Input from "../../ui/Input";
@@ -13,11 +13,9 @@ import { getSchemeById } from "../../../services/state/api/masterApi";
 import { toast } from "react-toastify";
 import { submitTargetForm } from "../../../services/state/api/FormApi";
 
-interface TargetModalProps {
-  id: string;
-}
 
-const TargetModal: React.FC<TargetModalProps> = ({ id }) => {
+
+const TargetModal: React.FC= () => {
   const {
     control,
     handleSubmit,
@@ -67,15 +65,10 @@ const TargetModal: React.FC<TargetModalProps> = ({ id }) => {
     },
   });
 
-  useEffect(() => {
-    if (id) {
-      mutation.mutate(id); // Call API when `id` changes
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+
 
   const submitMutation = useMutation({
-    mutationFn: (data: targetFormData) => submitTargetForm({ ...data, fklSchemeId: id }), // Pass id as fklSchemeId
+    mutationFn: (data: targetFormData) => submitTargetForm({ ...data }), // Pass id as fklSchemeId
     onSuccess: (response) => {
       // Check if the success response contains a message
       const successMessage = response?.message || "Target submitted successfully!";
