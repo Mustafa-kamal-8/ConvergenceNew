@@ -14,9 +14,8 @@ interface BulkUploadModalProps {
 
 
 
-const { userDetails } = useAuthStore.getState();
 
-console.log("user details are",userDetails)
+
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -31,6 +30,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
       toast.error("Please select a file before uploading.");
       return;
     }
+    const { userDetails } = useAuthStore.getState();
     if (!userDetails || !userDetails?.departmentId) {
       toast.error("User details or department ID is missing.");
       console.error("User details are invalid or missing departmentId.");
@@ -88,8 +88,8 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName,schemeId }) 
        
       });
 
-      if (resData.success) {
-        toast.success("File uploaded successfully!");
+      if (resData.success === true) {
+        toast.success(resData.message);
         handleClearFile();
       } else {
         const errorMessage = resData.message || "Error while uploading the file.";
