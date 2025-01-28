@@ -10,7 +10,14 @@ export interface SchemeFormData {
     sanctionOrderNo: string
     dateOfSanction: string;
     // selectedScheme: string
-  }
+}
+  
+export interface CreateDepartmentLoginData {
+  departmentName: string;
+  loginName: string,
+  password: string,
+  phoneNumber: number;
+}
 
 export interface CourseFormData  {
   dtFromDate: string,
