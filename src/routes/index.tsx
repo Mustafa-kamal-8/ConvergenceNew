@@ -25,7 +25,7 @@ import Sectors from "../pages/Sectors";
 const Index = () => {
   return (
     <Routes>
-      <Route path="Login" element={<Login />} />
+      <Route path="Login" element={ <Login /> } />
 
       <Route
         path="/"
@@ -35,24 +35,24 @@ const Index = () => {
           </ProtectedRoute>
         }
       >
-        <Route path="Dashboard" element={<Dashboard />} />
-        <Route path="Scheme" element={<Scheme />} />
-        <Route path="Scheme/Targets/:id" element={<Target />} />
-        <Route path="Course" element={<Course />} />
-        <Route path="TrainingPartner" element={<TrainingPartner />} />
+        <Route path="Dashboard" element={ <Dashboard /> } />
+        <Route path="Scheme" element={ <Scheme /> } />
+        <Route path="Scheme/Targets/:id" element={ <Target /> } />
+        <Route path="Course" element={ <Course /> } />
+        <Route path="TrainingPartner" element={ <TrainingPartner /> } />
         <Route
           path="TrainingPartner/Centeres/:id"
-          element={<TrainingCenter />}
+          element={ <TrainingCenter /> }
         />
-        <Route path="Batch" element={<Batch />} />
-        <Route path="Candidate" element={<Candidate />} />
-        <Route path="Trainer" element={<Trainer />} />
-        <Route path="Assessors" element={<Assessors />} />
-        <Route path="Assessment" element={<Assessment />} />
-        <Route path="Placement" element={<Placement />} />
-        <Route path="Invoice" element={<Invoice />} />
-        <Route path="States" element={<States />} />
-        <Route path="Sectors" element={<Sectors />} />
+        <Route path="Batch" element={ <Batch /> } />
+        <Route path="Candidate" element={ <Candidate /> } />
+        <Route path="Trainer" element={ <Trainer /> } />
+        <Route path="Assessors" element={ <Assessors /> } />
+        <Route path="Assessment" element={ <Assessment /> } />
+        <Route path="Placement" element={ <Placement /> } />
+        <Route path="Invoice" element={ <Invoice /> } />
+        <Route path="States" element={ <States /> } />
+        <Route path="Sectors" element={ <Sectors /> } />
       </Route>
 
       <Route
@@ -63,10 +63,10 @@ const Index = () => {
           </ProtectedRoute>
         }
       >
-        <Route path="" element={<CreateDepartment />} />
+        <Route path="" element={ <CreateDepartment /> } />
       </Route>
 
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={ <NotFound /> } />
     </Routes>
   );
 };

@@ -12,9 +12,9 @@ const CreateDepartment = () => {
   return (
     <div>
       <CentralizedTable
-        columns={departmentListColumns}
-        data={data}
-        pageSize={5}
+        columns={ departmentListColumns }
+        data={ data }
+        pageSize={ 5 }
       />
     </div>
   );
