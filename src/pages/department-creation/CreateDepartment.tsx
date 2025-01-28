@@ -4,6 +4,7 @@ import { departmentListColumns } from "../../utils/tableColumns";
 import { getCreatedDepartments } from "../../services/state/api/departmentCreationApi";
 import ModalOpenButton from "../../components/ui/ModelOpenButton";
 import { Add } from "@mui/icons-material";
+import CustomModal from "../../components/ui/CustomModal";
 
 const CreateDepartment = () => {
   const { data } = useQuery({
@@ -13,13 +14,13 @@ const CreateDepartment = () => {
 
   return (
     <div>
-       <ModalOpenButton
-              modalType={13}
-              modalTitle="Add Login Creation"
-              bulkName="LoginCreation"
-              Icon={Add}
-              id= {''}
-            />
+      <ModalOpenButton
+        modalType={ 13 }
+        modalTitle="Add Login Creation"
+        bulkName="LoginCreation"
+        Icon={ Add }
+        id={ '' }
+      />
       <CentralizedTable
         columns={ departmentListColumns }
         data={ data }
