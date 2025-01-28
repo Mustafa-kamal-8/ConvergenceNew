@@ -4,14 +4,13 @@ import { departmentListColumns } from "../../utils/tableColumns";
 import { getCreatedDepartments } from "../../services/state/api/departmentCreationApi";
 import ModalOpenButton from "../../components/ui/ModelOpenButton";
 import { Add } from "@mui/icons-material";
-
+import CustomModal from "../../components/ui/CustomModal";
 
 const CreateDepartment = () => {
   const { data } = useQuery({
     queryKey: ["getCreatedDepartments"],
     queryFn: getCreatedDepartments,
   });
-
   return (
     <div>
       <ModalOpenButton
