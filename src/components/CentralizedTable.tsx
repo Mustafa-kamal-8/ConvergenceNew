@@ -10,8 +10,8 @@ interface CentralizedTableProps {
 }
 
 const CentralizedTable: React.FC<CentralizedTableProps> = ({
-  columns,
-  data,
+  columns = [],
+  data = [],
   pageSize = 10,
 }) => {
   const {
