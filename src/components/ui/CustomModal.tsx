@@ -1,6 +1,6 @@
 // src/components/ui/CustomModal.tsx
 import React from 'react';
-import { Modal, Box, Typography} from '@mui/material';
+import { Modal, Box, Typography } from '@mui/material';
 import useModalStore from '../../services/state/useModelStore';
 import Scheme from './Modals/SchemeModal';
 import BulkUploadModal from './Modals/BulkUploadModal';
@@ -16,20 +16,21 @@ import AssessmentModal from './Modals/AssessmentModal';
 import PlacementModal from './Modals/PlacementModal';
 import InvoiceModal from './Modals/InvoiceModal';
 import TrainingCenterModel from './Modals/TrainingCenterModel';
+import LoginCreationModal from './Modals/LoginCreationModal';
 
 
 const CustomModal: React.FC = () => {
-  const { isOpen, modalType, modalTitle,bulkName, id,closeModal,schemeId } = useModalStore();
-  
+  const { isOpen, modalType, modalTitle, bulkName, id, closeModal, schemeId } = useModalStore();
+
 
   const renderModalContent = () => {
     switch (modalType) {
       case 0:
         return <Scheme />;
       case 1:
-        return <Traget id={id ?? ''}/>;
+        return <Traget id={id ?? ''} />;
       case 2:
-        return <CourseModal/>;
+        return <CourseModal />;
       case 3:
         return <TrainingPartnerModal />;
       case 4:
@@ -48,32 +49,34 @@ const CustomModal: React.FC = () => {
         return <InvoiceModal />;
       case 11:
         return <BulkUploadModal bulkName={bulkName} schemeId={schemeId ?? ''} />;
-        case 12:
-          return <TrainingCenterModel  id={id}/>;
+      case 12:
+        return <TrainingCenterModel id={id} />;
+      case 13:
+        return <LoginCreationModal />;
 
-      // return <TrainerModalContent />;
+
       default:
         return <p>No content available</p>;
     }
   };
 
-  console.log("modal title is",modalTitle);
+  console.log("modal title is", modalTitle);
 
   return (
     <Modal open={isOpen} onClose={closeModal} className='relative flex items-center justify-center'>
       <Box className="fixed bg-white w-fit border shadow-md rounded-xl mx-24"
       >
         <div className='p-4 flex gap-4 justify-between'>
-          
-        <Typography variant="h5" component="h2" mb={2}>
-            {modalTitle} 
+
+          <Typography variant="h5" component="h2" mb={2}>
+            {modalTitle}
           </Typography>
-        <button className=" text-theme-primary hover:text-theme-primary-hover" onClick={closeModal}>
-          <X />
-        </button>
+          <button className=" text-theme-primary hover:text-theme-primary-hover" onClick={closeModal}>
+            <X />
+          </button>
         </div>
         {renderModalContent()}
-      
+
       </Box>
     </Modal>
   );
