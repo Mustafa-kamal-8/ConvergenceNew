@@ -10,7 +10,6 @@ const CreateDepartment = () => {
     queryKey: ["getCreatedDepartments"],
     queryFn: getCreatedDepartments,
   });
-
   return (
     <div>
       <ModalOpenButton
