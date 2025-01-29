@@ -6,7 +6,7 @@ import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { DownloadCloud, Plus, UploadCloud } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getTargetData } from "../services/state/api/tableDataApi";
+import { getTableData } from "../services/state/api/tableDataApi";
 import { targetColumns } from "../utils/tableColumns";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
@@ -27,18 +27,16 @@ const Target: React.FC = () => {
     isLoading,
   } = useQuery({
     queryKey: ["targetData", searchKey, debouncedSearchValue],
-    queryFn: () => getTargetData("target", searchKey, debouncedSearchValue), // Fetch data using the ID
+    queryFn: () => getTableData("target", searchKey, debouncedSearchValue), // Fetch data using the ID
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      if (fetchedData?.data && fetchedData.data.length > 0) {
-        setFilteredData(fetchedData.data);
-      } else {
-        setFilteredData([]);
-      }
-    }
-  }, [fetchedData, isSuccess]);
+ 
+     useEffect(() => {
+        if (isSuccess && fetchedData?.data?.data) {
+          setFilteredData(fetchedData.data.data); 
+        }
+      }, [fetchedData, isSuccess]);
+
 
   // Handle dropdown selection
   const handleDropdownSelect = (option: { label: string; value: string }) => {

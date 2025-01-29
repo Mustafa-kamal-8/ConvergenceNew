@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
@@ -75,9 +74,7 @@ const Trainer: React.FC = () => {
 
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+    
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Trainers</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">

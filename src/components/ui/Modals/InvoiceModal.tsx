@@ -76,7 +76,7 @@ const InvoiceModal: React.FC = () => {
 
         {/* Invoice Type */}
         <div className="col-span-1">
-          <Label text="Training Partner" />
+          <Label text="Invoice Type" />
           <Controller
             name="fklInvoiceType"
             control={control}

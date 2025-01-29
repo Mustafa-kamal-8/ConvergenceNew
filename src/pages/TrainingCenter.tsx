@@ -2,13 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import { centerColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import { DownloadCloud, Plus, UploadCloud } from "lucide-react";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getCenterData } from "../services/state/api/tableDataApi";
+import { getTableData } from "../services/state/api/tableDataApi";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
@@ -29,7 +28,7 @@ const TrainingCenter: React.FC = () => {
     isLoading,
   } = useQuery({
     queryKey: ["centerData", searchKey, debouncedSearchValue],
-    queryFn: () => getCenterData("tp", searchKey, debouncedSearchValue),
+    queryFn: () => getTableData("tp", searchKey, debouncedSearchValue),
   });
 
   useEffect(() => {
@@ -57,9 +56,7 @@ const TrainingCenter: React.FC = () => {
   }
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+     
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">

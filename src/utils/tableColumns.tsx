@@ -376,7 +376,7 @@ interface PlacementData {
   bIsCandidatePlaced: string;
   vsEmployeerName: string;
   vsPlacementType: string;
- 
+  vsCandidateName: string
   Action: unknown;
 }
 
@@ -386,6 +386,7 @@ export const placementColumns = (
   { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "batchId"},
   { Header: "Candidate ID", accessor: "candidateId" },
+  { Header: "Candidate Name", accessor: "vsCandidateName" },
   { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
   { Header: "Placement Type", accessor: "vsPlacementType" },
   { Header: "Employer Name", accessor: "vsEmployeerName" },
