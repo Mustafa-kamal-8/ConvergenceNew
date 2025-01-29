@@ -1,72 +1,69 @@
-
 export interface SchemeFormData {
-  schemeType: string
-    // selectedFundingType: string;
-    scheme: string;
-    schemeCode: string;
-    fundName: string;
-    schemeFundingType: string
-    schemeFundingRatio: string
-    sanctionOrderNo: string
-    dateOfSanction: string;
-    // selectedScheme: string
+  schemeType: string;
+  // selectedFundingType: string;
+  scheme: string;
+  schemeCode: string;
+  fundName: string;
+  schemeFundingType: string;
+  schemeFundingRatio: string;
+  sanctionOrderNo: string;
+  dateOfSanction: string;
+  // selectedScheme: string
 }
-  
+
 export interface CreateDepartmentLoginData {
   departmentName: string;
-  loginName: string,
-  password: string,
+  loginName: string;
+  password: string;
   phoneNumber: number;
 }
 
-export interface CourseFormData  {
-  dtFromDate: string,
-  dtToDate: string,
-  fklSectorId: string,
-  vsCourseCode: string,
-  vsCourseName: string,
-  iTheoryDurationInHours: string,
-  iPracticalDurationInHours: string,
+export interface CourseFormData {
+  dtFromDate: string;
+  dtToDate: string;
+  fklSectorId: string;
+  vsCourseCode: string;
+  vsCourseName: string;
+  iTheoryDurationInHours: string;
+  iPracticalDurationInHours: string;
+}
 
-  };
-  
- export interface TrainingPartnerFormData {
-  vsTpName: string,
-  vsSpocEmail: string,
-  iSpocContactNum: string,
-  vsSpocName: string,
-  vsState: number,
-  vsDistrict: number,
-  vsBlock: number,
-  vsVillage: string,
-  vsAddress: string,
-  vsSmartId: string,
+export interface TrainingPartnerFormData {
+  vsTpName: string;
+  vsSpocEmail: string;
+  iSpocContactNum: string;
+  vsSpocName: string;
+  vsState: number;
+  vsDistrict: number;
+  vsBlock: number;
+  vsVillage: string;
+  vsAddress: string;
+  vsSmartId: string;
   isVillageCity: string;
   vsCity: string;
   vsULB: number;
-  }
+}
 
-  export interface TrainingCenterFormData {
-    vsTpName: string,
-    partnerCode: string;
-    vsTcName: string;
-    // vsTcCode: string;
-    vsSpocEmail: string;
-    vsSpocName: string;
-    iSpocContactNum: string;
-    smartId: string;
-    vsState: number;
-    vsULB:number;
-    vsCity:number;
-    vsDistrict: number;
-    vsBlock: number;
-    vsVillage: string;
-    vsAddress: string;
-    isVillageCity: string; 
-    fklAssemblyConstituencyId: number;
-    fklLoksabhaConstituencyId:number;
-    }
-
+export interface TrainingCenterFormData {
+  vsTpName: string;
+  partnerCode: string;
+  vsTcName: string;
+  // vsTcCode: string;
+  vsSpocEmail: string;
+  vsSpocName: string;
+  iSpocContactNum: string;
+  smartId: string;
+  vsState: number;
+  vsULB: number;
+  vsCity: number;
+  vsDistrict: number;
+  vsBlock: number;
+  vsVillage: string;
+  vsAddress: string;
+  isVillageCity: string;
+  fklAssemblyConstituencyId: number;
+  fklLoksabhaConstituencyId: number;
+}
 
 export interface AssessorFormData {
   // assosserId: number;
@@ -100,9 +97,9 @@ export interface BatchFormData {
 
 export type AssessmentFormData = {
   batchId: number;
- 
+
   candidateId: string;
- 
+
   dtAssessmentDate: string;
   // agency: string;
   // agencyMobile: string;
@@ -124,7 +121,6 @@ export type AssessmentFormData = {
   vsCertificateUrl: string;
 };
 
-
 export interface PlacementFormData {
   batchId: number;
   fklTpId: number;
@@ -140,7 +136,6 @@ export interface PlacementFormData {
 }
 
 export interface InvoiceFormData {
-
   fklInvoiceType: number;
   vsInvoiceTranche: string;
   vsInvoiceNo: string;
@@ -153,15 +148,14 @@ export interface InvoiceFormData {
   fklBatchId: number;
 }
 
-export interface targetFormData{
+export interface targetFormData {
   sanctionOrderNo: string;
   vsSchemeCode: string;
-  dtSanctionDate: string
+  dtSanctionDate: string;
   iTotalTarget: number;
-
 }
 
-export interface candidateFormData{
+export interface candidateFormData {
   candidateId: number;
   vsCandidateName: string;
   vsDOB: string;
@@ -169,7 +163,7 @@ export interface candidateFormData{
   vsFatherName: string;
   vsGender: number;
   fklIdType: number;
-  vsUUID:string;
+  vsUUID: string;
   fklReligionId: number;
   fklCategoryId: number;
   vsMobile: string;
@@ -183,32 +177,31 @@ export interface candidateFormData{
 
   //current address
   vsRAddress: string;
-  vsRState: number,
+  vsRState: number;
   vsRDistrict: number;
-  vsRBlock:number;
+  vsRBlock: number;
   vsRUlb: number;
-  isRCityVillage:string;
+  isRCityVillage: string;
   vsRPostOffice: string;
   vsRPolice: string;
   vsRPIN: string;
   vsRCouncilContituency: number;
   vsRAssemblyContituency: number;
-  vsRVillageCity : string
+  vsRVillageCity: string;
 
   //present address
-  vsPAddress:string;
+  vsPAddress: string;
   vsPDistrict: number;
-  vsPBlock: number
+  vsPBlock: number;
   vsPUlb: number;
-  vsPVillageCity:string;
-  vsPPostOffice:string;
+  vsPVillageCity: string;
+  vsPPostOffice: string;
   vsPPolice: string;
   vsPPIN: number;
   vsPCouncilContituency: number;
   vsPAssemblyContituency: number;
   iSameAddress: number;
-  vsPState : number;
- 
+  vsPState: number;
 
   //bank details
   vsBankHolderName: string;
@@ -219,9 +212,3 @@ export interface candidateFormData{
   vsBankIFSC: string;
 }
 
-export  interface departmentCreationFormData{
-departmentName: string;
-loginName: string;
-password: string;
-phoneNumber: string;
-}

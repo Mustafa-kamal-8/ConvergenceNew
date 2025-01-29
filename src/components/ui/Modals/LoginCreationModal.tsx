@@ -1,15 +1,18 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
-import { departmentCreationFormData } from "../../../utils/formTypes";
 import { departmentCreationSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
 import { useMutation } from "@tanstack/react-query";
-import { submitDCreationForm } from "../../../services/state/api/FormApi";
 import Input from "../Input";
 import Label from "../Label";
+import { createDepartmentLogin } from "../../../services/state/api/departmentCreationApi";
+import { departmentCreationFormData } from "../../../types/departmentCreation";
+import useModalStore from "../../../services/state/useModelStore";
 
 const LoginCreationModal = () => {
+  const { closeModal } = useModalStore();
+
   const {
     control,
     handleSubmit,
@@ -19,13 +22,15 @@ const LoginCreationModal = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: submitDCreationForm,
+    mutationFn: createDepartmentLogin,
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data.message || "Login Creation submitted successfully!");
+        closeModal();
       } else {
         toast.error(
-          data.message || "An error occurred while submitting the Login Creation."
+          data.message ||
+            "An error occurred while submitting the Login Creation."
         );
       }
     },
@@ -60,7 +65,9 @@ const LoginCreationModal = () => {
                 {...field}
                 type="text"
                 placeholder="Enter Department Name"
-                className={`w-full ${errors.departmentName ? "border-red-500" : ""}`}
+                className={`w-full ${
+                  errors.departmentName ? "border-red-500" : ""
+                }`}
               />
             )}
           />
@@ -120,7 +127,9 @@ const LoginCreationModal = () => {
                 {...field}
                 type="text"
                 placeholder="Enter Phone Number"
-                className={`w-full ${errors.phoneNumber ? "border-red-500" : ""}`}
+                className={`w-full ${
+                  errors.phoneNumber ? "border-red-500" : ""
+                }`}
               />
             )}
           />
