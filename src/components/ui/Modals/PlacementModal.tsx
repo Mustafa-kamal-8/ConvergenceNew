@@ -18,8 +18,10 @@ import {
 import Dropdown from "../Dropdown";
 import { submitPlacementForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
+import useModalStore from "../../../services/state/useModelStore";
 
 const PlacementModal: React.FC = () => {
+const {closeModal}  =useModalStore();
   const [fklTpId, setTpId] = useState<number | null>(null);
   const [fklTcId, setTcId] = useState<number | null>(null); 
   const [batchId, setBatchId] = useState<number | null>(null);
@@ -130,6 +132,7 @@ const PlacementModal: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitPlacementForm,
     onSuccess: (data) => {
+      closeModal();
       if (data?.success) {
         toast.success(data.message || "Assesment submitted successfully!");
       } else {

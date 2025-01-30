@@ -12,10 +12,14 @@ import { useMutation } from "@tanstack/react-query";
 import { getSchemeById } from "../../../services/state/api/masterApi";
 import { toast } from "react-toastify";
 import { submitTargetForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 
 
 const TargetModal: React.FC= () => {
+
+const {closeModal} = useModalStore();
+
   const {
     control,
     handleSubmit,
@@ -70,8 +74,10 @@ const TargetModal: React.FC= () => {
   const submitMutation = useMutation({
     mutationFn: (data: targetFormData) => submitTargetForm({ ...data }), // Pass id as fklSchemeId
     onSuccess: (response) => {
+    
       // Check if the success response contains a message
       const successMessage = response?.message || "Target submitted successfully!";
+      closeModal()
       toast.success(successMessage);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

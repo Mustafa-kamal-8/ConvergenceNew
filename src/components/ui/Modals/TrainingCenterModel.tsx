@@ -12,11 +12,13 @@ import { getDistrictByState, getMasterData, getULBblockByDistrict } from "../../
 import { submitTraningCenterForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
+import useModalStore from "../../../services/state/useModelStore";
 
 
 
 
 const TrainingCenterModel: React.FC = () => {
+  const {closeModal} = useModalStore()
  const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
  
@@ -133,6 +135,7 @@ const TrainingCenterModel: React.FC = () => {
     onSuccess: (response) => {
      
       const successMessage = response?.message || "Target submitted successfully!";
+      closeModal();
       toast.success(successMessage);
     },
     onError: (error: any) => {

@@ -16,8 +16,10 @@ import {
 } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitTrainingPartnerForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const TrainingPartnerModal: React.FC = () => {
+  const {closeModal} = useModalStore()
   const {
     handleSubmit,
     control,
@@ -111,6 +113,7 @@ const TrainingPartnerModal: React.FC = () => {
     mutationFn: submitTrainingPartnerForm,
     onSuccess: (data) => {
       if (data?.success) {
+        closeModal();
         toast.success(
           data.message || "Training Partner submitted successfully!"
         );

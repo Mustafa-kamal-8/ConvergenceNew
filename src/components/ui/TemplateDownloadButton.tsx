@@ -16,8 +16,13 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     if (templateType === 0) {
       data = [['Sl No', 'Scheme Funding Type','Scheme Funding Ratio','Sanction Order No','Date of Sanction','Scheme Type','Fund Name','Scheme','Scheme Code' ]];
     } else if (templateType === 1) {
-      data = [['sanction no', 'scheme code','total target','sanction date']];
-    } else {
+      data = [['Sl No','Sanction No', 'Scheme Name','Scheme Code','Total Target','Sanction Date']];
+    } else if (templateType === 2) {
+      data = [['Sl No','Course Name', 'From Date','To Date','Theory Duration Hours','Practical Duration Hours','Practical Duration Hours','Sector Name']];
+    }  else if (templateType === 3) {
+    data = [['Sl No','TP Name', 'TP Code','Spoc Name','Spoc Email','Spoc Contact Number','Smart ID','Address','State','District','City or Village','City','ULB','Village','Block']];
+  } 
+    else {
       console.error('Invalid template type');
       return;
     }

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import { trainingColumns as getTrainingColumns } from "../utils/tableColumns"; // Rename the import
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import {  DownloadCloud,  UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
@@ -67,9 +66,7 @@ if(isLoading){
 
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+    
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Partners</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -120,14 +117,14 @@ if(isLoading){
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="trainingPartner"
+              bulkName="tp"
               Icon={UploadCloud}
             
             />
             <ModalOpenButton
               modalType={3}
               modalTitle="Add Training Partner"
-              bulkName="trainingPartner"
+              bulkName="tp"
               Icon={Add}
             
             />

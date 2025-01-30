@@ -13,9 +13,11 @@ import { getBatch, getMasterData, getsdmsByBatch, getTcByTp } from "../../../ser
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Dropdown from "../Dropdown";
 import { submitAssesmentForm } from "../../../services/state/api/FormApi";
-
+import useModalStore from "../../../services/state/useModelStore";
 
 const AssessmentModal: React.FC = () => {
+
+  const {closeModal}  = useModalStore();
 
  const [fklTpId, setTpId] = useState<number | null>(null);
   const [fklTcId, setTcId] = useState<number | null>(null); //setBatchId
@@ -97,8 +99,9 @@ const AssessmentModal: React.FC = () => {
     mutationFn: submitAssesmentForm,
     onSuccess: (data) => {
       if (data?.success) {
+        closeModal();
         toast.success(
-          data.message || "Assesment submitted successfully!"
+           data.message || "Assesment submitted successfully!"
         );
       } else {
         toast.error(

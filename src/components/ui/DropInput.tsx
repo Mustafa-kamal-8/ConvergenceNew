@@ -14,7 +14,7 @@ interface DropInputProps {
 const DropInput: React.FC<DropInputProps> = ({
   file,
   setFile,
-  maxSize = 2 * 1024 * 1024, // Default 2MB
+  maxSize = 10 * 1024 * 1024,
   accept = {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [], // .xlsx
     "application/vnd.ms-excel": [], // .xls
@@ -33,7 +33,7 @@ const DropInput: React.FC<DropInputProps> = ({
       if (rejectedFiles.length > 0) {
         const error = rejectedFiles[0]?.errors?.[0];
         if (error?.code === "file-too-large") {
-          setErrorMessage("File is too large. Maximum size is 2MB.");
+          setErrorMessage("File is too large. Maximum size is 10 MB.");
         } else if (error?.code === "file-invalid-type") {
           setErrorMessage("Invalid file type. Only .xls, .xlsx, and .csv files are allowed.");
         }

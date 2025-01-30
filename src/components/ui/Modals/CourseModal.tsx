@@ -11,8 +11,11 @@ import { submitCourseForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
 import { getMasterData } from "../../../services/state/api/masterApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const CourseModal: React.FC = () => {
+
+  const {closeModal} = useModalStore()
   const {
     handleSubmit,
     control,
@@ -36,6 +39,7 @@ const CourseModal: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitCourseForm,
     onSuccess: (data) => {
+      closeModal();
       toast.success("Course submitted successfully!");
       console.log("Course submitted successfully", data);
     },

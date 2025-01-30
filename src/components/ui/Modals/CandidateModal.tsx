@@ -11,8 +11,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBranchByBank, getDistrictByState, getIfscByBranch, getMasterData, getULBblockByDistrict } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const CandidateModal: React.FC = () => {
+
+  const {closeModal} = useModalStore();
   const [isSameAddress, setIsSameAddress] = useState(true);
   const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
@@ -22,6 +25,8 @@ const CandidateModal: React.FC = () => {
 
   const [fklBankId, setBank] = useState<number | null>(null);
   const [pklBranchId, setBranch] = useState<number | null>(null);
+
+
 
   const {
     handleSubmit,
@@ -259,6 +264,7 @@ const CandidateModal: React.FC = () => {
      mutationFn: submitCandidateForm,
      onSuccess: (data) => {
        if (data?.success) {
+        closeModal();
          toast.success(
            data.message || "Candidate submitted successfully!"
          );

@@ -12,10 +12,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getMasterData } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitInvoiceForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const InvoiceModal: React.FC = () => {
  
-
+const {closeModal} = useModalStore()
 
 
   const {
@@ -44,6 +45,7 @@ const InvoiceModal: React.FC = () => {
     const mutation = useMutation({
       mutationFn: submitInvoiceForm,
       onSuccess: (data) => {
+        closeModal();
         if (data?.success) {
           toast.success(data.message || "Assesment submitted successfully!");
         } else {

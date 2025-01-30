@@ -9,8 +9,11 @@ import { assessorSchema } from "../../../utils/validation";
 import { AssessorFormData } from "../../../utils/formTypes";
 import { submitAssessorForm } from "../../../services/state/api/FormApi";
 import { useMutation } from "@tanstack/react-query";
+import useModalStore from "../../../services/state/useModelStore";
 
 const AssessorsModal: React.FC = () => {
+
+  const {closeModal} = useModalStore();
 
   const {
     handleSubmit,
@@ -24,6 +27,7 @@ const AssessorsModal: React.FC = () => {
     mutationFn: submitAssessorForm,
     onSuccess: (data) => {
       if (data?.success) {
+        closeModal();
         toast.success(
           data.message || "Training Partner submitted successfully!"
         );

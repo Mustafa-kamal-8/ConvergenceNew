@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import { assessorsColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import CustomModal from "../components/ui/CustomModal";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import {  DownloadCloud, UploadCloud } from "lucide-react";
@@ -74,9 +73,7 @@ const Assessors: React.FC = () => {
 
   return (
     <>
-      <div>
-        <CustomModal />
-      </div>
+   
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Assessors</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -124,14 +121,14 @@ const Assessors: React.FC = () => {
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="assessors"
+              bulkName="assessor"
               Icon={UploadCloud}
             
             />
             <ModalOpenButton
               modalType={7}
               modalTitle="Add Assessors"
-              bulkName="Assessors"
+              bulkName="assessor"
               Icon={Add}
             
             />

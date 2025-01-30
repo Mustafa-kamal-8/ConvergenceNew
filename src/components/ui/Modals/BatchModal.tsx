@@ -13,8 +13,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getCourses, getMasterData, getTcByTp } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const BatchModel : React.FC = () => {
+
+  const {closeModal} = useModalStore()
 
  const [fklTpId, setTpId] = useState<number | null>(null);
 
@@ -127,6 +130,7 @@ const BatchModel : React.FC = () => {
        mutationFn: submitBatchForm,
        onSuccess: (data) => {
          if (data?.success) {
+          closeModal();
            toast.success(data.message || "Scheme submitted successfully!");
          } else {
            toast.error(data.error || "An error occurred while submitting the scheme.");

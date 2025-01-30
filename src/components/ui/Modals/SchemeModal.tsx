@@ -10,8 +10,11 @@ import { SchemeValidation } from "../../../utils/validation";
 import { useMutation } from "@tanstack/react-query";
 import { submitSchemeForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
+import useModalStore from "../../../services/state/useModelStore";
 
 const SchemeModalContent: React.FC = () => {
+
+  const {closeModal} = useModalStore();
   const {
     handleSubmit,
     control,
@@ -26,6 +29,7 @@ const SchemeModalContent: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
     onSuccess: (data) => {
+      closeModal();
       if (data?.success) {
         toast.success(data.message || "Scheme submitted successfully!");
       } else {

@@ -11,8 +11,11 @@ import { TrainerFormData } from "../../../utils/formTypes";
 import { trainerSchema } from"../../../utils/validation"; 
 import { useMutation } from "@tanstack/react-query";
 import { submitTrainerForm } from "../../../services/state/api/FormApi";
+import useModalStore from "../../../services/state/useModelStore";
 
 const TrainerModalContent: React.FC = () => {
+
+ const {closeModal} = useModalStore();
   const {
     handleSubmit,
     control,
@@ -25,6 +28,7 @@ const TrainerModalContent: React.FC = () => {
     mutationFn: submitTrainerForm,
     onSuccess: (data) => {
       if (data?.success) {
+        closeModal();
         toast.success(
           data.message || "Trainer submitted successfully!"
         );
