@@ -106,13 +106,13 @@ const TrainingCenter: React.FC = () => {
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="trainingPartner"
+              bulkName="TC"
               Icon={UploadCloud}
             />
             <ModalOpenButton
               modalType={12}
               modalTitle="Add Centers"
-              bulkName="trainingCenter"
+              bulkName="TC"
               Icon={Plus}
             />
           </div>

@@ -552,6 +552,16 @@ export const invoiceValidationSchema = Joi.object({
       "string.empty": "Amount is required",
       "string.pattern.base": "Amount must be a valid number",
     }),
+
+    fklTpId: Joi.number().required().label("Training Partner ID").messages({
+      "string.empty": "Training Partner ID is required.",
+    }),
+    fklTcId: Joi.number().required().label("Training Center ID").messages({
+      "string.empty": "Training Center ID is required.",
+    }),
+    fklBatchId: Joi.number().required().label("Batch ID").messages({
+      "string.empty": "Batch ID is required.",
+    }),
 });
 
 

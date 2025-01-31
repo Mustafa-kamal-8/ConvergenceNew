@@ -8,14 +8,19 @@ import { toast } from "react-toastify";
 import { candidateSchema } from "../../../utils/validation";
 import { candidateFormData } from "../../../utils/formTypes";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getBranchByBank, getDistrictByState, getIfscByBranch, getMasterData, getULBblockByDistrict } from "../../../services/state/api/masterApi";
+import {
+  getBranchByBank,
+  getDistrictByState,
+  getIfscByBranch,
+  getMasterData,
+  getULBblockByDistrict,
+} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 
 const CandidateModal: React.FC = () => {
-
-  const {closeModal} = useModalStore();
+  const { closeModal } = useModalStore();
   const [isSameAddress, setIsSameAddress] = useState(true);
   const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
@@ -25,8 +30,6 @@ const CandidateModal: React.FC = () => {
 
   const [fklBankId, setBank] = useState<number | null>(null);
   const [pklBranchId, setBranch] = useState<number | null>(null);
-
-
 
   const {
     handleSubmit,
@@ -38,6 +41,15 @@ const CandidateModal: React.FC = () => {
     resolver: joiResolver(candidateSchema),
   });
 
+  const { data: qualificationData } = useQuery({
+    queryKey: ["masterData", "qualification"],
+    queryFn: () => getMasterData("qualification"),
+  });
+  useEffect(() => {
+    if (qualificationData) {
+      console.log("Fetched master data:", qualificationData);
+    }
+  }, [qualificationData]);
 
   const { data: genderData } = useQuery({
     queryKey: ["genderData", "gender"],
@@ -58,7 +70,6 @@ const CandidateModal: React.FC = () => {
       })
     ) || [];
 
-
   const { data: religionData } = useQuery({
     queryKey: ["religionData", "religion"],
     queryFn: () => getMasterData("religion"),
@@ -77,7 +88,6 @@ const CandidateModal: React.FC = () => {
         value: religion.pklReligionId,
       })
     ) || [];
-
 
   const { data: idTypeData } = useQuery({
     queryKey: ["idTypeData", "id_type"],
@@ -129,7 +139,6 @@ const CandidateModal: React.FC = () => {
       })
     ) || [];
 
-
   const { data: districtData } = useQuery({
     queryKey: ["masterData", "district", stateId],
     queryFn: () => getDistrictByState(stateId, "district"),
@@ -166,7 +175,6 @@ const CandidateModal: React.FC = () => {
     queryFn: () => getULBblockByDistrict(districtIdP, "ULBblock"),
   });
 
-
   const isRCityVillage = [
     { label: "Village", value: "Village" },
     { label: "City", value: "City" },
@@ -181,39 +189,39 @@ const CandidateModal: React.FC = () => {
 
   const selectedPVillageCity = watch("vsPVillageCity", "") as unknown as string;
 
-  const ULBblockOptions = selectedRVillageCity === "Village"
-    ? ULBblockData?.data?.result?.blocks?.map(
-      (blocks: { blockId: number; blockName: string }) => ({
-        label: blocks.blockName,
-        value: blocks.blockId,
-      })
-    ) || []
-    : selectedRVillageCity === "City"
+  const ULBblockOptions =
+    selectedRVillageCity === "Village"
+      ? ULBblockData?.data?.result?.blocks?.map(
+          (blocks: { blockId: number; blockName: string }) => ({
+            label: blocks.blockName,
+            value: blocks.blockId,
+          })
+        ) || []
+      : selectedRVillageCity === "City"
       ? ULBblockData?.data?.result?.ulbs?.map(
-        (ulbs: { ulbId: number; ulbName: string }) => ({
-          label: ulbs.ulbName,
-          value: ulbs.ulbId,
-        })
-      ) || []
+          (ulbs: { ulbId: number; ulbName: string }) => ({
+            label: ulbs.ulbName,
+            value: ulbs.ulbId,
+          })
+        ) || []
       : [];
 
-  const ULBblockOptionsP = selectedPVillageCity === "Village"
-    ? ULBblockDataP?.data?.result?.blocks?.map(
-      (blocks: { blockId: number; blockName: string }) => ({
-        label: blocks.blockName,
-        value: blocks.blockId,
-      })
-    ) || []
-    : selectedPVillageCity === "City"
+  const ULBblockOptionsP =
+    selectedPVillageCity === "Village"
+      ? ULBblockDataP?.data?.result?.blocks?.map(
+          (blocks: { blockId: number; blockName: string }) => ({
+            label: blocks.blockName,
+            value: blocks.blockId,
+          })
+        ) || []
+      : selectedPVillageCity === "City"
       ? ULBblockDataP?.data?.result?.ulbs?.map(
-        (ulbs: { ulbId: number; ulbName: string }) => ({
-          label: ulbs.ulbName,
-          value: ulbs.ulbId,
-        })
-      ) || []
+          (ulbs: { ulbId: number; ulbName: string }) => ({
+            label: ulbs.ulbName,
+            value: ulbs.ulbId,
+          })
+        ) || []
       : [];
-
-
 
   const { data: bankData } = useQuery({
     queryKey: ["masterData", "bank"],
@@ -245,58 +253,62 @@ const CandidateModal: React.FC = () => {
   });
 
   useEffect(() => {
-    if (ifscData && ifscData.data?.result && ifscData.data?.result?.ifsc_code && ifscData.data?.result?.ifsc_code[0]) {
+    if (
+      ifscData &&
+      ifscData.data?.result &&
+      ifscData.data?.result?.ifsc_code &&
+      ifscData.data?.result?.ifsc_code[0]
+    ) {
       setValue("vsBankIFSC", ifscData.data?.result?.ifsc_code[0].vsIFSCCode);
     }
   }, [ifscData, setValue]);
 
-  const isIFSCCodeAvailable = !!(ifscData && ifscData.data?.result && ifscData.data?.result?.ifsc_code && ifscData.data?.result?.ifsc_code[0]);
-
+  const isIFSCCodeAvailable = !!(
+    ifscData &&
+    ifscData.data?.result &&
+    ifscData.data?.result?.ifsc_code &&
+    ifscData.data?.result?.ifsc_code[0]
+  );
 
   const { data: constiAssemblyData } = useQuery({
     queryKey: ["masterData", "constituency"],
     queryFn: () => getMasterData("constituency"),
   });
 
-
-
   const mutation = useMutation({
-     mutationFn: submitCandidateForm,
-     onSuccess: (data) => {
-       if (data?.success) {
+    mutationFn: submitCandidateForm,
+    onSuccess: (data) => {
+      if (data?.success) {
         closeModal();
-         toast.success(
-           data.message || "Candidate submitted successfully!"
-         );
-       } else {
-         toast.error(
-           data.message || "An error occurred while submitting the Trainer."
-         );
-       }
-     },
-     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     onError: (error: any) => {
-       const errorMessage =
-         error?.response?.data?.message || "An unknown error occurred.";
-       toast.error(errorMessage); 
-     },
-   });
-   
- 
-    const onSubmit: SubmitHandler<candidateFormData> = (data:candidateFormData) => {
-       mutation.mutate(data);
-     };
- 
+        toast.success(data.message || "Candidate submitted successfully!");
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Trainer."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage);
+    },
+  });
 
+  const onSubmit: SubmitHandler<candidateFormData> = (
+    data: candidateFormData
+  ) => {
+    mutation.mutate(data);
+  };
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid gap-4 grid-cols-1 sm:grid-cols-2   md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 py-4"
+        className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 py-4"
       >
         {/* Basic Details */}
-        <div>
+        <div className="col-span-1">
           <Label text="ID" />
           <Controller
             name="candidateId"
@@ -314,7 +326,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Batch ID" />
           <Controller
             name="batchId"
@@ -332,7 +344,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div >
+        <div className="col-span-1">
           <Label text="Name" />
           <Controller
             name="vsCandidateName"
@@ -350,7 +362,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Date Of Birth" />
           <Controller
             name="vsDOB"
@@ -368,7 +380,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Age" />
           <Controller
             name="iAge"
@@ -384,7 +396,7 @@ const CandidateModal: React.FC = () => {
           {errors.iAge && <p className="text-red-500">{errors.iAge.message}</p>}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Father's Name" />
           <Controller
             name="vsFatherName"
@@ -452,7 +464,7 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.fklIdType.message}</p>
           )}
         </div>
-        <div>
+        <div className="col-span-1">
           <Label text="UUID" />
           <Controller
             name="vsUUID"
@@ -469,7 +481,6 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsUUID.message}</p>
           )}
         </div>
-
 
         <div className="col-span-1">
           <Label text="Religion" />
@@ -523,7 +534,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div>
+        <div className="col-span-1">
           <Label text="Mobile Number" />
           <Controller
             name="vsMobile"
@@ -540,7 +551,7 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsMobile.message}</p>
           )}
         </div>
-        <div>
+        <div className="col-span-1">
           <Label text="Email ID" />
           <Controller
             name="vsEmail"
@@ -557,7 +568,7 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsEmail.message}</p>
           )}
         </div>
-        <div>
+        <div className="col-span-1">
           <Label text="Education Attained" />
           <Controller
             name="vsEducationAttained"
@@ -575,9 +586,9 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
+        <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
-
-        <div >
+        <div className="col-span-1">
           <Label text="Disability" />
           <Controller
             name="bDisability"
@@ -711,8 +722,13 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
+        <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
+        <div className="col-span-full text-gray-900 font-semibold">
+          Present Address
+        </div>
+
         <div>
-          <Label text="Present Address" />
+          <Label text="Address" />
           <Controller
             name="vsRAddress"
             control={control}
@@ -729,7 +745,6 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        {/* Example: vsRDistrict */}
         <div className="col-span-1">
           <Label text="State" />
           <Controller
@@ -781,7 +796,6 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-
         {/* Present Village/City */}
         <div className="col-span-1">
           <Label text="Village/City" />
@@ -792,8 +806,9 @@ const CandidateModal: React.FC = () => {
             render={({ field }) => (
               <select
                 {...field}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.isRCityVillage ? "border-red-500" : ""
-                  }`}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.isRCityVillage ? "border-red-500" : ""
+                }`}
               >
                 <option value="" disabled>
                   -- Select Village/City --
@@ -814,7 +829,7 @@ const CandidateModal: React.FC = () => {
         {selectedRVillageCity === "Village" && (
           <>
             <div className="col-span-1">
-              <Label text="Present Block" />
+              <Label text="Block" />
               <Controller
                 name="vsRBlock"
                 control={control}
@@ -839,7 +854,7 @@ const CandidateModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Present Village" />
+              <Label text=" Village" />
               <Controller
                 name="vsRVillageCity"
                 control={control}
@@ -886,7 +901,7 @@ const CandidateModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Present City" />
+              <Label text="City" />
               <Controller
                 name="vsRVillageCity"
                 control={control}
@@ -905,10 +920,9 @@ const CandidateModal: React.FC = () => {
           </>
         )}
 
-
         {/* Present Post Office */}
         <div>
-          <Label text="Present Post Office" />
+          <Label text="Post Office" />
           <Controller
             name="vsRPostOffice"
             control={control}
@@ -927,7 +941,7 @@ const CandidateModal: React.FC = () => {
 
         {/* Present Police Station */}
         <div>
-          <Label text="Present Police Station" />
+          <Label text="Police Station" />
           <Controller
             name="vsRPolice"
             control={control}
@@ -946,7 +960,7 @@ const CandidateModal: React.FC = () => {
 
         {/* Present PIN */}
         <div>
-          <Label text="Present PIN" />
+          <Label text="PIN" />
           <Controller
             name="vsRPIN"
             control={control}
@@ -965,7 +979,7 @@ const CandidateModal: React.FC = () => {
 
         {/* Present Council Constituency */}
         <div className="col-span-1">
-          <Label text="Present Assembly Constituency" />
+          <Label text="Assembly Constituency" />
           <Controller
             name="vsRCouncilContituency"
             control={control}
@@ -974,7 +988,10 @@ const CandidateModal: React.FC = () => {
                 {...field}
                 options={
                   constiAssemblyData?.data?.result?.assemblyConstituency?.map(
-                    (assembly: { ConstituencyName: string; AssemblyConstituencyId: number }) => ({
+                    (assembly: {
+                      ConstituencyName: string;
+                      AssemblyConstituencyId: number;
+                    }) => ({
                       label: assembly.ConstituencyName, // Display name
                       value: assembly.AssemblyConstituencyId, // ID to store
                     })
@@ -998,9 +1015,8 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-
         <div className="col-span-1">
-          <Label text="Present Lok Sabha Constituency" />
+          <Label text="Lok Sabha Constituency" />
           <Controller
             name="vsRAssemblyContituency"
             control={control}
@@ -1009,7 +1025,10 @@ const CandidateModal: React.FC = () => {
                 {...field}
                 options={
                   constiAssemblyData?.data?.result?.loksabhaConstituency?.map(
-                    (loksabha: { ConstituencyName: string; LoksabhaConstituencyId: number }) => ({
+                    (loksabha: {
+                      ConstituencyName: string;
+                      LoksabhaConstituencyId: number;
+                    }) => ({
                       label: loksabha.ConstituencyName, // Display name
                       value: loksabha.LoksabhaConstituencyId, // ID to store
                     })
@@ -1021,7 +1040,9 @@ const CandidateModal: React.FC = () => {
                   field.onChange(selectedOption.value); // Update form value
                   setValue("vsRAssemblyContituency", selectedOption.value); // Sync form value
                 }}
-                className={errors.vsRAssemblyContituency ? "border-red-500" : ""}
+                className={
+                  errors.vsRAssemblyContituency ? "border-red-500" : ""
+                }
                 placeholder="-- Select Lok Sabha Constituency --"
               />
             )}
@@ -1032,7 +1053,6 @@ const CandidateModal: React.FC = () => {
             </p>
           )}
         </div>
-
 
         {/* Toggle for Same Address */}
         <div>
@@ -1049,7 +1069,7 @@ const CandidateModal: React.FC = () => {
                     checked={field.value === 1}
                     onChange={() => {
                       field.onChange(1);
-                      setIsSameAddress(true);  // If 'Yes' is selected, set isSameAddress to true
+                      setIsSameAddress(true); // If 'Yes' is selected, set isSameAddress to true
                     }}
                   />
                   Yes
@@ -1061,7 +1081,7 @@ const CandidateModal: React.FC = () => {
                     checked={field.value === 0}
                     onChange={() => {
                       field.onChange(0);
-                      setIsSameAddress(false);  // If 'No' is selected, set isSameAddress to false
+                      setIsSameAddress(false); // If 'No' is selected, set isSameAddress to false
                     }}
                   />
                   No
@@ -1074,11 +1094,15 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        {/* Conditional Present Address Fields */}
+        <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
+
         {!isSameAddress && (
           <>
+            <div className="col-span-full text-gray-900 font-semibold">
+              Permanent Address
+            </div>
             <div className="col-span-1">
-              <Label text="Permanent Address" />
+              <Label text="Address" />
               <Controller
                 name="vsPAddress"
                 control={control}
@@ -1095,10 +1119,8 @@ const CandidateModal: React.FC = () => {
               )}
             </div>
 
-            {/* Add other present address fields similar to vsPAddress */}
-            {/* Example: vsPDistrict */}
             <div className="col-span-1">
-              <Label text="Permanent State" />
+              <Label text="State" />
               <Controller
                 name="vsPState"
                 control={control}
@@ -1133,7 +1155,10 @@ const CandidateModal: React.FC = () => {
                     options={districtOptionsP}
                     getOptionLabel={(option: { label: string }) => option.label}
                     getOptionValue={(option: { value: number }) => option.value}
-                    onSelect={(selectedValue: { label: string; value: number }) => {
+                    onSelect={(selectedValue: {
+                      label: string;
+                      value: number;
+                    }) => {
                       field.onChange(selectedValue.value);
                       setDistrictIdP(selectedValue.value);
                       setValue("vsPDistrict", selectedValue.value);
@@ -1157,8 +1182,9 @@ const CandidateModal: React.FC = () => {
                 render={({ field }) => (
                   <select
                     {...field}
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.vsPVillageCity ? "border-red-500" : ""
-                      }`}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors.vsPVillageCity ? "border-red-500" : ""
+                    }`}
                   >
                     <option value="" disabled>
                       -- Select Village/City --
@@ -1179,7 +1205,7 @@ const CandidateModal: React.FC = () => {
             {selectedPVillageCity === "Village" && (
               <>
                 <div className="col-span-1">
-                  <Label text="Present Block" />
+                  <Label text="Block" />
                   <Controller
                     name="vsPBlock"
                     control={control}
@@ -1204,7 +1230,7 @@ const CandidateModal: React.FC = () => {
                 </div>
 
                 <div className="col-span-2">
-                  <Label text="Present Village" />
+                  <Label text="Village" />
                   <Controller
                     name="vsPVillageCity"
                     control={control}
@@ -1212,12 +1238,16 @@ const CandidateModal: React.FC = () => {
                       <Input
                         {...field}
                         type="text"
-                        className={errors.vsPVillageCity ? "border-red-500" : ""}
+                        className={
+                          errors.vsPVillageCity ? "border-red-500" : ""
+                        }
                       />
                     )}
                   />
                   {errors.vsPVillageCity && (
-                    <p className="text-red-500">{errors.vsPVillageCity.message}</p>
+                    <p className="text-red-500">
+                      {errors.vsPVillageCity.message}
+                    </p>
                   )}
                 </div>
               </>
@@ -1251,7 +1281,7 @@ const CandidateModal: React.FC = () => {
                 </div>
 
                 <div className="col-span-2">
-                  <Label text="Present City" />
+                  <Label text="City" />
                   <Controller
                     name="vsPVillageCity"
                     control={control}
@@ -1259,22 +1289,24 @@ const CandidateModal: React.FC = () => {
                       <Input
                         {...field}
                         type="text"
-                        className={errors.vsPVillageCity ? "border-red-500" : ""}
+                        className={
+                          errors.vsPVillageCity ? "border-red-500" : ""
+                        }
                       />
                     )}
                   />
                   {errors.vsPVillageCity && (
-                    <p className="text-red-500">{errors.vsPVillageCity.message}</p>
+                    <p className="text-red-500">
+                      {errors.vsPVillageCity.message}
+                    </p>
                   )}
                 </div>
               </>
             )}
 
-
-
             {/* Present Post Office */}
             <div>
-              <Label text="Permanent Post Office" />
+              <Label text="Post Office" />
               <Controller
                 name="vsPPostOffice"
                 control={control}
@@ -1293,7 +1325,7 @@ const CandidateModal: React.FC = () => {
 
             {/* Present Police Station */}
             <div>
-              <Label text="Permanent Police Station" />
+              <Label text="Police Station" />
               <Controller
                 name="vsPPolice"
                 control={control}
@@ -1312,7 +1344,7 @@ const CandidateModal: React.FC = () => {
 
             {/* Present PIN */}
             <div>
-              <Label text="Permanent PIN" />
+              <Label text="PIN" />
               <Controller
                 name="vsPPIN"
                 control={control}
@@ -1331,76 +1363,89 @@ const CandidateModal: React.FC = () => {
 
             {/* Present Council Constituency */}
             <div className="col-span-1">
-  <Label text="Assembly Constituency" />
-  <Controller
-    name="vsPAssemblyContituency"
-    control={control}
-    render={({ field }) => (
-      <Dropdown
-        {...field}
-        options={
-          constiAssemblyData?.data?.result?.assemblyConstituency?.map(
-            (assembly: { ConstituencyName: string; AssemblyConstituencyId: number }) => ({
-              label: assembly.ConstituencyName, // Display name
-              value: assembly.AssemblyConstituencyId, // ID to store
-            })
-          ) || [] // Fallback to an empty array
-        }
-        getOptionLabel={(option) => option.label}
-        getOptionValue={(option) => option.value}
-        onSelect={(selectedOption) => {
-          field.onChange(selectedOption.value); // Update form value
-          setValue("vsPAssemblyContituency", selectedOption.value); // Sync form value
-        }}
-        className={errors.vsPAssemblyContituency ? "border-red-500" : ""}
-        placeholder="-- Select Assembly Constituency --"
-      />
-    )}
-  />
-  {errors.vsPAssemblyContituency && (
-    <p className="text-red-500">
-      {errors.vsPAssemblyContituency.message}
-    </p>
-  )}
-</div>
+              <Label text="Assembly Constituency" />
+              <Controller
+                name="vsPAssemblyContituency"
+                control={control}
+                render={({ field }) => (
+                  <Dropdown
+                    {...field}
+                    options={
+                      constiAssemblyData?.data?.result?.assemblyConstituency?.map(
+                        (assembly: {
+                          ConstituencyName: string;
+                          AssemblyConstituencyId: number;
+                        }) => ({
+                          label: assembly.ConstituencyName, // Display name
+                          value: assembly.AssemblyConstituencyId, // ID to store
+                        })
+                      ) || [] // Fallback to an empty array
+                    }
+                    getOptionLabel={(option) => option.label}
+                    getOptionValue={(option) => option.value}
+                    onSelect={(selectedOption) => {
+                      field.onChange(selectedOption.value); // Update form value
+                      setValue("vsPAssemblyContituency", selectedOption.value); // Sync form value
+                    }}
+                    className={
+                      errors.vsPAssemblyContituency ? "border-red-500" : ""
+                    }
+                    placeholder="-- Select Assembly Constituency --"
+                  />
+                )}
+              />
+              {errors.vsPAssemblyContituency && (
+                <p className="text-red-500">
+                  {errors.vsPAssemblyContituency.message}
+                </p>
+              )}
+            </div>
 
-
-<div className="col-span-1">
-  <Label text="Lok Sabha Constituency" />
-  <Controller
-    name="vsPCouncilContituency"
-    control={control}
-    render={({ field }) => (
-      <Dropdown
-        {...field}
-        options={
-          constiAssemblyData?.data?.result?.loksabhaConstituency?.map(
-            (loksabha: { ConstituencyName: string; LoksabhaConstituencyId: number }) => ({
-              label: loksabha.ConstituencyName, // Display name
-              value: loksabha.LoksabhaConstituencyId, // ID to store
-            })
-          ) || [] // Fallback to an empty array
-        }
-        getOptionLabel={(option) => option.label}
-        getOptionValue={(option) => option.value}
-        onSelect={(selectedOption) => {
-          field.onChange(selectedOption.value); // Update form value
-          setValue("vsPCouncilContituency", selectedOption.value); // Sync form value
-        }}
-        className={errors.vsPCouncilContituency ? "border-red-500" : ""}
-        placeholder="-- Select Lok Sabha Constituency --"
-      />
-    )}
-  />
-  {errors.vsPCouncilContituency && (
-    <p className="text-red-500">
-      {errors.vsPCouncilContituency.message}
-    </p>
-  )}
-</div>
-
-            </>
+            <div className="col-span-1">
+              <Label text="Lok Sabha Constituency" />
+              <Controller
+                name="vsPCouncilContituency"
+                control={control}
+                render={({ field }) => (
+                  <Dropdown
+                    {...field}
+                    options={
+                      constiAssemblyData?.data?.result?.loksabhaConstituency?.map(
+                        (loksabha: {
+                          ConstituencyName: string;
+                          LoksabhaConstituencyId: number;
+                        }) => ({
+                          label: loksabha.ConstituencyName, // Display name
+                          value: loksabha.LoksabhaConstituencyId, // ID to store
+                        })
+                      ) || [] // Fallback to an empty array
+                    }
+                    getOptionLabel={(option) => option.label}
+                    getOptionValue={(option) => option.value}
+                    onSelect={(selectedOption) => {
+                      field.onChange(selectedOption.value); // Update form value
+                      setValue("vsPCouncilContituency", selectedOption.value); // Sync form value
+                    }}
+                    className={
+                      errors.vsPCouncilContituency ? "border-red-500" : ""
+                    }
+                    placeholder="-- Select Lok Sabha Constituency --"
+                  />
+                )}
+              />
+              {errors.vsPCouncilContituency && (
+                <p className="text-red-500">
+                  {errors.vsPCouncilContituency.message}
+                </p>
+              )}
+            </div>
+          </>
         )}
+
+        <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
+        <div className="col-span-full text-gray-900 font-semibold">
+          Bank Details
+        </div>
         <div>
           <Label text="Bank Holder Name" />
           <Controller
@@ -1491,7 +1536,6 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-
         {/* Bank IFSC */}
         <div>
           <Label text="Bank IFSC" />
@@ -1510,23 +1554,20 @@ const CandidateModal: React.FC = () => {
           {errors.vsBankIFSC && (
             <p className="text-red-500">{errors.vsBankIFSC.message}</p>
           )}
-
         </div>
 
         {/* Add all other fields similarly */}
 
         {/* Submit Button */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
-          <Button
-            text="Submit"
-            loadingText="Submitting..."
-            loading={mutation.isPending}
-
-            disabled={false}
-          />
-        </div>
-
       </form>
+      <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
+        <Button
+          text="Submit"
+          loadingText="Submitting..."
+          loading={mutation.isPending}
+          disabled={false}
+        />
+      </div>
     </div>
   );
 };

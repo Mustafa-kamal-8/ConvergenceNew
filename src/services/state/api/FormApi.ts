@@ -132,12 +132,15 @@ export const submitCourseForm =async(data: CourseFormData) =>{
 
         export const submitInvoiceForm =async(data:InvoiceFormData) =>{
           const { userDetails } = useAuthStore.getState();
+
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const {fklTcId, fklTpId, ...filteredData } = data;
          
           if (!userDetails) {
             throw new Error("User details are not available in the store.");
           }
           const requestData={
-            ...data,
+            ...filteredData,
               fklDepartmentId: userDetails?.departmentId,
             queryType: "invoice"
           }

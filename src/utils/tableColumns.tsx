@@ -489,15 +489,14 @@ export const invoiceColumns = (
 
 
 interface CandidateData {
-  id: string;
-  BatchId: string;
-  CandidateId: string;
-  CandidateName: string;
-  FatherName: string;
-  MotherName: string;
-  DOB: string;
-  Age: string;
-  Gender: string;
+  candidateId: string;
+  iBatchNumber: string;
+  vsCandidateName: string;
+  vsDOB: string;
+  iAge: string;
+  pklGenderId: string;
+  vsMobile: string;
+  pklQualificationId: string;
   Action: unknown;
 }
 
@@ -505,20 +504,19 @@ export const candidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Batch ID", accessor: "BatchId" },
-  { Header: "Candidate ID", accessor: "CandidateId" },
-  { Header: "Candidate Name", accessor: "CandidateName" },
-  { Header: "Father Name", accessor: "FatherName" },
-  { Header: "Mother Name", accessor: "MotherName" },
-  { Header: "Date of Birth", accessor: "DOB" },
-  { Header: "Age", accessor: "Age" },
-  { Header: "Gender", accessor: "Gender" },
+  { Header: "Batch ID", accessor: "iBatchNumber" },
+  { Header: "Candidate Name", accessor: "vsCandidateName" },
+  { Header: "Date Of Birth", accessor: "vsDOB" ,  Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),},
+  { Header: "Age", accessor: "iAge" },
+  { Header: "Gender", accessor: "pklGenderId" },
+  { Header: "Mobile", accessor: "vsMobile" },
+  { Header: "Qualification", accessor: "pklQualificationId" },
   {
     Header: "Action",
     accessor: "Action",
     Cell: ({ row }) => (
       <button
-        onClick={() => navigate(`/candidate/${row.original.CandidateId}`)}
+        onClick={() => navigate(`/candidate/${row.original.candidateId}`)}
         className="text-blue-500 hover:underline"
       >
         View

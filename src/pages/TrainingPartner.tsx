@@ -117,14 +117,14 @@ if(isLoading){
             <ModalOpenButton
               modalType={11}
               modalTitle="Bulk Upload"
-              bulkName="tp"
+              bulkName="TP"
               Icon={UploadCloud}
             
             />
             <ModalOpenButton
               modalType={3}
               modalTitle="Add Training Partner"
-              bulkName="tp"
+              bulkName="TP"
               Icon={Add}
             
             />

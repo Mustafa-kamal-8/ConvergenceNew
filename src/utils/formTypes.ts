@@ -148,6 +148,9 @@ export interface InvoiceFormData {
   iTotalCandidate: number;
   fRate: string;
   fAmount: string;
+  fklTpId: number;
+  fklTcId: number;
+  fklBatchId: number;
 }
 
 export interface targetFormData{
