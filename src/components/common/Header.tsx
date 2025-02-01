@@ -16,7 +16,9 @@ const Header = ({
   const [showDropdown, setShowDropdown] = useState(false); // Dropdown visibility state
 
   const handleLogout = () => {
+    window.location.reload()
     clearAuth(); // Clear cookies and reset state
+    window.location.reload()
     setShowDropdown(false); // Close dropdown after logout
   };
 

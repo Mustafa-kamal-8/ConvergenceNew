@@ -561,3 +561,15 @@ export const candidateColumns = (
     ),
   },
 ];
+
+
+
+interface DepartmentData {
+  Id: number;
+  vsDepartmentName: string;
+}
+
+export const departmentColumns = (): Column<DepartmentData>[] => [
+  { Header: "ID", accessor: (_row: DepartmentData, rowIndex: number) => rowIndex + 1 },
+  { Header: "Trainer Name", accessor: "vsDepartmentName" },
+];

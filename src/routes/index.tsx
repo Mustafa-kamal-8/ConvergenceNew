@@ -18,8 +18,9 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 import NotFound from "../pages/404/NotFound";
 import SystemAdminLayout from "../components/common/SysAdminLayout";
 import CreateDepartment from "../pages/department-creation/CreateDepartment";
-import States from "../pages/States";
-import Sectors from "../pages/Sectors";
+import States from "../pages/masters/States";
+import Sectors from "../pages/masters/Sectors";
+import Departments from "../pages/masters/Departments";
 
 const Index = () => {
   return (
@@ -52,6 +53,7 @@ const Index = () => {
         <Route path="Invoice" element={<Invoice />} />
         <Route path="States" element={<States />} />
         <Route path="Sectors" element={<Sectors />} />
+        <Route path="Departments" element={<Departments />} />
       </Route>
 
       <Route

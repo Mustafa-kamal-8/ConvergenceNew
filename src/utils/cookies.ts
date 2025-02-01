@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import Cookies from 'js-cookie';
@@ -21,45 +20,55 @@ interface AuthStore {
   initializeAuth: () => void;
 }
 
-// Create the Zustand store
 const useAuthStore = create<AuthStore>()(
-  devtools((set) => ({
-    token: null,
-    userDetails: null,
+  devtools((set) => {
+    let logoutTimer: NodeJS.Timeout | null = null; // Store logout timer
 
-    // Check if the user is authenticated
-    isAuthenticated: false,
+    return {
+      token: null,
+      userDetails: null,
+      isAuthenticated: false,
 
-    // Set token and user details in store and cookies
-    setAuth: (token: string, userDetails: UserDetails) => {
-      const expiryDate = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000); 
-      Cookies.set('token', token, { expires: expiryDate });
-      Cookies.set('userDetails', JSON.stringify(userDetails), { expires: expiryDate });
+      setAuth: (token: string, userDetails: UserDetails) => {
+        const expiryTime = new Date().getTime() + 1 * 24 * 60 * 60 * 1000; 
 
-      set({ token, userDetails, isAuthenticated: !!token });
-    },
 
-    // Clear token and user details from store and cookies
-    clearAuth: () => {
-      Cookies.remove('token');
-      Cookies.remove('userDetails');
-      set({ token: null, userDetails: null, isAuthenticated: false });
-    },
+        Cookies.set('token', token, { expires: 1 / 1440, path: '/' }); // 1 min in days
+        Cookies.set('userDetails', JSON.stringify(userDetails), { expires: 1 / 1440, path: '/' });
 
-    // Initialize auth from cookies
-    initializeAuth: () => {
-      const token = Cookies.get('token');
-      const userDetails = Cookies.get('userDetails');
+        set({ token, userDetails, isAuthenticated: true });
 
-      if (token && userDetails) {
-        set({ token, userDetails: JSON.parse(userDetails) as UserDetails, isAuthenticated: true });
-      } else {
-        set({ isAuthenticated: false });
-      }
-    },
-  }))
+        // Clear any existing timer
+        if (logoutTimer) clearTimeout(logoutTimer);
+
+        // Auto logout when token expires
+        logoutTimer = setTimeout(() => {
+          set({ token: null, userDetails: null, isAuthenticated: false });
+          Cookies.remove('token', { path: '/' });
+          Cookies.remove('userDetails', { path: '/' });
+        }, expiryTime - new Date().getTime());
+      },
+
+      clearAuth: () => {
+        Cookies.remove('token', { path: '/' });
+        Cookies.remove('userDetails', { path: '/' });
+        set({ token: null, userDetails: null, isAuthenticated: false });
+      
+      },
+
+      initializeAuth: () => {
+        const token = Cookies.get('token');
+        const userDetails = Cookies.get('userDetails');
+
+        if (token && userDetails) {
+          set({ token, userDetails: JSON.parse(userDetails), isAuthenticated: true });
+        } else {
+          set({ isAuthenticated: false });
+          
+        }
+      },
+    };
+  })
 );
 
 export default useAuthStore;
-
-

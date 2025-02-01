@@ -27,7 +27,7 @@ export const NavItems: NavItem[] = [
     link: "",
     icon: Settings2,
     subItems: [
-      { name: "Departments", link: "/list-buildings" },
+      { name: "Departments", link: "/Departments" },
       { name: "Sectors", link: "/Sectors" },
       { name: "States & Districts", link: "/States" },
     ],
