@@ -1,6 +1,7 @@
 import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import StatusToggleButton from "../pages/department-creation/components/StatusToggleButton";
 
 interface SchemeData {
   pklSchemeId: string;
@@ -17,14 +18,13 @@ interface SchemeData {
 
 export const schemeColumns: (
   navigate: ReturnType<typeof useNavigate>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<SchemeData>[] = (_navigate) => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme", accessor: "vsSchemeName" },
   {
     Header: "Targets",
     accessor: "count",
-  
   },
   { Header: "Scheme Type", accessor: "vsSchemeType" },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
@@ -54,10 +54,12 @@ export const targetColumns = (
 ): Column<TargetData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
-  { Header: "Sanction Order Number", accessor: "vsSanctionNo"
-   
-   },
-  { Header: "Date Of Sanction", accessor: "dtSanctionDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD") },
+  { Header: "Sanction Order Number", accessor: "vsSanctionNo" },
+  {
+    Header: "Date Of Sanction",
+    accessor: "dtSanctionDate",
+    Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
+  },
   { Header: "Total Target", accessor: "iTotalTarget" },
   {
     Header: "Action",
@@ -82,7 +84,7 @@ interface CourseData {
   JobRoleName: string;
   iTheoryDurationInHours: string;
   iPracticalDurationInHours: string;
-  
+
   vsSectorName: string;
   Action: unknown;
 }
@@ -104,10 +106,10 @@ export const courseColumns = (
     accessor: "dtToDate",
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
- 
+
   { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
   { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
- 
+
   {
     Header: "Action",
     accessor: "Action",
@@ -137,19 +139,18 @@ interface TrainingPartnerData {
   isVillageCity: string;
   vsCity: string;
   vsULB: number;
-  pklTpId:string;
+  pklTpId: string;
   count: number;
 }
 
 export const trainingColumns: (
   navigate: ReturnType<typeof useNavigate>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<TrainingPartnerData>[] = (_navigate) => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Centers",
-    accessor: "count", 
-  
+    accessor: "count",
   },
   { Header: "Partner Name", accessor: "vsTpName" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
@@ -158,9 +159,7 @@ export const trainingColumns: (
   { Header: "Address", accessor: "vsAddress" },
   { Header: "State", accessor: "vsState" },
   { Header: "District", accessor: "vsDistrict" },
- 
 ];
-
 
 interface TrainingCenterData {
   pklTcId: number;
@@ -194,7 +193,6 @@ export const centerColumns = (
 ];
 
 interface BatchData {
-
   pklBatchId: string;
   SDMSid: string;
   iBatchNumber: string;
@@ -229,7 +227,7 @@ interface AssessorsData {
   Mobile: string;
   vsMobile: string;
   vsAssesmentAgency: string;
-  dtValidUpTo: string
+  dtValidUpTo: string;
   Action: unknown;
 }
 
@@ -239,7 +237,7 @@ export const assessorsColumns = (
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Assessor Name", accessor: "vsAssosserName" },
   { Header: "Name", accessor: "vsEmail" },
- 
+
   { Header: "Mobile", accessor: "vsMobile" },
   { Header: "Assessor Agency", accessor: "vsAssesmentAgency" },
   {
@@ -260,7 +258,6 @@ export const assessorsColumns = (
     ),
   },
 ];
-
 
 interface TrainerData {
   pklConvTrainerId: number;
@@ -295,7 +292,6 @@ export const trainerColumns = (
   },
 ];
 
-
 interface AssessmentData {
   pklConvAssessmentId: string;
   batchId: string;
@@ -320,13 +316,21 @@ export const assessmentColumns = (
   { Header: "Batch ID", accessor: "batchId" },
   { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
   { Header: "Candidate ID", accessor: "candidateId" },
-  { Header: "Assessment Date", accessor: "dtAssessmentDate",  Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A", },
+  {
+    Header: "Assessment Date",
+    accessor: "dtAssessmentDate",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+  },
   { Header: "Agency", accessor: "vsAgency" },
- 
+
   { Header: "Accessor Name", accessor: "vsAccessorName" },
   { Header: "Result", accessor: "vsResult" },
-  { Header: "Result Date", accessor: "dtResultDate" ,  Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",},
- 
+  {
+    Header: "Result Date",
+    accessor: "dtResultDate",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+  },
+
   {
     Header: "Marksheet",
     accessor: "vsMarksheetUrl",
@@ -360,7 +364,9 @@ export const assessmentColumns = (
     accessor: "Action",
     Cell: ({ row }) => (
       <button
-        onClick={() => navigate(`/assessment/${row.original.pklConvAssessmentId}`)}
+        onClick={() =>
+          navigate(`/assessment/${row.original.pklConvAssessmentId}`)
+        }
         className="text-blue-500 hover:underline"
       >
         View
@@ -376,7 +382,7 @@ interface PlacementData {
   bIsCandidatePlaced: string;
   vsEmployeerName: string;
   vsPlacementType: string;
-  vsCandidateName: string
+  vsCandidateName: string;
   Action: unknown;
 }
 
@@ -384,19 +390,21 @@ export const placementColumns = (
   navigate: (path: string) => void
 ): Column<PlacementData>[] => [
   { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Batch ID", accessor: "batchId"},
+  { Header: "Batch ID", accessor: "batchId" },
   { Header: "Candidate ID", accessor: "candidateId" },
   { Header: "Candidate Name", accessor: "vsCandidateName" },
   { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
   { Header: "Placement Type", accessor: "vsPlacementType" },
   { Header: "Employer Name", accessor: "vsEmployeerName" },
- 
+
   {
     Header: "Action",
     accessor: "Action",
     Cell: ({ row }) => (
       <button
-        onClick={() => navigate(`/placement/${row.original.pklConvPlacementId}`)}
+        onClick={() =>
+          navigate(`/placement/${row.original.pklConvPlacementId}`)
+        }
         className="text-blue-500 hover:underline"
       >
         View
@@ -404,8 +412,6 @@ export const placementColumns = (
     ),
   },
 ];
-
-
 
 interface DepartmentListData {
   id: string;
@@ -415,6 +421,9 @@ interface DepartmentListData {
   phoneNumber: string;
   createdDate: string;
   userName: string;
+  bEnable: number;
+  Action: unknown;
+  pklDepartmentId: number;
 }
 
 export const departmentListColumns: Column<DepartmentListData>[] = [
@@ -426,7 +435,7 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
   {
     Header: "Department Name",
     accessor: "departmentName",
-    Cell: ({ value }) => value ?? "N/A",
+    Cell: ({ value }) => <span className="capitalize">{value ?? "N/A"}</span>,
   },
   {
     Header: "Contact Number",
@@ -448,6 +457,28 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     accessor: "adminName",
     Cell: ({ value }) => value ?? "N/A",
   },
+  {
+    Header: "Status",
+    accessor: "bEnable",
+    Cell: ({ value }) => (
+      <span style={{ color: value === 0 ? "red" : "green" }}>
+        {value === 0 ? "Inactive" : value === 1 ? "Active" : "N/A"}
+      </span>
+    ),
+  },
+  {
+    Header: "Action",
+    accessor: "Action",
+    Cell: ({ row }) => {
+      const { bEnable, pklDepartmentId } = row.original;
+      return (
+        <StatusToggleButton
+          initialStatus={bEnable}
+          pklTargetId={pklDepartmentId}
+        />
+      );
+    },
+  },
 ];
 
 interface InvoiceData {
@@ -458,7 +489,7 @@ interface InvoiceData {
   fAmount: string;
   fRate: string;
   iTotalCandidate: string;
- 
+
   Action: unknown;
 }
 
@@ -467,7 +498,11 @@ export const invoiceColumns = (
 ): Column<InvoiceData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
-  { Header: "Date", accessor: "vsInvoiceDate" , Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A"},
+  {
+    Header: "Date",
+    accessor: "vsInvoiceDate",
+    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+  },
   { Header: "Invoice Number", accessor: "vsInvoiceNo" },
   { Header: "Amount", accessor: "fAmount" },
   { Header: "Rate", accessor: "fRate" },
@@ -485,8 +520,6 @@ export const invoiceColumns = (
     ),
   },
 ];
-
-
 
 interface CandidateData {
   candidateId: string;
@@ -506,7 +539,11 @@ export const candidateColumns = (
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "iBatchNumber" },
   { Header: "Candidate Name", accessor: "vsCandidateName" },
-  { Header: "Date Of Birth", accessor: "vsDOB" ,  Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),},
+  {
+    Header: "Date Of Birth",
+    accessor: "vsDOB",
+    Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
+  },
   { Header: "Age", accessor: "iAge" },
   { Header: "Gender", accessor: "pklGenderId" },
   { Header: "Mobile", accessor: "vsMobile" },
@@ -524,4 +561,3 @@ export const candidateColumns = (
     ),
   },
 ];
-
