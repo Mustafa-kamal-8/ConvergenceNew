@@ -855,6 +855,7 @@ export const departmentCreationSchema = Joi.object({
   departmentName: Joi.string().required().label("Department Name").messages({
     "string.empty": "Department Name is required.",
   }),
+  departmentName1: Joi.string(),
   loginName: Joi.string().required().label("Login Name").messages({
     "string.empty": "Login Name is required.",
   }),

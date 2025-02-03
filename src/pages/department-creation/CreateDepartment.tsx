@@ -5,17 +5,29 @@ import { getCreatedDepartments } from "../../services/state/api/departmentCreati
 import ModalOpenButton from "../../components/ui/ModelOpenButton";
 import { Add } from "@mui/icons-material";
 import { Autocomplete, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Department } from "../../types/departmentCreation";
 
-interface Department {
-  pklDepartmentId: number;
-  vsDepartmentName: string;
-}
 
 const CreateDepartment = () => {
-  const { data } = useQuery({
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
+  const { data, refetch } = useQuery({
     queryKey: ["getCreatedDepartments"],
-    queryFn: getCreatedDepartments,
+    queryFn: () =>
+      getCreatedDepartments({ departmentId: selectedDepartmentId }),
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [selectedDepartmentId]);
+
+  const handleDepartmentChange = (_: any, newValue: any) => {
+    // If a department is selected, set its department ID
+    setSelectedDepartmentId(newValue?.pklDepartmentId || null);
+    refetch(); // Refetch data based on the selected department ID
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -26,8 +38,9 @@ const CreateDepartment = () => {
             option?.vsDepartmentName?.charAt(0)?.toUpperCase() +
             option?.vsDepartmentName?.slice(1)
           }
-          options={data?.departmentNameList}
+          options={data?.departmentNameList || []}
           sx={{ width: 300 }}
+          onChange={handleDepartmentChange}
           renderInput={(params) => (
             <TextField
               {...params}

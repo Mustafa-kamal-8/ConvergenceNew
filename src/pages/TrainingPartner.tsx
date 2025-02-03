@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
-import { trainingColumns as getTrainingColumns } from "../utils/tableColumns"; // Rename the import
+import {
+  DuplicateTrainingColumns,
+  trainingColumns as getTrainingColumns,
+} from "../utils/tableColumns"; // Rename the import
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import {  DownloadCloud,  UploadCloud } from "lucide-react";
+import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +19,16 @@ import Loader from "../components/ui/Loader";
 const TrainingPartner: React.FC = () => {
   const navigate = useNavigate();
   const columns = useMemo(() => getTrainingColumns(navigate), [navigate]);
+  const CrossDuplicateTrainingColumns = useMemo(
+    () => DuplicateTrainingColumns(navigate, true),
+    [navigate]
+  );
+  const duplicateTrainingColumns = useMemo(
+    () => DuplicateTrainingColumns(navigate, false),
+    [navigate]
+  );
+
+  DuplicateTrainingColumns;
   const [filteredData, setFilteredData] = useState([]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -27,11 +40,9 @@ const TrainingPartner: React.FC = () => {
     data: fetchedData,
     isLoading,
     isSuccess,
-   
   } = useQuery({
     queryKey: ["tpData", searchKey, debouncedSearchValue],
     queryFn: () => getTableData("TP", searchKey, debouncedSearchValue),
-   
   });
 
   useEffect(() => {
@@ -45,43 +56,37 @@ const TrainingPartner: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
-
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
-    setSearchValue(""); 
+    setSearchValue("");
   };
-  
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-   
   };
 
-if(isLoading){
-  return <Loader/>
-}
-  
-
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
-    
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Partners</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
-        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "TP name", value: "vsTpName" },
-                { label: "Mobile", value: "iSpocContactNum" },  
+                { label: "Mobile", value: "iSpocContactNum" },
                 { label: "SPOC Name", value: "vsSpocName" },
                 { label: "Smart ID", value: "vsSmartId" },
                 { label: "District", value: "vsDistrict" },
                 { label: "State", value: "vsState" },
                 { label: "Block", value: "vsBlock" },
-                { label: "ULB", value: "vsULB" }
+                { label: "ULB", value: "vsULB" },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
@@ -119,21 +124,42 @@ if(isLoading){
               modalTitle="Bulk Upload"
               bulkName="TP"
               Icon={UploadCloud}
-            
             />
             <ModalOpenButton
               modalType={3}
               modalTitle="Add Training Partner"
               bulkName="TP"
               Icon={Add}
-            
             />
-         
           </div>
         </div>
       </div>
+      <div className="pt-5">
+        <p className="text-2xl font-bold mb-4">Unique Training Partners</p>
+        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      </div>
 
-      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      <div className="pt-5">
+        <p className="text-2xl font-bold mb-4">
+          Duplicate Training Partners(My Department)
+        </p>
+        <CentralizedTable
+          columns={duplicateTrainingColumns}
+          data={filteredData}
+          pageSize={5}
+        />
+      </div>
+
+      <div className="pt-5">
+        <p className="text-2xl font-bold mb-4">
+          Cross-Department Duplicate Training Partners
+        </p>
+        <CentralizedTable
+          columns={CrossDuplicateTrainingColumns}
+          data={filteredData}
+          pageSize={5}
+        />
+      </div>
     </>
   );
 };

@@ -8,6 +8,7 @@ interface InputProps {
   className?: string;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   disabled?: boolean;
+  name?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -18,6 +19,7 @@ const Input: React.FC<InputProps> = ({
   className,
   onBlur,
   disabled,
+  name,
 }) => {
   // Handle the change event for 'number' type
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +35,7 @@ const Input: React.FC<InputProps> = ({
     <div>
       <input
         type={type}
+        name={name}
         className={`w-full px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 ${className}`}
         placeholder={placeholder}
         value={value}

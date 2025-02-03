@@ -3,20 +3,25 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import { departmentCreationSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Input from "../Input";
 import Label from "../Label";
 import { createDepartmentLogin } from "../../../services/state/api/departmentCreationApi";
 import { departmentCreationFormData } from "../../../types/departmentCreation";
 import useModalStore from "../../../services/state/useModelStore";
+import Dropdown from "../Dropdown";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import { useEffect, useState } from "react";
 
 const LoginCreationModal = () => {
+  const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
   const { closeModal } = useModalStore();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<departmentCreationFormData>({
     resolver: joiResolver(departmentCreationSchema),
   });
@@ -42,6 +47,15 @@ const LoginCreationModal = () => {
     },
   });
 
+  const { data: masterData, refetch } = useQuery({
+    queryKey: ["masterData", "department"],
+    queryFn: () => getMasterData("department"),
+  });
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const onSubmit: SubmitHandler<departmentCreationFormData> = (
     data: departmentCreationFormData
   ) => {
@@ -61,6 +75,51 @@ const LoginCreationModal = () => {
             name="departmentName"
             control={control}
             render={({ field }) => (
+              <>
+                {!isCustomDepartment ? (
+                  <Dropdown
+                    {...field}
+                    options={masterData?.data?.result?.department}
+                    isOtherOption
+                    getOptionLabel={(option) => option?.label}
+                    getOptionValue={(option) => option?.value}
+                    onSelect={(selectedOption) => {
+                      if (selectedOption.label === "Other") {
+                        setIsCustomDepartment(true);
+                        console.log(selectedOption);
+                        setValue("departmentName", ""); // Reset the input field
+                      } else {
+                        setIsCustomDepartment(false); // Keep dropdown
+                        field.onChange(selectedOption.label);
+                        setValue("departmentName", selectedOption.label);
+                      }
+                    }}
+                    className={errors.departmentName ? "border-red-500" : ""}
+                    placeholder="-- Select Department --"
+                  />
+                ) : (
+                  <Input
+                    type="text"
+                    placeholder="Enter Department Name"
+                    className={`w-full ${
+                      errors.departmentName ? "border-red-500" : ""
+                    }`}
+                    onChange={(e) => setValue("departmentName", e.target.value)} // Handle input separately
+                  />
+                )}
+              </>
+            )}
+          />
+          {errors.departmentName && (
+            <p className="text-red-500">{errors.departmentName.message}</p>
+          )}
+        </div>
+        {/* <div className="col-span-1">
+          <Label text="Department Name" />
+          <Controller
+            name="departmentName"
+            control={control}
+            render={({ field }) => (
               <Input
                 {...field}
                 type="text"
@@ -74,7 +133,7 @@ const LoginCreationModal = () => {
           {errors.departmentName && (
             <p className="text-red-500">{errors.departmentName.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Login Name */}
         <div className="col-span-1">

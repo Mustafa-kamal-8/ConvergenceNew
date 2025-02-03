@@ -2,16 +2,17 @@ import React from "react";
 
 type DropdownOption = {
   label: string;
-  value: number 
+  value: number | string;
 };
 
 type DropdownProps = {
   options: DropdownOption[];
   getOptionLabel?: (option: DropdownOption) => string; // Function to customize option label
-  getOptionValue?: (option: DropdownOption) => number; // Function to customize option value
+  getOptionValue?: (option: DropdownOption) => number | string; // Function to customize option value
   onSelect: (selectedValue: DropdownOption) => void; // Callback for selection
   className?: string;
   placeholder?: string;
+  isOtherOption?: boolean;
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -21,30 +22,31 @@ const Dropdown: React.FC<DropdownProps> = ({
   onSelect,
   className,
   placeholder = "Select an option",
+  isOtherOption,
 }) => {
   return (
     <select
-    onChange={(e) => {
-      const selectedOption = options.find((option) => {
-        const optionValue = String(getOptionValue(option)); // Convert to string
-        return optionValue === e.target.value;
-      });
-      if (selectedOption) {
-        onSelect(selectedOption); // Pass the selected option object
-      }
-    }}
-    className={`w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
-  >
-    <option value="" disabled selected>
-      {placeholder}
-    </option>
-    {options.map((option, index) => (
-      <option key={index} value={String(getOptionValue(option))}>
-        {getOptionLabel(option)}
+      onChange={(e) => {
+        const selectedOption = options.find((option) => {
+          const optionValue = getOptionValue(option);
+          return String(optionValue) === e.target.value;
+        });
+        if (selectedOption) {
+          onSelect(selectedOption); // Pass the selected option object
+        }
+      }}
+      className={`w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
+    >
+      <option value="" disabled selected>
+        {placeholder}
       </option>
-    ))}
-  </select>
-  
+      {isOtherOption && <option value="other">Other</option>}
+      {options?.map((option, index) => (
+        <option key={index} value={getOptionValue(option)}>
+          {getOptionLabel(option)}
+        </option>
+      ))}
+    </select>
   );
 };
 
