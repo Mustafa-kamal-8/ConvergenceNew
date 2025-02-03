@@ -384,6 +384,51 @@ const AssessmentModal: React.FC = () => {
           />
           {errors.vsTotalMarks && <p className="text-red-500">{errors.vsTotalMarks.message}</p>}
         </div>
+        <div className="col-span-1">
+          <Label text="Obtain Marks" />
+          <Controller
+            name="vsObtainedMarks"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.vsObtainedMarks ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.vsObtainedMarks && <p className="text-red-500">{errors.vsObtainedMarks.message}</p>}
+        </div>
+        <div className="col-span-1">
+          <Label text="Marksheet URL" />
+          <Controller
+            name="vsMarksheetUrl"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.vsMarksheetUrl ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.vsMarksheetUrl && <p className="text-red-500">{errors.vsMarksheetUrl.message}</p>}
+        </div>
+        <div className="col-span-1">
+          <Label text="Certificate URL" />
+          <Controller
+            name="vsCertificateUrl"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={`w-full ${errors.vsCertificateUrl ? "border-red-500" : ""}`}
+              />
+            )}
+          />
+          {errors.vsCertificateUrl && <p className="text-red-500">{errors.vsCertificateUrl.message}</p>}
+        </div>
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button

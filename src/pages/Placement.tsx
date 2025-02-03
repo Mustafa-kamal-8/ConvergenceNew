@@ -112,8 +112,8 @@ const Placement: React.FC = () => {
          
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={9}
-              templateTitle="Template"
+              templateType={10}
+              templateTitle="Placement Template"
               Icon={DownloadCloud}
             />
 

@@ -131,14 +131,17 @@ export const NavItems: NavItem[] = [
     // ],
   },
 
-
   {
-    name: "Reports",
-    link: "",
+    name: "Invoice",
+    link: "/Invoice",
     icon: Receipt,
-    subItems: [
-      { name: "Invoice", link: "/Invoice" },
-      { name: "Overall Report", link: "/add-building" },
-    ],
+    // subItems: [
+    //   { name: "Manage Users", link: "/manage-users" },
+    //   { name: "User Roles", link: "/user-roles" },
+    // ],
   },
+
+
+
+ 
 ];

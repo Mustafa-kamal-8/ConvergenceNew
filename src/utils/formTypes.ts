@@ -153,6 +153,7 @@ export interface targetFormData {
   vsSchemeCode: string;
   dtSanctionDate: string;
   iTotalTarget: number;
+  
 }
 
 export interface candidateFormData {

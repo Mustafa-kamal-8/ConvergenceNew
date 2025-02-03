@@ -28,7 +28,7 @@ const TrainingCenter: React.FC = () => {
     isLoading,
   } = useQuery({
     queryKey: ["centerData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("tp", searchKey, debouncedSearchValue),
+    queryFn: () => getTableData("tc", searchKey, debouncedSearchValue),
   });
 
   useEffect(() => {
@@ -99,8 +99,8 @@ const TrainingCenter: React.FC = () => {
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={3}
-              templateTitle="Template"
+              templateType={4}
+              templateTitle="TC Template"
               Icon={DownloadCloud}
             />
             <ModalOpenButton

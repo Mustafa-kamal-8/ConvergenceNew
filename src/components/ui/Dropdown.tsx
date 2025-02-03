@@ -2,7 +2,7 @@ import React from "react";
 
 type DropdownOption = {
   label: string;
-  value: number;
+  value: number 
 };
 
 type DropdownProps = {
@@ -24,26 +24,27 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   return (
     <select
-      onChange={(e) => {
-        const selectedOption = options.find((option) => {
-          const optionValue = getOptionValue(option);
-          return String(optionValue) === e.target.value;
-        });
-        if (selectedOption) {
-          onSelect(selectedOption); // Pass the selected option object
-        }
-      }}  
-      className={`w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
-    >
-      <option value="" disabled selected>
-        {placeholder}
+    onChange={(e) => {
+      const selectedOption = options.find((option) => {
+        const optionValue = String(getOptionValue(option)); // Convert to string
+        return optionValue === e.target.value;
+      });
+      if (selectedOption) {
+        onSelect(selectedOption); // Pass the selected option object
+      }
+    }}
+    className={`w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
+  >
+    <option value="" disabled selected>
+      {placeholder}
+    </option>
+    {options.map((option, index) => (
+      <option key={index} value={String(getOptionValue(option))}>
+        {getOptionLabel(option)}
       </option>
-      {options.map((option, index) => (
-        <option key={index} value={getOptionValue(option)}>
-          {getOptionLabel(option)}
-        </option>
-      ))}
-    </select>
+    ))}
+  </select>
+  
   );
 };
 

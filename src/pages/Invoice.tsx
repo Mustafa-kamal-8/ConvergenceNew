@@ -112,8 +112,8 @@ import SearchInputBox from "../components/ui/SearchInputBox";
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={10}
-              templateTitle="Template"
+              templateType={11}
+              templateTitle="Invoice Template"
               Icon={DownloadCloud}
             />
 

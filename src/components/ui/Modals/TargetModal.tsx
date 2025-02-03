@@ -45,7 +45,7 @@ const {closeModal} = useModalStore();
   // Extract dropdown options
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const schemeOptions = schemeData?.data?.result?.scheme?.map(
-    (scheme: { vsSchemeName: unknown; pklSchemeId: number; vsSchemeCode: unknown; dtSanctionDate: unknown; }) => ({
+    (scheme: { vsSchemeName: string; pklSchemeId: number; vsSchemeCode: string; dtSanctionDate: string; }) => ({
       label: scheme.vsSchemeName,
       value: scheme.pklSchemeId,
       vsSchemeCode: scheme.vsSchemeCode,
@@ -111,7 +111,7 @@ const {closeModal} = useModalStore();
               getOptionValue={(option) => option.value}
               onSelect={(selectedOption) => {
                 field.onChange(selectedOption.value);
-                setValue("vsSchemeCode", selectedOption.value);
+                setValue("vsSchemeCode", String(selectedOption.value)); 
               }}
               className={errors.vsSchemeCode ? "border-red-500" : ""}
               placeholder="-- Select Scheme --"

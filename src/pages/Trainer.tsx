@@ -44,8 +44,8 @@ const Trainer: React.FC = () => {
 
  useEffect(() => {
     if (isSuccess) {
-      if (fetchedData?.data && fetchedData.data.length > 0) {
-        setFilteredData(fetchedData.data);
+      if (fetchedData?.data.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
       } else {
         setFilteredData([]);
       }
@@ -118,7 +118,7 @@ const Trainer: React.FC = () => {
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={6}
-              templateTitle="Template"
+              templateTitle=" Trainer Template"
               Icon={DownloadCloud}
             />
 

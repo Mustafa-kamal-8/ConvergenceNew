@@ -22,6 +22,42 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     }  else if (templateType === 3) {
     data = [['Sl No','TP Name', 'TP Code','Spoc Name','Spoc Email','Spoc Contact Number','Smart ID','Address','State','District','City or Village','City','ULB','Village','Block']];
   } 
+  else if (templateType === 4) {
+    data = [['Sl No','TP Name', 'TC Name','TC Code','Spoc Name','Spoc Email','Spoc Contact Number','State','District','Block/ULB','ULB','City or Village','Address','Assembly Constituency','Lok Sabha Constituency','Partner Code','Smart ID']];
+  } 
+  else if (templateType === 5) {
+    data = [['SL No','Assessor Name', 'Email','Mobile','Assessment Agency','Valid Up To']];
+  } 
+  else if (templateType === 6) {
+    data = [['Sl No','Trainer Name', 'Email','Mobile','Aadhaar/PAN no']];
+  }
+  else if (templateType === 7) {
+    data = [['Sl No','TP Name', 'TC Name','Course Name','QPNOS','SDMS ID','Start Date','End Date','Sector','Batch ID']];
+  }
+  else if (templateType === 8) {
+    data = [['Sl No',	'Batch ID',	'Candidate ID',	'Candidate Name',	'DOB',	'Age',	'Father Name',	'Gender',	'Id Type', 'ID Card Number',	'Religion',	'Category',	'Mobile',	'Email',	'Education Attained',	'Disability',	'Tea Tribe',	'BPL Card Holder',	'Minority',	'Residential Address',	'Residential District',	'Residential State',	'Residential Block',	'Residential ULB',	'Residential Village/City',	'Residential Post Office',	'Residential Police',	'Residential PIN',	'Residential Council', 'Contituency',	'Residential Assembly Contituency',	'Permanent Address',	'Permanent State',	'Permanent District',	'Permanent Block',	'Permanent ULB',	'Permanent Village/City',	'Permanent Post Office',	'Permanent Police','Permanent PIN',	'Permanent Council Contituency',	'Permanent Assembly Contituency',	'Bank Holder Name',	'Bank Name',	'Branch Name',	'Account Number',	'Bank IFSC'
+    ]];
+  }
+  else if (templateType === 9) {
+    data = [['Sl No', 'Batch ID', 'SDMS Batch ID', 'Candidate ID', 'Is Assessed', 
+             'Assessment Date', 'Agency', 'Agency Mobile', 'Agency Email', 
+             'Accessor Name', 'Result', 'Result Date', 'Total Marks', 
+             'Obtained Marks', 'Marksheet URL', 'Certificate URL']];
+  }
+  else if (templateType === 10) {
+    data = [['Sl No', 'Batch ID', 'Candidate Name', 'Is Candidate Placed', 
+             'Employer Name', 'Placement Type', 'Employer Contact Number', 
+             'Placement State', 'Placement District', 'Monthly Salary']];
+  }
+
+  else if (templateType === 11) {
+    data = [['Sl No', 'Invoice Type', 'Invoice No', 'Invoice Tranche', 
+             'Batch Number', 'Total Candidate', 'Rate', 'Invoice Date', 'Amount']];
+  }
+  
+  
+  
+  
     else {
       console.error('Invalid template type');
       return;
@@ -29,10 +65,10 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
 
     const worksheet = XLSX.utils.aoa_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Template${templateType}`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Template${templateTitle}`);
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, `Template${templateType}.xlsx`);
+    saveAs(blob, `${templateTitle}.xlsx`);
   };
 
   return (

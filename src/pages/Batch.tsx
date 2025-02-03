@@ -100,8 +100,8 @@ import { useQuery } from "@tanstack/react-query";
           </div>
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={4}
-              templateTitle="Template"
+              templateType={7}
+              templateTitle="Batch Template"
               Icon={DownloadCloud}
             />
 

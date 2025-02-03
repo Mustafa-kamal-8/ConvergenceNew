@@ -119,8 +119,8 @@ const Candidate: React.FC = () => {
         
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={5}
-              templateTitle="Template"
+              templateType={8}
+              templateTitle="Candidate Template"
               Icon={DownloadCloud}
             />
 

@@ -571,5 +571,5 @@ interface DepartmentData {
 
 export const departmentColumns = (): Column<DepartmentData>[] => [
   { Header: "ID", accessor: (_row: DepartmentData, rowIndex: number) => rowIndex + 1 },
-  { Header: "Trainer Name", accessor: "vsDepartmentName" },
+  { Header: "Department Name", accessor: "vsDepartmentName" },
 ];

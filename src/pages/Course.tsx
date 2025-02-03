@@ -100,7 +100,7 @@ if (isLoading) {
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={2}
-              templateTitle="Template"
+              templateTitle="Course Template"
               Icon={DownloadCloud}
             />
 

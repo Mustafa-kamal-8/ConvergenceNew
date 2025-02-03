@@ -109,7 +109,7 @@ const Scheme: React.FC = () => {
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={0}
-              templateTitle="Template"
+              templateTitle="Scheme Template"
               Icon={DownloadCloud}
             />
             <ModalOpenButton

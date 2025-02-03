@@ -450,6 +450,15 @@ export const assessmentValidationSchema = Joi.object({
   fklTpId: Joi.number().optional().label("SDMS ID").messages({
     "string.empty": "SDMS ID is required."
   }),
+  vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
+    "string.empty": "SDMS ID is required."
+  }),
+  vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
+    "string.empty": "SDMS ID is required."
+  }),
+  vsCertificateUrl: Joi.string().optional().label("Obtain Marks").messages({
+    "string.empty": "SDMS ID is required."
+  }),
 });
 
 

@@ -113,8 +113,8 @@ import CentralizedTable from "../components/CentralizedTable";
            
           <div className="flex gap-1">
             <TemplateDownloadButton
-              templateType={8}
-              templateTitle="Template"
+              templateType={9}
+              templateTitle="Assessment Template"
               Icon={DownloadCloud}
             />
 

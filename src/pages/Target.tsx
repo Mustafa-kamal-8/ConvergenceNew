@@ -98,7 +98,7 @@ const Target: React.FC = () => {
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={1}
-              templateTitle="Template"
+              templateTitle="Target Template"
               Icon={DownloadCloud}
             />
             <ModalOpenButton
