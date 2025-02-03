@@ -697,6 +697,7 @@ export const departmentColumns = (): Column<DepartmentData>[] => [
   { Header: "ID", accessor: (_row: DepartmentData, rowIndex: number) => rowIndex + 1 },
   { Header: "Department Name", accessor: "vsDepartmentName" },
 ];
+<<<<<<< HEAD
 export const CrossCandidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
@@ -785,3 +786,16 @@ export const DuplicateCandidateColumns = (
   }
   return columns;
 };
+=======
+
+
+interface SectorData {
+  Id: number;
+  vsSectorName: string;
+}
+
+export const sectorColumns = (): Column<SectorData>[] => [
+  { Header: "ID", accessor: (_row: SectorData, rowIndex: number) => rowIndex + 1 },
+  { Header: "Sector Name", accessor: "vsSectorName" },
+];
+>>>>>>> 7e40bed (add push)

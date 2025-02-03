@@ -17,6 +17,7 @@ import PlacementModal from './Modals/PlacementModal';
 import InvoiceModal from './Modals/InvoiceModal';
 import TrainingCenterModel from './Modals/TrainingCenterModel';
 import LoginCreationModal from './Modals/LoginCreationModal';
+import SectorModal from './Modals/SectorModal';
 
 
 const CustomModal: React.FC = () => {
@@ -53,6 +54,8 @@ const CustomModal: React.FC = () => {
         return <TrainingCenterModel />;
       case 13:
         return <LoginCreationModal />;
+        case 14:
+          return <SectorModal />;
 
 
       default:
