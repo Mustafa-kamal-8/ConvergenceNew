@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";

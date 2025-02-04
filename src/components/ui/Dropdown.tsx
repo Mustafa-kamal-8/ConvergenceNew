@@ -2,7 +2,7 @@ import React from "react";
 
 type DropdownOption = {
   label: string;
-  value: number | string;
+  value: number;
 };
 
 type DropdownProps = {
