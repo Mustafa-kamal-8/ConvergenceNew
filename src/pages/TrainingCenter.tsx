@@ -28,7 +28,7 @@ const TrainingCenter: React.FC = () => {
     isLoading,
   } = useQuery({
     queryKey: ["centerData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("tc", searchKey, debouncedSearchValue),
+    queryFn: () => getTableData("TC", searchKey, debouncedSearchValue),
   });
 
   useEffect(() => {
@@ -117,6 +117,10 @@ const TrainingCenter: React.FC = () => {
             />
           </div>
         </div>
+      </div>
+      <div>
+      <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
+
       </div>
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>

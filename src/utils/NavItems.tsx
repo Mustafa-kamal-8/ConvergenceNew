@@ -70,7 +70,7 @@ export const NavItems: NavItem[] = [
     // ],
   },
   {
-    name: "Training centeres",
+    name: "Training Centeres",
     link: "/TrainingCenter",
     icon: Building2,
     // subItems: [

@@ -275,7 +275,9 @@ export const DuplicateTrainingColumns = (
           </>
         );
       },
-    });
+    },
+    { Header: "District", accessor: "department_names" },
+  );
   }
   return columns;
 };
