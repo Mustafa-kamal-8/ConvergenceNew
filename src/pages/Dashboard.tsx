@@ -16,6 +16,7 @@ import {
   Receipt,
   Settings2,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Custom hook for animated count
 const useAnimatedCount = (endValue: number, duration: number): number => {
@@ -54,18 +55,78 @@ const Dashboard: React.FC = () => {
   const convergenceCounts = masterData?.data?.convergenceCount || {};
 
   const countItems = [
-    { label: "Schemes", count: convergenceCounts.schemesCount?.[0]?.count || 0, icon: Table2 },
-    { label: "Courses", count: convergenceCounts.coursesCount?.[0]?.count || 0, icon: Book },
-    { label: "Training Partners", count: convergenceCounts.tpCount?.[0]?.count || 0, icon: Users2 },
-    { label: "Training Centers", count: convergenceCounts.tcCount?.[0]?.count || 0, icon: Building2 },
-    { label: "Batches", count: convergenceCounts.batchCount?.[0]?.count || 0, icon: Group },
-    { label: "Candidates", count: convergenceCounts.candidateCount?.[0]?.count || 0, icon: User2 },
-    { label: "Trainers", count: convergenceCounts.trainerCount?.[0]?.count || 0, icon: Spline },
-    { label: "Assessors", count: convergenceCounts.assessorCount?.[0]?.count || 0, icon: Settings2 },
-    { label: "Targets", count: convergenceCounts.targetCount?.[0]?.count || 0, icon: Receipt },
-    { label: "Assessments", count: convergenceCounts.assessmentCount?.[0]?.count || 0, icon: FileSignature },
-    { label: "Invoices", count: convergenceCounts.invoiceCount?.[0]?.count || 0, icon: Receipt },
-    { label: "Placements", count: convergenceCounts.placementCount?.[0]?.count || 0, icon: Home },
+    {
+      label: "Schemes",
+      href: "/Scheme",
+      count: convergenceCounts.schemesCount?.[0]?.count || 0,
+      icon: Table2,
+    },
+    {
+      label: "Courses",
+      href: "/Course",
+      count: convergenceCounts.coursesCount?.[0]?.count || 0,
+      icon: Book,
+    },
+    {
+      label: "Training Partners",
+      href: "/TrainingPartner",
+      count: convergenceCounts.tpCount?.[0]?.count || 0,
+      icon: Users2,
+    },
+    {
+      label: "Training Centers",
+      href: "/TrainingCenter",
+      count: convergenceCounts.tcCount?.[0]?.count || 0,
+      icon: Building2,
+    },
+    {
+      label: "Batches",
+      href: "/Batch",
+      count: convergenceCounts.batchCount?.[0]?.count || 0,
+      icon: Group,
+    },
+    {
+      label: "Candidates",
+      href: "/Candidate",
+      count: convergenceCounts.candidateCount?.[0]?.count || 0,
+      icon: User2,
+    },
+    {
+      label: "Trainers",
+      href: "/Trainer",
+      count: convergenceCounts.trainerCount?.[0]?.count || 0,
+      icon: Spline,
+    },
+    {
+      label: "Assessors",
+      href: "/Assessors",
+      count: convergenceCounts.assessorCount?.[0]?.count || 0,
+      icon: Settings2,
+    },
+    {
+      label: "Targets",
+      href: "/Target",
+      count: convergenceCounts.targetCount?.[0]?.count || 0,
+      icon: Receipt,
+    },
+    {
+      label: "Assessments",
+      href: "/Assessment",
+      count: convergenceCounts.assessmentCount?.[0]?.count || 0,
+      icon: FileSignature,
+    },
+    {
+      label: "Invoices",
+      href: "/Invoice",
+      count: convergenceCounts.invoiceCount?.[0]?.count || 0,
+      icon: Receipt,
+    },
+    {
+      label: "Placements",
+      href: "/Placement",
+      count: convergenceCounts.placementCount?.[0]?.count || 0,
+      icon: Home,
+    },
   ];
 
   // Animation duration
@@ -79,26 +140,30 @@ const Dashboard: React.FC = () => {
           const animatedCount = useAnimatedCount(item.count, duration);
           const Icon = item.icon;
           return (
-            <motion.div
-              key={index}
-              className="w-full h-44 bg-white flex flex-col items-center justify-center rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-            >
-              <div className="text-blue-600 mb-2">
-                <Icon size={40} />
-              </div>
-              <p className="text-lg font-medium text-gray-700">{item.label}</p>
-              <motion.p
-                className="text-4xl font-semibold text-gray-800 mt-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 2 }}
-                transition={{ duration: 1.0 }}
+            <Link to={item.href}>
+              <motion.div
+                key={index}
+                className="w-full h-44 bg-white flex flex-col items-center justify-center rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                {animatedCount}
-              </motion.p>
-            </motion.div>
+                <div className="text-blue-600 mb-2">
+                  <Icon size={40} />
+                </div>
+                <p className="text-lg font-medium text-gray-700">
+                  {item.label}
+                </p>
+                <motion.p
+                  className="text-4xl font-semibold text-gray-800 mt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 2 }}
+                  transition={{ duration: 1.0 }}
+                >
+                  {animatedCount}
+                </motion.p>
+              </motion.div>
+            </Link>
           );
         })}
       </div>

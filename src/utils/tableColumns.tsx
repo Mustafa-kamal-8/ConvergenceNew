@@ -66,40 +66,41 @@ export const schemeDuplicateColumns: (
   { Header: "Fund Type", accessor: "vsSchemeFundingType" },
   { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
   { Header: "Sanction Order Number", accessor: "sanctionOrderNo" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => {
-      const [open, setOpen] = useState(false);
+  { Header: "Departments", accessor: "department_names" },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => {
+  //     const [open, setOpen] = useState(false);
 
-      const handleDelete = () => {
-        console.log("Deleting scheme:", row.original);
-        setOpen(false);
-      };
+  //     const handleDelete = () => {
+  //       console.log("Deleting scheme:", row.original);
+  //       setOpen(false);
+  //     };
 
-      return (
-        <>
-          <button className="text-red-500" onClick={() => setOpen(true)}>
-            <Trash2 className="w-5 h-5" />
-          </button>
+  //     return (
+  //       <>
+  //         <button className="text-red-500" onClick={() => setOpen(true)}>
+  //           <Trash2 className="w-5 h-5" />
+  //         </button>
 
-          {/* MUI Confirm Dialog */}
-          <Dialog open={open} onClose={() => setOpen(false)}>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-            <DialogContent>Are you sure to delete this scheme?</DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpen(false)} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleDelete} color="error">
-                Yes, Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      );
-    },
-  },
+  //         {/* MUI Confirm Dialog */}
+  //         <Dialog open={open} onClose={() => setOpen(false)}>
+  //           <DialogTitle>Confirm Deletion</DialogTitle>
+  //           <DialogContent>Are you sure to delete this scheme?</DialogContent>
+  //           <DialogActions>
+  //             <Button onClick={() => setOpen(false)} color="primary">
+  //               Cancel
+  //             </Button>
+  //             <Button onClick={handleDelete} color="error">
+  //               Yes, Delete
+  //             </Button>
+  //           </DialogActions>
+  //         </Dialog>
+  //       </>
+  //     );
+  //   },
+  // },
 ];
 
 interface TargetData {
@@ -243,44 +244,42 @@ export const DuplicateTrainingColumns = (
     { Header: "Address", accessor: "vsAddress" },
     { Header: "State", accessor: "vsState" },
     { Header: "District", accessor: "vsDistrict" },
+    { Header: "Department Name", accessor: "department_names" },
   ];
   if (!isCrossDepartmentDuplicate) {
-    columns.push(
-      {
-        Header: "Action",
-        accessor: "Action",
-        Cell: ({ row }) => {
-          const [open, setOpen] = useState(false);
+    columns.push({
+      Header: "Action",
+      accessor: "Action",
+      Cell: ({ row }) => {
+        const [open, setOpen] = useState(false);
 
-          const handleDelete = () => {
-            setOpen(false);
-          };
+        const handleDelete = () => {
+          setOpen(false);
+        };
 
-          return (
-            <>
-              <button className="text-red-500" onClick={() => setOpen(true)}>
-                <Trash2 className="w-5 h-5" />
-              </button>
+        return (
+          <>
+            <button className="text-red-500" onClick={() => setOpen(true)}>
+              <Trash2 className="w-5 h-5" />
+            </button>
 
-              {/* MUI Confirm Dialog */}
-              <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <DialogContent>Are you sure to delete the TP?</DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setOpen(false)} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={handleDelete} color="error">
-                    Yes, Delete
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          );
-        },
+            {/* MUI Confirm Dialog */}
+            <Dialog open={open} onClose={() => setOpen(false)}>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogContent>Are you sure to delete the TP?</DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpen(false)} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={handleDelete} color="error">
+                  Yes, Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        );
       },
-      { Header: "Department Name", accessor: "department_names" }
-    );
+    });
   }
   return columns;
 };
