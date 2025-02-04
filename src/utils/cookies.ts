@@ -30,11 +30,11 @@ const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
 
       setAuth: (token: string, userDetails: UserDetails) => {
-        const expiryTime = new Date().getTime() + 1 * 24 * 60 * 60 * 1000; 
-
-
-        Cookies.set('token', token, { expires: 1 / 1440, path: '/' }); // 1 min in days
-        Cookies.set('userDetails', JSON.stringify(userDetails), { expires: 1 / 1440, path: '/' });
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; 
+        const expiryTime = new Date().getTime() + oneDayInMilliseconds;
+        
+        Cookies.set('token', token, { expires: 1, path: '/' }); // 1 day
+        Cookies.set('userDetails', JSON.stringify(userDetails), { expires: 1, path: '/' });
 
         set({ token, userDetails, isAuthenticated: true });
 
