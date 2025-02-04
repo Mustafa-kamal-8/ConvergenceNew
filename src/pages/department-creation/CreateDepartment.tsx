@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery } from "@tanstack/react-query";
 import CentralizedTable from "../../components/CentralizedTable";
 import { departmentListColumns } from "../../utils/tableColumns";
@@ -21,9 +22,9 @@ const CreateDepartment = () => {
 
   useEffect(() => {
     refetch();
-  }, [selectedDepartmentId]);
+  }, [refetch, selectedDepartmentId]);
 
-  const handleDepartmentChange = (_: any, newValue: any) => {
+  const handleDepartmentChange = (_: unknown, newValue: any) => {
     // If a department is selected, set its department ID
     setSelectedDepartmentId(newValue?.pklDepartmentId || null);
     refetch(); // Refetch data based on the selected department ID

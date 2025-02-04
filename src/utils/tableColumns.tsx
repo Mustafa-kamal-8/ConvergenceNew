@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -249,6 +250,7 @@ export const DuplicateTrainingColumns = (
       {
         Header: "Action",
         accessor: "Action",
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         Cell: ({ row }) => {
           const [open, setOpen] = useState(false);
 
@@ -546,10 +548,12 @@ interface DepartmentListData {
   createdDate: string;
   userName: string;
   bEnable: number;
+  password: string;
   Action: unknown;
   pklDepartmentId: number;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const departmentListColumns: Column<DepartmentListData>[] = [
   {
     Header: "Sl. No.",
@@ -562,12 +566,12 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     Cell: ({ value }) => <span className="capitalize">{value ?? "N/A"}</span>,
   },
   {
-    Header: "Contact Number",
-    accessor: "phoneNumber",
+    Header: "User Name",
+    accessor: "password",
     Cell: ({ value }) => value ?? "N/A",
   },
   {
-    Header: "User Name",
+    Header: "Password",
     accessor: "userName",
     Cell: ({ value }) => value ?? "N/A",
   },
