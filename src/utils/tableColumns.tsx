@@ -191,6 +191,7 @@ interface TrainingPartnerData {
   vsTpName: string;
   vsSpocEmail: string;
   iSpocContactNum: string;
+  department_names: string;
   vsSpocName: string;
   vsState: number;
   vsDistrict: number;
@@ -243,41 +244,42 @@ export const DuplicateTrainingColumns = (
     { Header: "District", accessor: "vsDistrict" },
   ];
   if (!isCrossDepartmentDuplicate) {
-    columns.push({
-      Header: "Action",
-      accessor: "Action",
-      Cell: ({ row }) => {
-        const [open, setOpen] = useState(false);
+    columns.push(
+      {
+        Header: "Action",
+        accessor: "Action",
+        Cell: ({ row }) => {
+          const [open, setOpen] = useState(false);
 
-        const handleDelete = () => {
-          setOpen(false);
-        };
+          const handleDelete = () => {
+            setOpen(false);
+          };
 
-        return (
-          <>
-            <button className="text-red-500" onClick={() => setOpen(true)}>
-              <Trash2 className="w-5 h-5" />
-            </button>
+          return (
+            <>
+              <button className="text-red-500" onClick={() => setOpen(true)}>
+                <Trash2 className="w-5 h-5" />
+              </button>
 
-            {/* MUI Confirm Dialog */}
-            <Dialog open={open} onClose={() => setOpen(false)}>
-              <DialogTitle>Confirm Deletion</DialogTitle>
-              <DialogContent>Are you sure to delete the TP?</DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpen(false)} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={handleDelete} color="error">
-                  Yes, Delete
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </>
-        );
+              {/* MUI Confirm Dialog */}
+              <Dialog open={open} onClose={() => setOpen(false)}>
+                <DialogTitle>Confirm Deletion</DialogTitle>
+                <DialogContent>Are you sure to delete the TP?</DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setOpen(false)} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleDelete} color="error">
+                    Yes, Delete
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+          );
+        },
       },
-    },
-    { Header: "District", accessor: "department_names" },
-  );
+      { Header: "Department Name", accessor: "department_names" }
+    );
   }
   return columns;
 };
@@ -647,7 +649,7 @@ interface CandidateData {
   iBatchNumber: string;
   vsCandidateName: string;
   department_names?: string;
-  duplicate_count?:string;
+  duplicate_count?: string;
   vsDOB: string;
   iAge: string;
   pklGenderId: string;
@@ -688,18 +690,18 @@ export const candidateColumns = (
   },
 ];
 
-
-
 interface DepartmentData {
   Id: number;
   vsDepartmentName: string;
 }
 
 export const departmentColumns = (): Column<DepartmentData>[] => [
-  { Header: "ID", accessor: (_row: DepartmentData, rowIndex: number) => rowIndex + 1 },
+  {
+    Header: "ID",
+    accessor: (_row: DepartmentData, rowIndex: number) => rowIndex + 1,
+  },
   { Header: "Department Name", accessor: "vsDepartmentName" },
 ];
-<<<<<<< HEAD
 export const CrossCandidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
@@ -788,8 +790,6 @@ export const DuplicateCandidateColumns = (
   }
   return columns;
 };
-=======
-
 
 interface SectorData {
   Id: number;
@@ -797,7 +797,9 @@ interface SectorData {
 }
 
 export const sectorColumns = (): Column<SectorData>[] => [
-  { Header: "ID", accessor: (_row: SectorData, rowIndex: number) => rowIndex + 1 },
+  {
+    Header: "ID",
+    accessor: (_row: SectorData, rowIndex: number) => rowIndex + 1,
+  },
   { Header: "Sector Name", accessor: "vsSectorName" },
 ];
->>>>>>> 7e40bed (add push)
