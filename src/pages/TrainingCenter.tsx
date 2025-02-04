@@ -56,7 +56,6 @@ const TrainingCenter: React.FC = () => {
   }
   return (
     <>
-     
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -119,10 +118,13 @@ const TrainingCenter: React.FC = () => {
         </div>
       </div>
       <div>
-      <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
-
+        <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
+        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
       </div>
-      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      <div className="pt-10">
+        <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Training Centeres</p>
+        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      </div>
     </>
   );
 };

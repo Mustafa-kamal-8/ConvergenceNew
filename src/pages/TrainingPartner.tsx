@@ -141,17 +141,6 @@ const TrainingPartner: React.FC = () => {
 
       <div className="pt-5">
         <p className="text-2xl font-bold mb-4">
-          Duplicate Training Partners(My Department)
-        </p>
-        <CentralizedTable
-          columns={duplicateTrainingColumns}
-          data={filteredData}
-          pageSize={5}
-        />
-      </div>
-
-      <div className="pt-5">
-        <p className="text-2xl font-bold mb-4">
           Cross-Department Duplicate Training Partners
         </p>
         <CentralizedTable

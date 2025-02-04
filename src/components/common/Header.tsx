@@ -53,7 +53,8 @@ const Header = ({
                 className="flex items-center gap-2 border px-4 py-1 rounded-lg shadow-sm bg-gray-50 cursor-pointer"
                 onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown visibility
               >
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 capitalize
+                ">
                   {userDetails.username}
                 </span>
               </div>

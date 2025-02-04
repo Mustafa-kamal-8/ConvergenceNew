@@ -149,17 +149,6 @@ const Candidate: React.FC = () => {
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">
-          Duplicate Candidates(Department Name)
-        </p>
-        <CentralizedTable
-          columns={duplicateTableColumns}
-          data={fetchedData?.data?.duplicate_candidate}
-          pageSize={5}
-        />
-      </div>
-
-      <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">
           Cross-Department Duplicate Candidates
         </p>
         <CentralizedTable
