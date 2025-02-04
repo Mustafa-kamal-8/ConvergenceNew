@@ -10,11 +10,7 @@ import Loader from "../components/ui/Loader";
 import { getTableData } from "../services/state/api/tableDataApi";
 import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../services/state/useDebounce";
-import {
-  candidateColumns,
-  CrossCandidateColumns,
-  DuplicateCandidateColumns,
-} from "../utils/tableColumns";
+import { candidateColumns, CrossCandidateColumns } from "../utils/tableColumns";
 import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
