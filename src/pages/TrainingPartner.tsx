@@ -23,12 +23,6 @@ const TrainingPartner: React.FC = () => {
     () => DuplicateTrainingColumns(navigate, true),
     [navigate]
   );
-  const duplicateTrainingColumns = useMemo(
-    () => DuplicateTrainingColumns(navigate, false),
-    [navigate]
-  );
-
-  DuplicateTrainingColumns;
   const [filteredData, setFilteredData] = useState([]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

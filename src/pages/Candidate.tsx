@@ -24,10 +24,6 @@ const Candidate: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => candidateColumns(navigate), [navigate]);
-  const duplicateTableColumns = useMemo(
-    () => DuplicateCandidateColumns(navigate),
-    [navigate]
-  );
   const CrossDuplicateTableColumns = useMemo(
     () => CrossCandidateColumns(navigate),
     [navigate]
