@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Input from "../../ui/Input";
@@ -7,17 +7,20 @@ import Label from "../../ui/Label";
 import Button from "../../ui/SubmitButton";
 import { SchemeFormData } from "../../../utils/formTypes";
 import { SchemeValidation } from "../../../utils/validation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitSchemeForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import useModalStore from "../../../services/state/useModelStore";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
 
 const SchemeModalContent: React.FC = () => {
 
-  const {closeModal} = useModalStore();
+  const { closeModal } = useModalStore();
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<SchemeFormData>({
     resolver: joiResolver(SchemeValidation),
@@ -25,6 +28,36 @@ const SchemeModalContent: React.FC = () => {
   });
 
   // const [selectedScheme, setSelectedScheme] = useState<string>("new");
+   const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
+
+  const { data: schemeTypeData } = useQuery({
+    queryKey: ["masterData", "schemeType"],
+    queryFn: () => getMasterData("schemeType"),
+  });
+
+
+  const schemeTypeOptions =
+    schemeTypeData?.data?.result?.schemeType?.map(
+      (states: { pklSchemeTypeId: number; vsSchemeType: string }) => ({
+        label: states.vsSchemeType,
+        value: states.pklSchemeTypeId,
+      })
+    ) || [];
+
+  const { data: schemeName } = useQuery({
+    queryKey: ["masterData", "schemeName"],
+    queryFn: () => getMasterData("schemeName"),
+  });
+
+  const schemeNameOptions =
+    schemeName?.data?.result?.schemeName?.map(
+      (schemeName: { vsSchemeName: string, pklSchemeTypeId: string }) => ({
+        label: schemeName.vsSchemeName,
+        value: schemeName.vsSchemeName,
+      })
+    ) || [];
+
+ 
 
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
@@ -46,6 +79,13 @@ const SchemeModalContent: React.FC = () => {
   const onSubmit = (data: SchemeFormData) => {
     mutation.mutate(data);
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // function setValue(_arg0: string, _value: number | string) {
+  //   console.log(_value);
+    
+  //   throw new Error("Function not implemented.");
+  // }
 
   // const schemeTypes = ["Type 1", "Type 2", "Type 3"];
   // const fundingTypes = ["Type A", "Type B", "Type C"];
@@ -105,31 +145,81 @@ const SchemeModalContent: React.FC = () => {
           </div>
         )} */}
 
-        <div>
-          <Label text="Scheme Name" />
+<div className="col-span-1">
+          <Label text="Scheme Name" required/>
           <Controller
-            control={control}
             name="scheme"
-            render={({ field }) => <Input {...field} type="text" />}
+            control={control}
+            render={({ field }) => (
+              <>
+                {!isCustomDepartment ? (
+                  <Dropdown
+                    {...field}
+                    options={schemeNameOptions}
+                    isOtherOption
+                    getOptionLabel={(option) => option?.label}
+                    getOptionValue={(option) => option?.label}
+                    onSelect={(selectedOption) => {
+                      if (selectedOption.label === "other") {
+                        setIsCustomDepartment(true);
+                        setValue("scheme", ""); // Reset the input field
+                      } else {
+                        setIsCustomDepartment(false); // Keep dropdown
+                        field.onChange(selectedOption.label);
+                        setValue("scheme", selectedOption.label);
+                      }
+                    }}
+                    className={errors.scheme ? "border-red-500" : ""}
+                    placeholder="-- Select Scheme--"
+                  />
+                ) : (
+                  <Input
+                    type="text"
+                    placeholder="Enter Scheme Name"
+                    className={`w-full ${
+                      errors.scheme ? "border-red-500" : ""
+                    }`}
+                    onChange={(e) => setValue("scheme", e.target.value)} // Handle input separately
+                  />
+                )}
+              </>
+            )}
           />
           {errors.scheme && (
             <p className="text-red-500">{errors.scheme.message}</p>
           )}
         </div>
 
-        <div>
-          <Label text="Scheme Type" />
+        <div className="col-span-1">
+          <Label text="Scheme Type" required />
           <Controller
-            control={control}
             name="schemeType"
-            render={({ field }) => <Input {...field} type="text" />}
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={schemeTypeOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+
+                  setValue("schemeType", selectedOption.value);
+                }}
+                className={errors.schemeType ? "border-red-500" : ""}
+                placeholder="-- Select Scheme Type --"
+              />
+            )}
           />
           {errors.schemeType && (
             <p className="text-red-500">{errors.schemeType.message}</p>
           )}
         </div>
+
+
+
         <div>
-          <Label text="Scheme Code" />
+          <Label text="Scheme Code" required />
           <Controller
             control={control}
             name="schemeCode"
@@ -142,7 +232,7 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Fund Name */}
         <div className="col-span-full sm:col-span-2">
-          <Label text="Fund Name" />
+          <Label text="Fund Name" required />
           <Controller
             control={control}
             name="fundName"
@@ -155,7 +245,7 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Funding Type and Ratio */}
         <div>
-          <Label text="Funding Type" />
+          <Label text="Funding Type" required />
           <Controller
             control={control}
             name="schemeFundingType"
@@ -166,7 +256,7 @@ const SchemeModalContent: React.FC = () => {
           )}
         </div>
         <div>
-          <Label text="Scheme Funding Ratio" />
+          <Label text="Scheme Funding Ratio" required />
           <Controller
             control={control}
             name="schemeFundingRatio"
@@ -179,7 +269,7 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Order Number */}
         <div className="col-span-full sm:col-span-2">
-          <Label text="Scheme Order Number" />
+          <Label text="Scheme Order Number" required />
           <Controller
             control={control}
             name="sanctionOrderNo"
@@ -192,7 +282,7 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Date Of Sanction */}
         <div>
-          <Label text="Date Of Sanction" />
+          <Label text="Date Of Sanction" required />
           <Controller
             control={control}
             name="dateOfSanction"
@@ -211,7 +301,7 @@ const SchemeModalContent: React.FC = () => {
             text="Submit"
             loadingText="Submitting..."
             loading={mutation.isPending}
-          
+
             disabled={false}
           />
         </div>

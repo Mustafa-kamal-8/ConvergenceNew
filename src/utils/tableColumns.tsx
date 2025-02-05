@@ -708,6 +708,7 @@ export const departmentColumns = (): Column<DepartmentData>[] => [
   { Header: "Department Name", accessor: "vsDepartmentName" },
 ];
 export const CrossCandidateColumns = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },

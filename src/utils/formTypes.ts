@@ -1,13 +1,14 @@
 export interface SchemeFormData {
-  schemeType: string;
+  schemeType: number;
   // selectedFundingType: string;
-  scheme: string;
+  scheme:string;
   schemeCode: string;
   fundName: string;
   schemeFundingType: string;
   schemeFundingRatio: string;
   sanctionOrderNo: string;
   dateOfSanction: string;
+  otherSchemeName: string;
   // selectedScheme: string
 }
 

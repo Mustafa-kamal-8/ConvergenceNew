@@ -21,11 +21,11 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
   scheme: Joi.string()
   .required()
   .messages({
-    "any.required": "Name is required.",
-    "string.empty": "Name  is required.",
+    "any.required": "Scheme Name is required.",
+    "string.empty": "Scheme Name is required.",
   }),
 
-  schemeType: Joi.string()
+  schemeType: Joi.number()
   .required()
   .messages({
     "any.required": "Name is required.",
@@ -54,13 +54,15 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
       "string.empty": "Funding Type is required.",
     }),
 
-  schemeFundingRatio: Joi.number()
+    schemeFundingRatio: Joi.string()
+    .pattern(/^\d+:\d+$/) // Ensures the format is "number:number"
     .required()
     .messages({
+      "string.pattern.base": "Funding Ratio must be in the format 'X:Y' (e.g., 50:50).",
       "any.required": "Funding Ratio is required.",
-      "number.empty": "Funding Ratio is required.",
+      "string.empty": "Funding Ratio is required.",
     }),
-
+  
     sanctionOrderNo: Joi.string()
     .required()
     .messages({
