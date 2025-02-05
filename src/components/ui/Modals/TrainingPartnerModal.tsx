@@ -149,7 +149,7 @@ const TrainingPartnerModal: React.FC = () => {
       >
         {/* Name */}
         <div className="col-span-2">
-          <Label text="Name" />
+          <Label text="Name" required />
           <Controller
             name="vsTpName"
             control={control}
@@ -168,7 +168,7 @@ const TrainingPartnerModal: React.FC = () => {
 
           {/* Smart ID */}
           <div className="col-span-1">
-          <Label text="Smart ID" />
+          <Label text="Smart ID (If Registered From NSDC)" />
           <Controller
             name="vsSmartId"
             control={control}
@@ -176,18 +176,36 @@ const TrainingPartnerModal: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-                className={errors.vsSmartId ? "border-red-500" : ""}
+                // className={errors.vsSmartId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.vsSmartId && (
+          {/* {errors.vsSmartId && (
             <p className="text-red-500">{errors.vsSmartId.message}</p>
+          )} */}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="PAN Card" required />
+          <Controller
+            name="vsPAN"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsPAN ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsPAN && (
+            <p className="text-red-500">{errors.vsPAN.message}</p>
           )}
         </div>
 
         {/* SPOC Name */}
         <div className="col-span-2">
-          <Label text="SPOC Name" />
+          <Label text="SPOC Name"required />
           <Controller
             name="vsSpocName"
             control={control}
@@ -208,7 +226,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* Mobile */}
         <div className="col-span-1">
-          <Label text="Mobile" />
+          <Label text="Mobile"required />
           <Controller
             name="iSpocContactNum"
             control={control}
@@ -246,7 +264,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* Address */}
         <div className="col-span-2">
-          <Label text="Address" />
+          <Label text="Address" required/>
           <Controller
             name="vsAddress"
             control={control}
@@ -265,7 +283,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* State */}
         <div className="col-span-1">
-          <Label text="State" />
+          <Label text="State" required/>
           <Controller
             name="vsState"
             control={control}
@@ -292,7 +310,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* District */}
         <div className="col-span-1">
-          <Label text="District" />
+          <Label text="District" required/>
           <Controller
             name="vsDistrict"
             control={control}
@@ -318,7 +336,7 @@ const TrainingPartnerModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-  <Label text="Village/City" />
+  <Label text="Village/City"/>
   <Controller
     name="isVillageCity"
     control={control}
@@ -341,16 +359,16 @@ const TrainingPartnerModal: React.FC = () => {
       </select>
     )}
   />
-  {errors.isVillageCity && (
+  {/* {errors.isVillageCity && (
     <p className="text-red-500">{errors.isVillageCity.message}</p>
-  )}
+  )} */}
 </div>
 
 
         {selectedVillageCity === "Village" && (
           <>
             <div className="col-span-1">
-              <Label text="Block" />
+              <Label text="Block" required/>
               <Controller
                 name="vsBlock"
                 control={control}
@@ -375,7 +393,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Village" />
+              <Label text="Village" required/>
               <Controller
                 name="vsVillage"
                 control={control}
@@ -397,7 +415,7 @@ const TrainingPartnerModal: React.FC = () => {
         {selectedVillageCity === "City" && (
           <>
             <div className="col-span-1">
-              <Label text="ULB" />
+              <Label text="ULB" required />
               <Controller
                 name="vsULB"
                 control={control}
@@ -422,7 +440,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="City" />
+              <Label text="City" required/>
               <Controller
                 name="vsCity"
                 control={control}

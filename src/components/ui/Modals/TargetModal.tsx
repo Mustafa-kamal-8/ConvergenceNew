@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Button from "../../ui/SubmitButton";
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
-import DatePicker from "react-datepicker";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { targetSchema } from "../../../utils/validation";
 import { targetFormData } from "../../../utils/formTypes";
@@ -15,16 +14,13 @@ import { submitTargetForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 import Dropdown from "../Dropdown";
 
-interface Scheme {
-  dtSanctionDate: string | null;
-}
+
 const TargetModal: React.FC = () => {
   const { closeModal } = useModalStore();
 
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
     setValue,
     // clearErrors,
@@ -32,7 +28,7 @@ const TargetModal: React.FC = () => {
     resolver: joiResolver(targetSchema),
   });
 
-  const [selectedScheme, setSelectedScheme] = useState<Scheme>();
+
 
   // Fetch scheme data
   const { data: schemeData } = useQuery({
@@ -44,10 +40,16 @@ const TargetModal: React.FC = () => {
     queryFn: () => getMasterData("targetType"),
   });
 
-  console.log(targetType);
+  const targetTypeOptions =
+  targetType?.data?.result?.targetType?.map(
+    (targetType: { vsTargetType: string; pklTargetTypeId: string }) => ({
+      label: targetType.vsTargetType,
+      value: targetType.pklTargetTypeId,
+    })
+  ) || [];
 
   // Extract dropdown options
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   const schemeOptions =
     schemeData?.data?.result?.scheme?.map(
       (scheme: {
@@ -56,57 +58,40 @@ const TargetModal: React.FC = () => {
         vsSchemeCode: string;
         dtSanctionDate: string;
       }) => ({
-        label: scheme.vsSchemeName,
+        label: scheme.vsSchemeCode,
         value: scheme.pklSchemeId,
         vsSchemeCode: scheme.vsSchemeCode,
         dtSanctionDate: scheme.dtSanctionDate,
       })
     ) || [];
 
-  const targetTypeOptions =
-    schemeData?.data?.result?.scheme?.map(
-      (scheme: {
-        vsSchemeName: string;
-        pklSchemeId: number;
-        vsSchemeCode: string;
-        dtSanctionDate: string;
-      }) => ({
-        label: scheme.vsSchemeName,
-        value: scheme.pklSchemeId,
-        vsSchemeCode: scheme.vsSchemeCode,
-        dtSanctionDate: scheme.dtSanctionDate,
-      })
-    ) || [];
+  
 
   // Watch selected scheme from the dropdown
-  const selectedSchemeId = watch("vsSchemeCode");
 
   // Update fields when scheme changes
-  useEffect(() => {
-    const scheme = schemeOptions.find(
-      (s: { value: string }) => s.value === selectedSchemeId
-    );
-    if (scheme) {
-      setSelectedScheme(scheme);
-      setValue("sanctionOrderNo", scheme.vsSchemeCode); // Update Sanction Order Number
-      setValue("dtSanctionDate", scheme.dtSanctionDate); // Update Date Of Sanction
-    }
-  }, [selectedSchemeId, schemeOptions, setValue]);
+
 
   const mutation = useMutation({
     mutationFn: (data: targetFormData) => submitTargetForm({ ...data }),
-    onSuccess: (response) => {
-      const successMessage =
-        response?.message || "Target submitted successfully!";
-      closeModal();
-      toast.success(successMessage);
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message || "An error occurred!";
-      toast.error(errorMessage);
-    },
+    onSuccess: (data) => {
+         if (data?.success) {
+           closeModal();
+           toast.success(
+             data.message || "Training Partner submitted successfully!"
+           );
+         } else {
+           toast.error(
+             data.message || "An error occurred while submitting the Training Partner."
+           );
+         }
+       },
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       onError: (error: any) => {
+         const errorMessage =
+           error?.response?.data?.message || "An unknown error occurred.";
+         toast.error(errorMessage); 
+       },
   });
 
   const onSubmit: SubmitHandler<targetFormData> = (data: targetFormData) => {
@@ -121,7 +106,7 @@ const TargetModal: React.FC = () => {
       >
         {/* Scheme Code */}
         <div className="col-span-1">
-          <Label text="Scheme" />
+          <Label text="Scheme Code" required/>
           <Controller
             name="vsSchemeCode"
             control={control}
@@ -145,32 +130,12 @@ const TargetModal: React.FC = () => {
           )}
         </div>
 
-        {/* Sanction Order Number */}
-        <div>
-          <Label text="Target Order Number" />
-          <Controller
-            name="sanctionOrderNo"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.sanctionOrderNo ? "border-red-500" : ""}
-                disabled // Make it read-only
-              />
-            )}
-          />
-          {errors.sanctionOrderNo && (
-            <p className="text-red-500 text-sm">
-              {errors.sanctionOrderNo.message}
-            </p>
-          )}
-        </div>
+       
 
         <div>
-          <Label text="Target Type" />
+          <Label text="Target Type"required />
           <Controller
-            name="sanctionOrderNo"
+            name="targetType"
             control={control}
             render={({ field }) => (
               <Dropdown
@@ -180,52 +145,57 @@ const TargetModal: React.FC = () => {
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                  setValue("vsSchemeCode", String(selectedOption.value));
+                  setValue("targetType",(selectedOption.value));
                 }}
-                className={errors.vsSchemeCode ? "border-red-500" : ""}
+                className={errors.targetType ? "border-red-500" : ""}
                 placeholder="-- Select Scheme --"
               />
             )}
           />
-          {errors.sanctionOrderNo && (
+          {errors.targetType && (
             <p className="text-red-500 text-sm">
-              {errors.sanctionOrderNo.message}
+              {errors.targetType.message}
             </p>
           )}
         </div>
-
-        {/* Date Of Target */}
-        <div>
-          <Label text="Date Of Target" />
+ {/* Sanction Order Number */}
+ <div>
+          <Label text="Target Order Number" required/>
           <Controller
-            name="dtSanctionDate"
+            name="vsTargetNo"
             control={control}
             render={({ field }) => (
-              <DatePicker
+              <Input
                 {...field}
-                selected={
-                  selectedScheme?.dtSanctionDate
-                    ? new Date(selectedScheme.dtSanctionDate)
-                    : null
-                }
-                dateFormat="yyyy-MM-dd"
-                className={`px-4 py-3 border ${
-                  errors.dtSanctionDate ? "border-red-500" : "border-gray-300"
-                } rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full`}
-                disabled // Make it read-only
+                type="text"
+                className={errors.vsTargetNo ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.dtSanctionDate && (
-            <p className="text-red-500 text-xs">
-              {errors.dtSanctionDate.message}
+          {errors.vsTargetNo && (
+            <p className="text-red-500 text-sm">
+              {errors.vsTargetNo.message}
             </p>
+          )}
+        </div>
+        {/* Date Of Target */}
+        <div>
+          <Label text="Target date" required />
+          <Controller
+            control={control}
+            name="dtTargetDate"
+            render={({ field }) => (
+              <Input {...field} type="date" className="w-full" />
+            )}
+          />
+          {errors.dtTargetDate && (
+            <p className="text-red-500">{errors.dtTargetDate.message}</p>
           )}
         </div>
 
         {/* Total Target */}
         <div>
-          <Label text="Total Target" />
+          <Label text="Total Target" required/>
           <Controller
             name="iTotalTarget"
             control={control}

@@ -109,8 +109,9 @@ interface TargetData {
   vsSchemeCode: string;
   iTotalTarget: string;
   dtSanctionDate: string;
-  vsSanctionNo: number;
+  vsTargetNo: number;
   TotalTarget: string;
+  vsTargetType: string;
   Action: unknown;
 }
 
@@ -119,9 +120,10 @@ export const targetColumns = (
 ): Column<TargetData>[] => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
-  { Header: "Sanction Order Number", accessor: "vsSanctionNo" },
+  { Header: "Target Order Number", accessor: "vsTargetNo" },
+  { Header: "Target Type", accessor: "vsTargetType" },
   {
-    Header: "Date Of Sanction",
+    Header: "Date Of Target",
     accessor: "dtSanctionDate",
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
@@ -192,13 +194,14 @@ export const courseColumns = (
 interface TrainingPartnerData {
   id: string;
   vsTpName: string;
-  vsSpocEmail: string;
+ 
   iSpocContactNum: string;
   department_names: string;
   vsSpocName: string;
   vsState: number;
   vsDistrict: number;
   vsBlock: number;
+  vsPAN: string
   vsVillage: string;
   vsAddress: string;
   vsSmartId: string;
@@ -215,17 +218,16 @@ export const trainingColumns: (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<TrainingPartnerData>[] = (_navigate) => [
   { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-  {
-    Header: "Centers",
-    accessor: "count",
-  },
+
   { Header: "Partner Name", accessor: "vsTpName" },
+  { Header: "PAN", accessor: "vsPAN" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
-  { Header: "SPOC Email", accessor: "vsSpocEmail" },
+ 
   { Header: "SPOC Contact", accessor: "iSpocContactNum" },
   { Header: "Address", accessor: "vsAddress" },
   { Header: "State", accessor: "vsState" },
   { Header: "District", accessor: "vsDistrict" },
+
 ];
 
 export const DuplicateTrainingColumns = (

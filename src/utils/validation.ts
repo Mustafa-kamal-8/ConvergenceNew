@@ -55,13 +55,14 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
     }),
 
     schemeFundingRatio: Joi.string()
-    .pattern(/^\d+:\d+$/) // Ensures the format is "number:number"
-    .required()
-    .messages({
-      "string.pattern.base": "Funding Ratio must be in the format 'X:Y' (e.g., 50:50).",
-      "any.required": "Funding Ratio is required.",
-      "string.empty": "Funding Ratio is required.",
-    }),
+  .pattern(/^\d+(:\d+)?$/) // Allows numbers (50) or ratio format (50:50)
+  .required()
+  .messages({
+    "string.pattern.base": "Funding Ratio must be a number (e.g., 50) or in 'X:Y' format (e.g., 50:50).",
+    "any.required": "Funding Ratio is required.",
+    "string.empty": "Funding Ratio is required.",
+  }),
+
   
     sanctionOrderNo: Joi.string()
     .required()
@@ -98,14 +99,14 @@ export const courseSchema = Joi.object({
     "number.base": "Total Practical Hours must be a number.",
     "any.required": "Total Practical Hours is required.",
   }),
-  dtFromDate: Joi.date().required().messages({
-    "date.base": "Date Valid From must be a valid date.",
-    "any.required": "Date Valid From is required.",
-  }),
-  dtToDate: Joi.date().required().messages({
-    "date.base": "Date Valid Upto must be a valid date.",
-    "any.required": "Date Valid Upto is required.",
-  }),
+  // dtFromDate: Joi.date().required().messages({
+  //   "date.base": "Date Valid From must be a valid date.",
+  //   "any.required": "Date Valid From is required.",
+  // }),
+  // dtToDate: Joi.date().required().messages({
+  //   "date.base": "Date Valid Upto must be a valid date.",
+  //   "any.required": "Date Valid Upto is required.",
+  // }),
 });
 
 
@@ -132,15 +133,15 @@ export const trainingPartnerSchema = Joi.object({
       "string.pattern.base": "Mobile number must be 10 digits.",
       "any.required": "Mobile number is required.",
     }),
-    vsSpocEmail: Joi.string()
-    .email({ tlds: { allow: false } }) 
-    .required()
-    .label("Email")
-    .messages({
-      "string.empty": "Email is required.",
-      "string.email": "Email must be a valid email address.",
-      "any.required": "Email is required.",
-    }),
+    // vsSpocEmail: Joi.string()
+    // .email({ tlds: { allow: false } }) 
+    // .required()
+    // .label("Email")
+    // .messages({
+    //   "string.empty": "Email is required.",
+    //   "string.email": "Email must be a valid email address.",
+    //   "any.required": "Email is required.",
+    // }),
   
     vsDistrict: Joi.number().required().label("Address").messages({
     "string.empty": "District is required.",
@@ -151,17 +152,21 @@ export const trainingPartnerSchema = Joi.object({
     "string.empty": "Address is required.",
     "any.required": "Address is required.",
   }),
-  vsSmartId: Joi.string().required().label("Smart ID").messages({
-    "string.empty": "Smart ID is required.",
-    "any.required": "Smart ID is required.",
+  vsPAN: Joi.string().required().label("PAN").messages({
+    "string.empty": "PAN Number is required.",
+    "any.required": "PAN Number is required.",
   }),
-  isVillageCity: Joi.string()
-    .required()
-    .label("Is Village City")
-    .messages({
-      "string.empty": "Village/City is required.",
-      "any.required": "Village/City is required.",
-    }),
+  // vsSmartId: Joi.string().required().label("Smart ID").messages({
+  //   "string.empty": "Smart ID is required.",
+  //   "any.required": "Smart ID is required.",
+  // }),
+  // isVillageCity: Joi.string()
+  //   .required()
+  //   .label("Is Village City")
+  //   .messages({
+  //     "string.empty": "Village/City is required.",
+  //     "any.required": "Village/City is required.",
+  //   }),
 
   vsCity: Joi.string()
     .when("isVillageCity", {
@@ -290,10 +295,10 @@ export const trainingCenterSchema = Joi.object({
       "string.pattern.base": "Mobile number must be 10 digits.",
       "any.required": "Mobile number is required.",
     }),
-  smartId: Joi.string().required().label("Smart ID").messages({
-    "string.empty": "Smart ID is required.",
-    "any.required": "Smart ID is required.",
-  }),
+  // smartId: Joi.string().required().label("Smart ID").messages({
+  //   "string.empty": "Smart ID is required.",
+  //   "any.required": "Smart ID is required.",
+  // }),
 });
 
 
@@ -577,16 +582,20 @@ export const invoiceValidationSchema = Joi.object({
 
 
 export const targetSchema = Joi.object({
-  sanctionOrderNo: Joi.string().required().label("Sanction No").messages({
+  vsTargetNo: Joi.string().required().label("Sanction No").messages({
     "string.empty": "Sector Name is required.",
   }),
   vsSchemeCode: Joi.string().required().label("Scheme Code").messages({
     "string.empty": "Scheme Code is required.",
   }),
-  dtSanctionDate: Joi.string().required().label("Sanction Date").messages({
+  dtTargetDate: Joi.string().required().label("Sanction Date").messages({
     "string.empty": "Sanction Date is required.",
   }),
   iTotalTarget: Joi.number().required().label("Total Target").messages({
+    "number.base": "Total Target must be a number.",
+    "any.required": "Total Target is required.",
+  }),
+  targetType: Joi.number().required().label("Total Target").messages({
     "number.base": "Total Target must be a number.",
     "any.required": "Total Target is required.",
   }),

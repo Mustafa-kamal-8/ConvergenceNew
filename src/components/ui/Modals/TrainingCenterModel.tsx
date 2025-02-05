@@ -160,7 +160,7 @@ const TrainingCenterModel: React.FC = () => {
       >
         {/* First Row */}
         <div>
-          <Label text="TP Name" />
+          <Label text="TP Name"required />
           <Controller
             name="vsTpName"
             control={control}
@@ -179,7 +179,7 @@ const TrainingCenterModel: React.FC = () => {
         </div>
 
         <div>
-          <Label text="Partner Code" />
+          <Label text="Partner Code" required/>
           <Controller
             name="partnerCode"
             control={control}
@@ -198,7 +198,7 @@ const TrainingCenterModel: React.FC = () => {
 
         {/* Second Row */}
         <div>
-          <Label text="Center Name" />
+          <Label text="Center Name"required />
           <Controller
             name="vsTcName"
             control={control}
@@ -224,17 +224,17 @@ const TrainingCenterModel: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-                className={errors.smartId ? "border-red-500" : ""}
+                // className={errors.smartId ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.smartId && (
+          {/* {errors.smartId && (
             <p className="text-red-500">{errors.smartId.message}</p>
-          )}
+          )} */}
         </div>
 
         <div>
-          <Label text="SPOC Name" />
+          <Label text="SPOC Name"required />
           <Controller
             name="vsSpocName"
             control={control}
@@ -290,7 +290,7 @@ const TrainingCenterModel: React.FC = () => {
       
 
         <div>
-          <Label text="SPOC Contact" />
+          <Label text="SPOC Contact"required />
           <Controller
             name="iSpocContactNum"
             control={control}
@@ -308,7 +308,7 @@ const TrainingCenterModel: React.FC = () => {
         </div>
 
         <div className="col-span-2">
-          <Label text="Address" />
+          <Label text="Address" required />
           <Controller
             name="vsAddress"
             control={control}
@@ -326,7 +326,43 @@ const TrainingCenterModel: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="State" />
+          <Label text="Longitude" required/>
+          <Controller
+            name="vsLongitude"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsLongitude ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsLongitude && (
+            <p className="text-red-500">{errors.vsLongitude.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="Latitude" required/>
+          <Controller
+            name="vsLatitude"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsLatitude ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsLatitude && (
+            <p className="text-red-500">{errors.vsLatitude.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="State" required/>
           <Controller
             name="vsState"
             control={control}
@@ -352,7 +388,7 @@ const TrainingCenterModel: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="District" />
+          <Label text="District" required/>
           <Controller
             name="vsDistrict"
             control={control}

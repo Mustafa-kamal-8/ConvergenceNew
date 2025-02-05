@@ -43,6 +43,7 @@ export interface TrainingPartnerFormData {
   isVillageCity: string;
   vsCity: string;
   vsULB: number;
+  vsPAN: string;
 }
 
 export interface TrainingCenterFormData {
@@ -50,6 +51,8 @@ export interface TrainingCenterFormData {
   partnerCode: string;
   vsTcName: string;
   // vsTcCode: string;
+  vsLongitude : string;
+  vsLatitude: string;
   vsSpocEmail: string;
   vsSpocName: string;
   iSpocContactNum: string;
@@ -150,10 +153,11 @@ export interface InvoiceFormData {
 }
 
 export interface targetFormData {
-  sanctionOrderNo: string;
+  vsTargetNo: string;
   vsSchemeCode: string;
-  dtSanctionDate: string;
+  dtTargetDate: string;
   iTotalTarget: number;
+  targetType: number
   
 }
 

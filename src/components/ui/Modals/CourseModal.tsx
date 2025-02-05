@@ -19,6 +19,7 @@ const CourseModal: React.FC = () => {
   const {
     handleSubmit,
     control,
+    watch,
     formState: { errors },
     setValue,
   } = useForm<CourseFormData>({
@@ -35,6 +36,15 @@ const CourseModal: React.FC = () => {
       console.log("Fetched master data:", masterData);
     }
   }, [masterData]);
+
+  useEffect(() => {
+    const selectedDate = watch("dtFromDate");
+    if (!selectedDate) {
+      const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+      setValue("dtFromDate", today);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("dtFromDate"), setValue]);
 
   const mutation = useMutation({
     mutationFn: submitCourseForm,
@@ -69,7 +79,7 @@ const CourseModal: React.FC = () => {
       >
         {/* Sector Name */}
         <div className="col-span-1">
-          <Label text="Sector Name" />
+          <Label text="Sector Name" required/>
           <Controller
             name="fklSectorId"
             control={control}
@@ -94,7 +104,7 @@ const CourseModal: React.FC = () => {
         </div>
 
         <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Label text="Job Role Name" />
+          <Label text="Job Role Name" required/>
           <Controller
             name="vsCourseName"
             control={control}
@@ -112,7 +122,7 @@ const CourseModal: React.FC = () => {
         </div>
         {/* QPNOS Code */}
         <div className="col-span-1 sm:col-span-1">
-          <Label text="QPNOS Code" />
+          <Label text="QPNOS Code"required />
           <Controller
             name="vsCourseCode"
             control={control}
@@ -132,7 +142,7 @@ const CourseModal: React.FC = () => {
         {/* Total Theory and Practical Hours */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
           <div>
-            <Label text="Total Theory Hours" />
+            <Label text="Total Theory Hours" required/>
             <Controller
               name="iTheoryDurationInHours"
               control={control}
@@ -153,7 +163,7 @@ const CourseModal: React.FC = () => {
             )}
           </div>
           <div>
-            <Label text="Total Practical Hours" />
+            <Label text="Total Practical Hours"required />
             <Controller
               name="iPracticalDurationInHours"
               control={control}
@@ -178,7 +188,7 @@ const CourseModal: React.FC = () => {
         {/* Date Valid From and Date Valid Upto */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
           <div>
-            <Label text="Date Valid From" />
+            <Label text="Date Valid From"/>
             <Controller
               name="dtFromDate"
               control={control}
@@ -186,13 +196,13 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="date"
-                  className={errors.dtFromDate ? "border-red-500" : ""}
+                  // className={errors.dtFromDate ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.dtFromDate && (
+            {/* {errors.dtFromDate && (
               <p className="text-red-500">{errors.dtFromDate.message}</p>
-            )}
+            )} */}
           </div>
           <div>
             <Label text="Date Valid Upto" />
@@ -203,13 +213,13 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="date"
-                  className={errors.dtToDate ? "border-red-500" : ""}
+                  // className={errors.dtToDate ? "border-red-500" : ""}
                 />
               )}
             />
-            {errors.dtToDate && (
+            {/* {errors.dtToDate && (
               <p className="text-red-500">{errors.dtToDate.message}</p>
-            )}
+            )} */}
           </div>
         </div>
 

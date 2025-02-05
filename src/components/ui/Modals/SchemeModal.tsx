@@ -58,28 +58,30 @@ const SchemeModalContent: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
     onSuccess: (data) => {
-      closeModal();
-      if (data?.success) {
-        toast.success(data.message || "Scheme submitted successfully!");
-      } else {
-        toast.error(
-          data.error || "An error occurred while submitting the scheme."
-        );
-      }
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.error || "An unknown error occurred.";
-      toast.error(errorMessage);
-    },
+         if (data?.success) {
+           closeModal();
+           toast.success(
+             data.message || "Training Partner submitted successfully!"
+           );
+         } else {
+           toast.error(
+             data.message || "An error occurred while submitting the Training Partner."
+           );
+         }
+       },
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       onError: (error: any) => {
+         const errorMessage =
+           error?.response?.data?.message || "An unknown error occurred.";
+         toast.error(errorMessage); 
+       },
   });
 
   const onSubmit = (data: SchemeFormData) => {
     mutation.mutate(data);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   // function setValue(_arg0: string, _value: number | string) {
   //   console.log(_value);
 
