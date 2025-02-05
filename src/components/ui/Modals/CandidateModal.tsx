@@ -18,6 +18,7 @@ import {
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
+// import { Autocomplete, TextField } from "@mui/material";
 
 const CandidateModal: React.FC = () => {
   const { closeModal } = useModalStore();
@@ -45,11 +46,7 @@ const CandidateModal: React.FC = () => {
     queryKey: ["masterData", "qualification"],
     queryFn: () => getMasterData("qualification"),
   });
-  useEffect(() => {
-    if (qualificationData) {
-      console.log("Fetched master data:", qualificationData);
-    }
-  }, [qualificationData]);
+  console.log("------", qualificationData?.data?.result?.qualification);
 
   const { data: genderData } = useQuery({
     queryKey: ["genderData", "gender"],
@@ -89,24 +86,27 @@ const CandidateModal: React.FC = () => {
       })
     ) || [];
 
-  const { data: idTypeData } = useQuery({
-    queryKey: ["idTypeData", "id_type"],
-    queryFn: () => getMasterData("id_type"),
-  });
+  // const { data: idTypeData } = useQuery({
+  //   queryKey: ["idTypeData", "id_type"],
+  //   queryFn: () => getMasterData("id_type"),
+  // });
 
-  useEffect(() => {
-    if (idTypeData) {
-      console.log("Fetched master data:", idTypeData);
-    }
-  }, [idTypeData]);
+  // useEffect(() => {
+  //   if (idTypeData) {
+  //     console.log("Fetched master data:", idTypeData);
+  //   }
+  // }, [idTypeData]);
 
-  const idTypeOptions =
-    idTypeData?.data?.result?.idType?.map(
-      (idType: { pklIdType: number; vsIdTypeDisplayName: string }) => ({
-        label: idType.vsIdTypeDisplayName,
-        value: idType.pklIdType,
-      })
-    ) || [];
+  const idTypeOptions = [
+    {
+      label: "Aadhaar",
+      value: 1,
+    },
+    {
+      label: "Non Aadhaar",
+      value: 0,
+    },
+  ];
 
   const { data: categoryData } = useQuery({
     queryKey: ["categoryData", "category"],
@@ -131,6 +131,12 @@ const CandidateModal: React.FC = () => {
     queryKey: ["masterData", "state"],
     queryFn: () => getMasterData("state"),
   });
+
+  const { data: batchIdOptions } = useQuery({
+    queryKey: ["masterData", "batchIdOptions"],
+    queryFn: () => getMasterData("batchCandidate"),
+  });
+
   const stateOptions =
     masterData?.data?.result?.states?.map(
       (states: { stateID: number; stateName: string }) => ({
@@ -138,6 +144,17 @@ const CandidateModal: React.FC = () => {
         value: states.stateID,
       })
     ) || [];
+
+  const batchOptions =
+    batchIdOptions?.data?.result?.batchCandidate?.map(
+      (item: { iBatchNumber: number }) => ({
+        label: item.iBatchNumber,
+        value: item.iBatchNumber,
+      })
+    ) || [];
+
+  console.log("id", batchOptions);
+  console.log("000", batchIdOptions);
 
   const { data: districtData } = useQuery({
     queryKey: ["masterData", "district", stateId],
@@ -309,7 +326,7 @@ const CandidateModal: React.FC = () => {
       >
         {/* Basic Details */}
         <div className="col-span-1">
-          <Label text="ID" />
+          <Label text="Candidate ID" required />
           <Controller
             name="candidateId"
             control={control}
@@ -327,16 +344,36 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Batch ID" />
+          <Label text="Batch ID" required />
           <Controller
             name="batchId"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="number"
-                className={errors.batchId ? "border-red-500" : ""}
+                options={batchOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+
+                  setValue("fklCategoryId", selectedOption.value);
+                }}
+                className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select Batch--"
               />
+              // <Autocomplete
+              //   disablePortal
+              //   options={batchOptions || []}
+              //   // onChange={handleDepartmentChange}
+              //   renderInput={(params) => (
+              //     <TextField
+              //       sx={{ padding: "-10px" }}
+              //       {...params}
+              //       className="capitalize"
+              //     />
+              //   )}
+              // />
             )}
           />
           {errors.batchId && (
@@ -345,7 +382,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Name" />
+          <Label text="Name" required />
           <Controller
             name="vsCandidateName"
             control={control}
@@ -363,7 +400,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Date Of Birth" />
+          <Label text="Date Of Birth" required />
           <Controller
             name="vsDOB"
             control={control}
@@ -381,7 +418,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Age" />
+          <Label text="Age" required />
           <Controller
             name="iAge"
             control={control}
@@ -397,7 +434,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Father's Name" />
+          <Label text="Father's Name" required />
           <Controller
             name="vsFatherName"
             control={control}
@@ -415,7 +452,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Gender" />
+          <Label text="Gender" required />
           <Controller
             name="vsGender"
             control={control}
@@ -440,7 +477,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
         <div className="col-span-1">
-          <Label text="ID Type" />
+          <Label text="ID Type" required />
           <Controller
             name="fklIdType"
             control={control}
@@ -453,7 +490,7 @@ const CandidateModal: React.FC = () => {
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
 
-                  setValue("fklIdType", selectedOption.value);
+                  setValue("fklIdType", selectedOption.label);
                 }}
                 className={errors.fklIdType ? "border-red-500" : ""}
                 placeholder="-- Select ID Type--"
@@ -465,7 +502,7 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
         <div className="col-span-1">
-          <Label text="UUID" />
+          <Label text="ID Number" />
           <Controller
             name="vsUUID"
             control={control}
@@ -483,7 +520,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Religion" />
+          <Label text="Religion" required />
           <Controller
             name="fklReligionId"
             control={control}
@@ -509,7 +546,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Category" />
+          <Label text="Category" required />
           <Controller
             name="fklCategoryId"
             control={control}
@@ -525,7 +562,7 @@ const CandidateModal: React.FC = () => {
                   setValue("fklCategoryId", selectedOption.value);
                 }}
                 className={errors.fklCategoryId ? "border-red-500" : ""}
-                placeholder="-- Select ID Type--"
+                placeholder="-- Select Category--"
               />
             )}
           />
@@ -535,7 +572,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Mobile Number" />
+          <Label text="Mobile Number" required />
           <Controller
             name="vsMobile"
             control={control}
@@ -574,10 +611,17 @@ const CandidateModal: React.FC = () => {
             name="vsEducationAttained"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="text"
-                className={errors.vsEducationAttained ? "border-red-500" : ""}
+                options={qualificationData?.data?.result?.qualification}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("vsEducationAttained", selectedOption.value);
+                }}
+                className={errors.fklCategoryId ? "border-red-500" : ""}
+                placeholder="-- Select Qualification--"
               />
             )}
           />
@@ -589,7 +633,7 @@ const CandidateModal: React.FC = () => {
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
         <div className="col-span-1">
-          <Label text="Disability" />
+          <Label text="Disability" required />
           <Controller
             name="bDisability"
             control={control}
@@ -622,7 +666,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div>
-          <Label text="Tea Tribe" />
+          <Label text="Tea Tribe" required />
           <Controller
             name="bTeaTribe"
             control={control}
@@ -656,7 +700,7 @@ const CandidateModal: React.FC = () => {
 
         {/* BPL Card Holder */}
         <div>
-          <Label text="BPL Card Holder" />
+          <Label text="BPL Card Holder" required />
           <Controller
             name="bBPLcardHolder"
             control={control}
@@ -690,7 +734,7 @@ const CandidateModal: React.FC = () => {
 
         {/* Minority */}
         <div>
-          <Label text="Minority" />
+          <Label text="Minority" required />
           <Controller
             name="bMinority"
             control={control}

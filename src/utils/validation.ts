@@ -11,48 +11,37 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
   //   }),
 
   // selectedFundingType: Joi.string()
-   
+
   //   .required()
   //   .messages({
   //     "any.required": "Funding Type is required.",
   //     "string.empty": "Funding Type is required.",
   //   }),
 
-  scheme: Joi.string()
-  .required()
-  .messages({
+  scheme: Joi.string().required().messages({
     "any.required": "Scheme Name is required.",
     "string.empty": "Scheme Name is required.",
   }),
 
-  schemeType: Joi.number()
-  .required()
-  .messages({
+  schemeType: Joi.number().required().messages({
     "any.required": "Name is required.",
     "string.empty": "Name  is required.",
   }),
 
-  schemeCode: Joi.string()
-    .required()
-    .messages({
-      "any.required": "Scheme Code is required.",
-      "string.empty": "Scheme Code is required.",
-    }),
+  schemeCode: Joi.string().required().messages({
+    "any.required": "Scheme Code is required.",
+    "string.empty": "Scheme Code is required.",
+  }),
 
-  fundName: Joi.string()
-    .required()
-    .messages({
-      "any.required": "Fund Name is required.",
-      "string.empty": "Fund Name is required.",
-    }),
+  fundName: Joi.string().required().messages({
+    "any.required": "Fund Name is required.",
+    "string.empty": "Fund Name is required.",
+  }),
 
-  schemeFundingType: Joi.string()
-   
-    .required()
-    .messages({
-      "any.required": "Funding Type is required.",
-      "string.empty": "Funding Type is required.",
-    }),
+  schemeFundingType: Joi.number().required().messages({
+    "any.required": "Funding Type is required.",
+    "string.empty": "Funding Type is required.",
+  }),
 
     schemeFundingRatio: Joi.string()
   .pattern(/^\d+(:\d+)?$/) // Allows numbers (50) or ratio format (50:50)
@@ -64,22 +53,17 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
   }),
 
   
-    sanctionOrderNo: Joi.string()
-    .required()
-    .messages({
-      "any.required": "Scheme Order Number is required.",
-      "string.empty": "Scheme Order Number is required.",
-    }),
+  sanctionOrderNo: Joi.string().required().messages({
+    "any.required": "Scheme Order Number is required.",
+    "string.empty": "Scheme Order Number is required.",
+  }),
 
-    dateOfSanction: Joi.date()
-    .required()
-    .messages({
-      "any.required": "Date of Sanction is required.",
-      "date.base": "Invalid date format.",
-    }),
-  
+  dateOfSanction: Joi.date().required().messages({
+    "any.required": "Date of Sanction is required.",
+    "date.base": "Invalid date format.",
+  }),
+  isSchemeFundingRatioDisabled: Joi.optional(),
 });
-
 
 export const courseSchema = Joi.object({
   fklSectorId: Joi.number().required().label("Sector Name").messages({
@@ -109,7 +93,6 @@ export const courseSchema = Joi.object({
   // }),
 });
 
-
 export const trainingPartnerSchema = Joi.object({
   vsTpName: Joi.string().required().label("Partner Name").messages({
     "string.empty": "Partner Name is required.",
@@ -119,7 +102,7 @@ export const trainingPartnerSchema = Joi.object({
     "string.empty": "SPOC Name is required.",
     "any.required": "SPOC Name is required.",
   }),
- 
+
   vsState: Joi.number().required().label("State").messages({
     "string.empty": "State is required.",
     "any.required": "State is required.",
@@ -147,7 +130,7 @@ export const trainingPartnerSchema = Joi.object({
     "string.empty": "District is required.",
     "any.required": "District is required.",
   }),
- 
+
   vsAddress: Joi.string().required().label("Address").messages({
     "string.empty": "Address is required.",
     "any.required": "Address is required.",
@@ -168,47 +151,42 @@ export const trainingPartnerSchema = Joi.object({
   //     "any.required": "Village/City is required.",
   //   }),
 
-  vsCity: Joi.string()
-    .when("isVillageCity", {
-      is: "City",
-      then: Joi.required().label("City").messages({
-        "string.empty": "City is required.",
-        "any.required": "City is required.",
-      }),
-      otherwise: Joi.optional(),
+  vsCity: Joi.string().when("isVillageCity", {
+    is: "City",
+    then: Joi.required().label("City").messages({
+      "string.empty": "City is required.",
+      "any.required": "City is required.",
     }),
+    otherwise: Joi.optional(),
+  }),
 
-  vsULB: Joi.number()
-    .when("isVillageCity", {
-      is: "City",
-      then: Joi.required().label("Village").messages({
-        "string.empty": "ULB is required.",
-        "any.required": "ULB is required.",
-      }),
-      otherwise: Joi.optional(),
+  vsULB: Joi.number().when("isVillageCity", {
+    is: "City",
+    then: Joi.required().label("Village").messages({
+      "string.empty": "ULB is required.",
+      "any.required": "ULB is required.",
     }),
+    otherwise: Joi.optional(),
+  }),
 
-  vsBlock: Joi.number()
-    .when("isVillageCity", {
-      is: "Village",
-      then: Joi.required().label("Block").messages({
-        "string.empty": "Block is required.",
-        "any.required": "Block is required.",
-      }),
-      otherwise: Joi.optional(),
+  vsBlock: Joi.number().when("isVillageCity", {
+    is: "Village",
+    then: Joi.required().label("Block").messages({
+      "string.empty": "Block is required.",
+      "any.required": "Block is required.",
     }),
+    otherwise: Joi.optional(),
+  }),
 
-  vsVillage: Joi.string()
-    .when("isVillageCity", {
-      is: "Village",
-      then: Joi.required().label("Village").messages({
-        "string.empty": "Village is required.",
-        "any.required": "Village is required.",
-      }),
-      otherwise: Joi.optional(),
+  vsVillage: Joi.string().when("isVillageCity", {
+    is: "Village",
+    then: Joi.required().label("Village").messages({
+      "string.empty": "Village is required.",
+      "any.required": "Village is required.",
     }),
+    otherwise: Joi.optional(),
+  }),
 });
-
 
 export const trainingCenterSchema = Joi.object({
   vsTpName: Joi.string().required().label("Training Partner Name").messages({
@@ -248,24 +226,22 @@ export const trainingCenterSchema = Joi.object({
     "string.empty": "District is required.",
     "any.required": "District is required.",
   }),
-  vsBlock: Joi.number()
-    .when("isVillageCity", {
-      is: "Village",
-      then: Joi.required().label("Block").messages({
-        "string.empty": "Block is required for villages.",
-        "any.required": "Block is required for villages.",
-      }),
-      otherwise: Joi.optional(),
+  vsBlock: Joi.number().when("isVillageCity", {
+    is: "Village",
+    then: Joi.required().label("Block").messages({
+      "string.empty": "Block is required for villages.",
+      "any.required": "Block is required for villages.",
     }),
-  vsVillage: Joi.string()
-    .when("isVillageCity", {
-      is: "Village",
-      then: Joi.required().label("Village").messages({
-        "string.empty": "Village is required.",
-        "any.required": "Village is required.",
-      }),
-      otherwise: Joi.optional(),
+    otherwise: Joi.optional(),
+  }),
+  vsVillage: Joi.string().when("isVillageCity", {
+    is: "Village",
+    then: Joi.required().label("Village").messages({
+      "string.empty": "Village is required.",
+      "any.required": "Village is required.",
     }),
+    otherwise: Joi.optional(),
+  }),
   vsAddress: Joi.string().required().label("Address").messages({
     "string.empty": "Address is required.",
     "any.required": "Address is required.",
@@ -278,14 +254,20 @@ export const trainingCenterSchema = Joi.object({
       "string.empty": "Please specify whether it is a Village or City.",
       "any.required": "Village/City Indicator is required.",
     }),
-    fklAssemblyConstituencyId: Joi.number().required().label("Constituency").messages({
-    "string.empty": "Constituency is required.",
-    "any.required": "Constituency is required.",
-  }),
-  fklLoksabhaConstituencyId: Joi.number().required().label("Constituency").messages({
-    "string.empty": "Constituency is required.",
-    "any.required": "Constituency is required.",
-  }),
+  fklAssemblyConstituencyId: Joi.number()
+    .required()
+    .label("Constituency")
+    .messages({
+      "string.empty": "Constituency is required.",
+      "any.required": "Constituency is required.",
+    }),
+  fklLoksabhaConstituencyId: Joi.number()
+    .required()
+    .label("Constituency")
+    .messages({
+      "string.empty": "Constituency is required.",
+      "any.required": "Constituency is required.",
+    }),
   iSpocContactNum: Joi.string()
     .pattern(/^[0-9]{10}$/)
     .required()
@@ -301,7 +283,6 @@ export const trainingCenterSchema = Joi.object({
   // }),
 });
 
-
 export const assessorSchema = Joi.object({
   // assosserId: Joi.number().required().label("Assessor ID").messages({
   //   "string.empty": "Assessor ID is required.",
@@ -310,29 +291,29 @@ export const assessorSchema = Joi.object({
     "string.empty": "Assessor Name is required.",
   }),
   vsEmail: Joi.string()
-  .email({ tlds: { allow: false } }) 
-  .required()
-  .label("Email")
-  .messages({
-    "string.empty": "Email is required.",
-    "string.email": "Email must be a valid email address.",
-    "any.required": "Email is required.",
-  }),
+    .email({ tlds: { allow: false } })
+    .required()
+    .label("Email")
+    .messages({
+      "string.empty": "Email is required.",
+      "string.email": "Email must be a valid email address.",
+      "any.required": "Email is required.",
+    }),
   vsMobile: Joi.string()
     .pattern(/^[0-9]{10}$/)
-    .required().label("Mobile")
+    .required()
+    .label("Mobile")
     .messages({
       "string.empty": "Mobile number is required.",
       "string.pattern.base": "Mobile number must be 10 digits.",
     }),
-    vsAssesmentAgency: Joi.string().required().label("Assessor Agency").messages({
+  vsAssesmentAgency: Joi.string().required().label("Assessor Agency").messages({
     "string.empty": "Assessment Agency is required.",
   }),
   dtValidUpTo: Joi.date().required().label("Valid Upto").messages({
     "date.base": "Valid Up To must be a valid date.",
   }),
 });
-
 
 export const trainerSchema = Joi.object({
   // trainerId: Joi.string().required().messages({
@@ -343,19 +324,22 @@ export const trainerSchema = Joi.object({
     "string.empty": "Trainer Name is required.",
     "any.required": "Trainer Name is required.",
   }),
-  vsMobile: Joi.string().pattern(/^[0-9]{10}$/).required().messages({
-    "string.pattern.base": "Mobile number must be 10 digits.",
-    "any.required": "Mobile number is required.",
-  }),
+  vsMobile: Joi.string()
+    .pattern(/^[0-9]{10}$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Mobile number must be 10 digits.",
+      "any.required": "Mobile number is required.",
+    }),
   vsEmail: Joi.string()
-  .email({ tlds: { allow: false } }) 
-  .required()
-  .label("Email")
-  .messages({
-    "string.empty": "Email is required.",
-    "string.email": "Email must be a valid email address.",
-    "any.required": "Email is required.",
-  }),
+    .email({ tlds: { allow: false } })
+    .required()
+    .label("Email")
+    .messages({
+      "string.empty": "Email is required.",
+      "string.email": "Email must be a valid email address.",
+      "any.required": "Email is required.",
+    }),
   vsPAN: Joi.string().required().messages({
     "string.empty": "ID Card (PAN/Voter) is required.",
     "any.required": "ID Card is required.",
@@ -367,7 +351,7 @@ export const batchSchema = Joi.object({
     "string.empty": "Batch ID is required.",
   }),
   SDMSid: Joi.string().required().label("SDMS ID").messages({
-   "string.empty": "SDMS ID is required.",
+    "string.empty": "SDMS ID is required.",
   }),
 
   dtStartDate: Joi.date().required().label("Start Date").messages({
@@ -379,12 +363,12 @@ export const batchSchema = Joi.object({
   fklSectorId: Joi.number().required().label("Sector ID").messages({
     "string.empty": "Sector ID is required.",
   }),
- 
+
   QPNOS: Joi.string().required().label("QPNOS").messages({
     "string.empty": "QPNOS is required.",
   }),
   fklCourseId: Joi.number().required().label("Course ID").messages({
-   "string.empty": "Course ID is required.",
+    "string.empty": "Course ID is required.",
   }),
   fklTpId: Joi.number().required().label("Training Partner ID").messages({
     "string.empty": "Training Partner ID is required.",
@@ -395,17 +379,13 @@ export const batchSchema = Joi.object({
   fklTrainerId: Joi.number().required().label("Trainer ID").messages({
     "string.empty": "Trainer ID required.",
   }),
-
 });
-
-
 
 export const assessmentValidationSchema = Joi.object({
   batchId: Joi.number().required().label("Batch ID").messages({
     "string.empty": "Batch ID is required.",
   }),
 
-  
   candidateId: Joi.string().required().messages({
     "string.base": `"candidateId" should be a type of 'text'`,
     "any.required": `"candidateId" is a required field`,
@@ -427,7 +407,7 @@ export const assessmentValidationSchema = Joi.object({
   //   "any.required": "Mobile number is required.",
   // }),
   //   agencyEmail: Joi.string()
-  //   .email({ tlds: { allow: false } }) 
+  //   .email({ tlds: { allow: false } })
   //   .required()
   //   .label("Email")
   //   .messages({
@@ -447,27 +427,26 @@ export const assessmentValidationSchema = Joi.object({
     "string.base": `"vsTotalMarks" should be a type of 'text'`,
     "any.required": `"vsTotalMarks" is a required field`,
   }),
- 
+
   fklTcId: Joi.number().required().label("Training Center ID").messages({
     "string.empty": "Training Center ID is required.",
   }),
   SDMSBatchId: Joi.string().optional().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
   fklTpId: Joi.number().optional().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
   vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
   vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
   vsCertificateUrl: Joi.string().optional().label("Obtain Marks").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
 });
-
 
 export const placementValidationSchema = Joi.object({
   batchId: Joi.number().required().messages({
@@ -491,16 +470,16 @@ export const placementValidationSchema = Joi.object({
     "any.required": `"Employe Name" is a required field`,
   }),
   vsEmployeerContactNumber: Joi.number()
-  .integer()
-  .min(1000000000) // Minimum 10-digit number
-  .max(9999999999) // Maximum 10-digit number
-  .required()
-  .messages({
-    "number.base": "Mobile number must be a number.",
-    "number.min": "Mobile number must be 10 digits.",
-    "number.max": "Mobile number must be 10 digits.",
-    "any.required": "Mobile number is required.",
-  }),
+    .integer()
+    .min(1000000000) // Minimum 10-digit number
+    .max(9999999999) // Maximum 10-digit number
+    .required()
+    .messages({
+      "number.base": "Mobile number must be a number.",
+      "number.min": "Mobile number must be 10 digits.",
+      "number.max": "Mobile number must be 10 digits.",
+      "any.required": "Mobile number is required.",
+    }),
 
   vsPlacementState: Joi.number().required().messages({
     "string.base": `"Placement State" should be a type of 'text'`,
@@ -518,13 +497,11 @@ export const placementValidationSchema = Joi.object({
     "string.empty": "Training Center ID is required.",
   }),
   fklTpId: Joi.number().optional().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required."
+    "string.empty": "SDMS ID is required.",
   }),
 });
 
-
 export const invoiceValidationSchema = Joi.object({
-
   fklInvoiceType: Joi.number().required().messages({
     "string.base": `"Invoice Type" should be a type of 'text'`,
     "any.required": `"Invoice Type" is a required field`,
@@ -537,31 +514,25 @@ export const invoiceValidationSchema = Joi.object({
     "string.base": `"Monthly Salary" should be a type of 'text'`,
     "any.required": `"Monthly Salary" is a required field`,
   }),
-  vsInvoiceDate: Joi.date()
-    .required()
-    .messages({
-      "any.required": "Date of Invoice is required.",
-      "date.base": "Invalid date format.",
-    }),
-    iTotalCandidate: Joi.number()
-    .integer()
-    .min(0) 
-    .required()
-    .messages({
-      "number.base": "No of Candidates must be a valid number.",
-      "number.integer": "No of Candidates must be an integer.",
-      "number.min": "No of Candidates cannot be negative.",
-      "any.required": "No of Candidates is required.",
-    }),
-  
-    fRate: Joi.string()
+  vsInvoiceDate: Joi.date().required().messages({
+    "any.required": "Date of Invoice is required.",
+    "date.base": "Invalid date format.",
+  }),
+  iTotalCandidate: Joi.number().integer().min(0).required().messages({
+    "number.base": "No of Candidates must be a valid number.",
+    "number.integer": "No of Candidates must be an integer.",
+    "number.min": "No of Candidates cannot be negative.",
+    "any.required": "No of Candidates is required.",
+  }),
+
+  fRate: Joi.string()
     .pattern(/^\d+(\.\d{1,2})?$/)
     .required()
     .messages({
       "string.empty": "Rate is required",
       "string.pattern.base": "Rate must be a valid number",
     }),
-    fAmount: Joi.string()
+  fAmount: Joi.string()
     .pattern(/^\d+(\.\d{1,2})?$/)
     .required()
     .messages({
@@ -569,17 +540,16 @@ export const invoiceValidationSchema = Joi.object({
       "string.pattern.base": "Amount must be a valid number",
     }),
 
-    fklTpId: Joi.number().required().label("Training Partner ID").messages({
-      "string.empty": "Training Partner ID is required.",
-    }),
-    fklTcId: Joi.number().required().label("Training Center ID").messages({
-      "string.empty": "Training Center ID is required.",
-    }),
-    fklBatchId: Joi.number().required().label("Batch ID").messages({
-      "string.empty": "Batch ID is required.",
-    }),
+  fklTpId: Joi.number().required().label("Training Partner ID").messages({
+    "string.empty": "Training Partner ID is required.",
+  }),
+  fklTcId: Joi.number().required().label("Training Center ID").messages({
+    "string.empty": "Training Center ID is required.",
+  }),
+  fklBatchId: Joi.number().required().label("Batch ID").messages({
+    "string.empty": "Batch ID is required.",
+  }),
 });
-
 
 export const targetSchema = Joi.object({
   vsTargetNo: Joi.string().required().label("Sanction No").messages({
@@ -601,7 +571,6 @@ export const targetSchema = Joi.object({
   }),
  
 });
-
 
 export const candidateSchema = Joi.object({
   candidateId: Joi.number().required().label("Candidate ID").messages({
@@ -657,24 +626,35 @@ export const candidateSchema = Joi.object({
       "string.empty": "Email is required.",
       "string.email": "Email must be a valid email address.",
     }),
-    batchId: Joi.number().required().label("ID Type").messages({
-      "any.required": "ID Type is required.",
+  batchId: Joi.number().required().label("ID Type").messages({
+    "any.required": "ID Type is required.",
+  }),
+  vsEducationAttained: Joi.string()
+    .required()
+    .label("Education Attained")
+    .messages({
+      "string.empty": "Education Attained is required.",
     }),
-  vsEducationAttained: Joi.string().required().label("Education Attained").messages({
-    "string.empty": "Education Attained is required.",
-  }),
-  bDisability: Joi.number().valid(0, 1).required().label("Disability").messages({
-    "any.only": "Disability must be 0 or 1.",
-    "any.required": "Disability is required.",
-  }),
+  bDisability: Joi.number()
+    .valid(0, 1)
+    .required()
+    .label("Disability")
+    .messages({
+      "any.only": "Disability must be 0 or 1.",
+      "any.required": "Disability is required.",
+    }),
   bTeaTribe: Joi.number().valid(0, 1).required().label("Tea Tribe").messages({
     "any.only": "Tea Tribe must be 0 or 1.",
     "any.required": "Tea Tribe is required.",
   }),
-  bBPLcardHolder: Joi.number().valid(0, 1).required().label("BPL Card Holder").messages({
-    "any.only": "BPL Card Holder must be 0 or 1.",
-    "any.required": "BPL Card Holder is required.",
-  }),
+  bBPLcardHolder: Joi.number()
+    .valid(0, 1)
+    .required()
+    .label("BPL Card Holder")
+    .messages({
+      "any.only": "BPL Card Holder must be 0 or 1.",
+      "any.required": "BPL Card Holder is required.",
+    }),
   bMinority: Joi.number().valid(0, 1).required().label("Minority").messages({
     "any.only": "Minority must be 0 or 1.",
     "any.required": "Minority is required.",
@@ -690,8 +670,7 @@ export const candidateSchema = Joi.object({
   vsRDistrict: Joi.number().required().label("Present District").messages({
     "any.required": "Present District is required.",
   }),
-  vsRBlock: Joi.number()
-  .when("vsRVillageCity", {
+  vsRBlock: Joi.number().when("vsRVillageCity", {
     is: "Village",
     then: Joi.required().label("Village").messages({
       "string.empty": "Block is required.",
@@ -699,8 +678,7 @@ export const candidateSchema = Joi.object({
     }),
     otherwise: Joi.optional(),
   }),
-  vsRULB: Joi.number()
-  .when("vsRVillageCity", {
+  vsRULB: Joi.number().when("vsRVillageCity", {
     is: "City",
     then: Joi.required().label("Village").messages({
       "string.empty": "ULB is required.",
@@ -709,9 +687,12 @@ export const candidateSchema = Joi.object({
     otherwise: Joi.optional(),
   }),
 
-  vsRVillageCity : Joi.string().required().label("Present Village/City").messages({
-    "string.empty": "Present Village/City is required.",
-  }),
+  vsRVillageCity: Joi.string()
+    .required()
+    .label("Present Village/City")
+    .messages({
+      "string.empty": "Present Village/City is required.",
+    }),
   vsRPostOffice: Joi.string().required().label("Present Post Office").messages({
     "string.empty": "Present Post Office is required.",
   }),
@@ -726,66 +707,75 @@ export const candidateSchema = Joi.object({
       "string.pattern.base": "PIN must be 6 digits.",
       "string.empty": "Present PIN is required.",
     }),
-  vsRCouncilContituency: Joi.number().required().label("Present Council Constituency").messages({
-    "any.required": "Present Council Constituency is required.",
-  }),
-  vsRAssemblyContituency: Joi.number().required().label("Present Assembly Constituency").messages({
-    "any.required": "Present Assembly Constituency is required.",
-  }),
- 
+  vsRCouncilContituency: Joi.number()
+    .required()
+    .label("Present Council Constituency")
+    .messages({
+      "any.required": "Present Council Constituency is required.",
+    }),
+  vsRAssemblyContituency: Joi.number()
+    .required()
+    .label("Present Assembly Constituency")
+    .messages({
+      "any.required": "Present Assembly Constituency is required.",
+    }),
 
-  iSameAddress: Joi.number().valid(0, 1).required().label("Is Permanent Same as Present Adress").messages({
-    "any.only": "Disability must be 0 or 1.",
-    "any.required": "Disability is required.",
-  }),
+  iSameAddress: Joi.number()
+    .valid(0, 1)
+    .required()
+    .label("Is Permanent Same as Present Adress")
+    .messages({
+      "any.only": "Disability must be 0 or 1.",
+      "any.required": "Disability is required.",
+    }),
 
   // Present Address
-  vsPAddress: Joi.when('vsSameAddress', {
+  vsPAddress: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.string().required().label("Present Address").messages({
       "string.empty": "Present Address is required.",
     }),
     otherwise: Joi.optional(),
   }),
-  vsPDistrict: Joi.when('vsSameAddress', {
+  vsPDistrict: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.number().required().label("Present District").messages({
       "any.required": "Present District is required.",
     }),
     otherwise: Joi.optional(),
   }),
-  vsPBlock: Joi.when('vsSameAddress', {
-    is: 0, 
-    then: Joi.when('vsPVillageCity', {
-      is: 'Village', 
+  vsPBlock: Joi.when("vsSameAddress", {
+    is: 0,
+    then: Joi.when("vsPVillageCity", {
+      is: "Village",
       then: Joi.number().required().label("Present Block").messages({
         "any.required": "Present Block is required.",
       }),
-      otherwise: Joi.optional(), 
+      otherwise: Joi.optional(),
     }),
-    otherwise: Joi.optional(), 
+    otherwise: Joi.optional(),
   }),
-  
-  vsPUlb: Joi.when('vsSameAddress', {
-    is: 0, 
-    then: Joi.when('vsPVillageCity', {
-      is: 'City', 
+
+  vsPUlb: Joi.when("vsSameAddress", {
+    is: 0,
+    then: Joi.when("vsPVillageCity", {
+      is: "City",
       then: Joi.number().required().label("Present ULB").messages({
         "any.required": "Present ULB is required.",
       }),
-      otherwise: Joi.optional(), 
+      otherwise: Joi.optional(),
     }),
-    otherwise: Joi.optional(), 
+    otherwise: Joi.optional(),
   }),
-  
-  vsPVillageCity: Joi.when('vsSameAddress', {
+
+  vsPVillageCity: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.string().required().label("Present Village/City").messages({
       "string.empty": "Present Village/City is required.",
     }),
     otherwise: Joi.optional(),
   }),
-  vsPState: Joi.when('vsSameAddress', {
+  vsPState: Joi.when("vsSameAddress", {
     is: 0, // If vsSameAddress is 0, then vsPState is required
     then: Joi.number().required().label("State").messages({
       "string.empty": "State is required.",
@@ -793,21 +783,21 @@ export const candidateSchema = Joi.object({
     }),
     otherwise: Joi.optional(), // If vsSameAddress is not 0, then vsPState is optional
   }),
-  vsPPostOffice: Joi.when('vsSameAddress', {
+  vsPPostOffice: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.string().required().label("Present Post Office").messages({
       "string.empty": "Present Post Office is required.",
     }),
     otherwise: Joi.optional(),
   }),
-  vsPPolice: Joi.when('vsSameAddress', {
+  vsPPolice: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.string().required().label("Present Police Station").messages({
       "string.empty": "Present Police Station is required.",
     }),
     otherwise: Joi.optional(),
   }),
-  vsPPIN: Joi.when('vsSameAddress', {
+  vsPPIN: Joi.when("vsSameAddress", {
     is: 0,
     then: Joi.string()
       .pattern(/^\d{6}$/)
@@ -819,18 +809,24 @@ export const candidateSchema = Joi.object({
       }),
     otherwise: Joi.optional(),
   }),
-  vsPCouncilContituency: Joi.when('vsSameAddress', {
+  vsPCouncilContituency: Joi.when("vsSameAddress", {
     is: 0,
-    then: Joi.number().required().label("Present Council Constituency").messages({
-      "any.required": "Present Council Constituency is required.",
-    }),
+    then: Joi.number()
+      .required()
+      .label("Present Council Constituency")
+      .messages({
+        "any.required": "Present Council Constituency is required.",
+      }),
     otherwise: Joi.optional(),
   }),
-  vsPAssemblyContituency: Joi.when('vsSameAddress', {
+  vsPAssemblyContituency: Joi.when("vsSameAddress", {
     is: 0,
-    then: Joi.number().required().label("Present Assembly Constituency").messages({
-      "any.required": "Present Assembly Constituency is required.",
-    }),
+    then: Joi.number()
+      .required()
+      .label("Present Assembly Constituency")
+      .messages({
+        "any.required": "Present Assembly Constituency is required.",
+      }),
     otherwise: Joi.optional(),
   }),
   // Bank Details
@@ -860,7 +856,6 @@ export const candidateSchema = Joi.object({
       "string.empty": "Bank IFSC is required.",
     }),
 });
-
 
 export const departmentCreationSchema = Joi.object({
   departmentName: Joi.string().required().label("Department Name").messages({

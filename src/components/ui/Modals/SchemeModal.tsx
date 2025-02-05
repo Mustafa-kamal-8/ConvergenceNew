@@ -55,6 +55,19 @@ const SchemeModalContent: React.FC = () => {
       })
     ) || [];
 
+  const { data: fundingType } = useQuery({
+    queryKey: ["masterData", "fundingType"],
+    queryFn: () => getMasterData("fundingType"),
+  });
+
+  const fundingTypeOptions =
+    fundingType?.data?.result?.fundingType?.map(
+      (fundingType: { vsFundingType: string; pklFundingTypeId: number }) => ({
+        label: fundingType.vsFundingType,
+        value: fundingType.pklFundingTypeId,
+      })
+    ) || [];
+
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
     onSuccess: (data) => {
@@ -78,7 +91,8 @@ const SchemeModalContent: React.FC = () => {
   });
 
   const onSubmit = (data: SchemeFormData) => {
-    mutation.mutate(data);
+    const { isSchemeFundingRatioDisabled, ...filteredData } = data;
+    mutation.mutate(filteredData);
   };
 
 
@@ -248,7 +262,31 @@ const SchemeModalContent: React.FC = () => {
           <Controller
             control={control}
             name="schemeFundingType"
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={fundingTypeOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("schemeFundingType", selectedOption.value);
+                  if (
+                    selectedOption.value === 1 ||
+                    selectedOption.value === 2 ||
+                    selectedOption.value === 3
+                  ) {
+                    setValue("schemeFundingRatio", "100");
+                    setValue("isSchemeFundingRatioDisabled", true);
+                  } else {
+                    setValue("schemeFundingRatio", "");
+                    setValue("isSchemeFundingRatioDisabled", false);
+                  }
+                }}
+                className={errors.schemeType ? "border-red-500" : ""}
+                placeholder="-- Select Scheme Type --"
+              />
+            )}
           />
           {errors.schemeFundingType && (
             <p className="text-red-500">{errors.schemeFundingType.message}</p>
@@ -259,7 +297,19 @@ const SchemeModalContent: React.FC = () => {
           <Controller
             control={control}
             name="schemeFundingRatio"
-            render={({ field }) => <Input {...field} type="text" />}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={
+                  control._getWatch("isSchemeFundingRatioDisabled") &&
+                  "bg-gray-100 cursor-not-allowed"
+                }
+                disabled={
+                  control._getWatch("isSchemeFundingRatioDisabled") || false
+                }
+              />
+            )}
           />
           {errors.schemeFundingRatio && (
             <p className="text-red-500">{errors.schemeFundingRatio.message}</p>
