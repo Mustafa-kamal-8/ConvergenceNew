@@ -15,7 +15,6 @@ import { getMasterData } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 
 const SchemeModalContent: React.FC = () => {
-
   const { closeModal } = useModalStore();
   const {
     handleSubmit,
@@ -28,13 +27,12 @@ const SchemeModalContent: React.FC = () => {
   });
 
   // const [selectedScheme, setSelectedScheme] = useState<string>("new");
-   const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
+  const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
 
   const { data: schemeTypeData } = useQuery({
     queryKey: ["masterData", "schemeType"],
     queryFn: () => getMasterData("schemeType"),
   });
-
 
   const schemeTypeOptions =
     schemeTypeData?.data?.result?.schemeType?.map(
@@ -51,13 +49,11 @@ const SchemeModalContent: React.FC = () => {
 
   const schemeNameOptions =
     schemeName?.data?.result?.schemeName?.map(
-      (schemeName: { vsSchemeName: string, pklSchemeTypeId: string }) => ({
+      (schemeName: { vsSchemeName: string; pklSchemeTypeId: string }) => ({
         label: schemeName.vsSchemeName,
         value: schemeName.vsSchemeName,
       })
     ) || [];
-
- 
 
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
@@ -66,12 +62,15 @@ const SchemeModalContent: React.FC = () => {
       if (data?.success) {
         toast.success(data.message || "Scheme submitted successfully!");
       } else {
-        toast.error(data.error || "An error occurred while submitting the scheme.");
+        toast.error(
+          data.error || "An error occurred while submitting the scheme."
+        );
       }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.error || "An unknown error occurred.";
+      const errorMessage =
+        error?.response?.data?.error || "An unknown error occurred.";
       toast.error(errorMessage);
     },
   });
@@ -83,7 +82,7 @@ const SchemeModalContent: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // function setValue(_arg0: string, _value: number | string) {
   //   console.log(_value);
-    
+
   //   throw new Error("Function not implemented.");
   // }
 
@@ -145,43 +144,32 @@ const SchemeModalContent: React.FC = () => {
           </div>
         )} */}
 
-<div className="col-span-1">
-          <Label text="Scheme Name" required/>
+        <div className="col-span-1">
+          <Label text="Scheme Name" required />
           <Controller
             name="scheme"
             control={control}
             render={({ field }) => (
               <>
-                {!isCustomDepartment ? (
-                  <Dropdown
-                    {...field}
-                    options={schemeNameOptions}
-                    isOtherOption
-                    getOptionLabel={(option) => option?.label}
-                    getOptionValue={(option) => option?.label}
-                    onSelect={(selectedOption) => {
-                      if (selectedOption.label === "other") {
-                        setIsCustomDepartment(true);
-                        setValue("scheme", ""); // Reset the input field
-                      } else {
-                        setIsCustomDepartment(false); // Keep dropdown
-                        field.onChange(selectedOption.label);
-                        setValue("scheme", selectedOption.label);
-                      }
-                    }}
-                    className={errors.scheme ? "border-red-500" : ""}
-                    placeholder="-- Select Scheme--"
-                  />
-                ) : (
-                  <Input
-                    type="text"
-                    placeholder="Enter Scheme Name"
-                    className={`w-full ${
-                      errors.scheme ? "border-red-500" : ""
-                    }`}
-                    onChange={(e) => setValue("scheme", e.target.value)} // Handle input separately
-                  />
-                )}
+                <Dropdown
+                  {...field}
+                  options={schemeNameOptions}
+                  isOtherOption
+                  getOptionLabel={(option) => option?.label}
+                  getOptionValue={(option) => option?.label}
+                  onSelect={(selectedOption) => {
+                    if (selectedOption.label === "other") {
+                      setIsCustomDepartment(true);
+                      setValue("scheme", "");
+                    } else {
+                      setIsCustomDepartment(false);
+                      field.onChange(selectedOption.label);
+                      setValue("scheme", selectedOption.label);
+                    }
+                  }}
+                  className={errors.scheme ? "border-red-500" : ""}
+                  placeholder="-- Select Scheme--"
+                />
               </>
             )}
           />
@@ -189,6 +177,17 @@ const SchemeModalContent: React.FC = () => {
             <p className="text-red-500">{errors.scheme.message}</p>
           )}
         </div>
+        {isCustomDepartment && (
+          <div className="col-span-1">
+            <Label text="Enter Schema Name" />
+            <Input
+              type="text"
+              placeholder="Enter Scheme Name"
+              className={`w-full ${errors.scheme ? "border-red-500" : ""}`}
+              onChange={(e) => setValue("scheme", e.target.value)} // Handle input separately
+            />
+          </div>
+        )}
 
         <div className="col-span-1">
           <Label text="Scheme Type" required />
@@ -215,8 +214,6 @@ const SchemeModalContent: React.FC = () => {
             <p className="text-red-500">{errors.schemeType.message}</p>
           )}
         </div>
-
-
 
         <div>
           <Label text="Scheme Code" required />
@@ -301,7 +298,6 @@ const SchemeModalContent: React.FC = () => {
             text="Submit"
             loadingText="Submitting..."
             loading={mutation.isPending}
-
             disabled={false}
           />
         </div>
@@ -311,4 +307,3 @@ const SchemeModalContent: React.FC = () => {
 };
 
 export default SchemeModalContent;
-

@@ -39,10 +39,31 @@ const TargetModal: React.FC = () => {
     queryKey: ["masterData", "scheme"],
     queryFn: () => getMasterData("scheme"),
   });
+  const { data: targetType } = useQuery({
+    queryKey: ["masterData", "targetType"],
+    queryFn: () => getMasterData("targetType"),
+  });
+
+  console.log(targetType);
 
   // Extract dropdown options
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const schemeOptions =
+    schemeData?.data?.result?.scheme?.map(
+      (scheme: {
+        vsSchemeName: string;
+        pklSchemeId: number;
+        vsSchemeCode: string;
+        dtSanctionDate: string;
+      }) => ({
+        label: scheme.vsSchemeName,
+        value: scheme.pklSchemeId,
+        vsSchemeCode: scheme.vsSchemeCode,
+        dtSanctionDate: scheme.dtSanctionDate,
+      })
+    ) || [];
+
+  const targetTypeOptions =
     schemeData?.data?.result?.scheme?.map(
       (scheme: {
         vsSchemeName: string;
@@ -126,7 +147,7 @@ const TargetModal: React.FC = () => {
 
         {/* Sanction Order Number */}
         <div>
-          <Label text="Sanction Order Number" />
+          <Label text="Target Order Number" />
           <Controller
             name="sanctionOrderNo"
             control={control}
@@ -146,9 +167,36 @@ const TargetModal: React.FC = () => {
           )}
         </div>
 
-        {/* Date Of Sanction */}
         <div>
-          <Label text="Date Of Sanction" />
+          <Label text="Target Type" />
+          <Controller
+            name="sanctionOrderNo"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={targetTypeOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("vsSchemeCode", String(selectedOption.value));
+                }}
+                className={errors.vsSchemeCode ? "border-red-500" : ""}
+                placeholder="-- Select Scheme --"
+              />
+            )}
+          />
+          {errors.sanctionOrderNo && (
+            <p className="text-red-500 text-sm">
+              {errors.sanctionOrderNo.message}
+            </p>
+          )}
+        </div>
+
+        {/* Date Of Target */}
+        <div>
+          <Label text="Date Of Target" />
           <Controller
             name="dtSanctionDate"
             control={control}
