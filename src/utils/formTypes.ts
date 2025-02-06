@@ -105,7 +105,7 @@ export interface BatchFormData {
 export type AssessmentFormData = {
   batchId: number;
 
-  candidateId: string;
+  // candidateId: string;
 
   dtAssessmentDate: string;
   // agency: string;
@@ -116,22 +116,22 @@ export type AssessmentFormData = {
   vsResult: string;
   dtResultDate: string;
   vsCertificationStatus: string;
-  vsTotalMarks: string;
-  obtainedMarks: number;
-  marksheetUrl: string;
-  certificateUrl: string;
-  fklTpId: number;
-  fklTcId: number;
+  // vsTotalMarks: string;
+  // obtainedMarks: number;
+  // marksheetUrl: string;
+  // certificateUrl: string;
+  // fklTpId: number;
+  // fklTcId: number;
   SDMSBatchId: string;
-  vsObtainedMarks: string;
-  vsMarksheetUrl: string;
-  vsCertificateUrl: string;
+  // vsObtainedMarks: string;
+  // vsMarksheetUrl: string;
+  // vsCertificateUrl: string;
 };
 
 export interface PlacementFormData {
   batchId: number;
-  fklTpId: number;
-  fklTcId: number;
+  // fklTpId: number;
+  // fklTcId: number;
   candidateId: number;
   bIsCandidatePlaced: number;
   vsPlacementType: string;

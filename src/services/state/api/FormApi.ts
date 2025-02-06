@@ -54,7 +54,7 @@ export const submitTrainingPartnerForm = async (
 };
 
 export const submitTargetForm = async (data: targetFormData) => {
-  const { sanctionOrderNo, ...restData } = data;
+  
 
   const { userDetails } = useAuthStore.getState();
 
@@ -63,8 +63,8 @@ export const submitTargetForm = async (data: targetFormData) => {
   }
 
   const requestData = {
-    ...restData,
-    vsSanctionNo: sanctionOrderNo,
+    ...data,
+  
     fklDepartmentId: userDetails?.departmentId,
     queryType: "target",
   };
@@ -109,14 +109,12 @@ export const submitCandidateForm = async (data: candidateFormData) => {
 export const submitAssesmentForm = async (data: AssessmentFormData) => {
   const { userDetails } = useAuthStore.getState();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fklTcId, fklTpId, ...filteredData } = data;
 
   if (!userDetails) {
     throw new Error("User details are not available in the store.");
   }
   const requestData = {
-    ...filteredData,
+    ...data,
     fklDepartmentId: userDetails?.departmentId,
     queryType: "assesment",
   };
@@ -127,14 +125,13 @@ export const submitAssesmentForm = async (data: AssessmentFormData) => {
 export const submitPlacementForm = async (data: PlacementFormData) => {
   const { userDetails } = useAuthStore.getState();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fklTcId, fklTpId, ...filteredData } = data;
+  
 
   if (!userDetails) {
     throw new Error("User details are not available in the store.");
   }
   const requestData = {
-    ...filteredData,
+    ...data,
     fklDepartmentId: userDetails?.departmentId,
     queryType: "placement",
   };

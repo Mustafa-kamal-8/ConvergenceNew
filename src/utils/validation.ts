@@ -386,10 +386,10 @@ export const assessmentValidationSchema = Joi.object({
     "string.empty": "Batch ID is required.",
   }),
 
-  candidateId: Joi.string().required().messages({
-    "string.base": `"candidateId" should be a type of 'text'`,
-    "any.required": `"candidateId" is a required field`,
-  }),
+  // candidateId: Joi.string().required().messages({
+  //   "string.base": `"candidateId" should be a type of 'text'`,
+  //   "any.required": `"candidateId" is a required field`,
+  // }),
   accessorId: Joi.string().required().messages({
     "string.base": `"assessedId" should be a type of 'text'`,
     "any.required": `"assessedId" is a required field`,
@@ -419,30 +419,30 @@ export const assessmentValidationSchema = Joi.object({
     "string.base": `"vsResult" should be a type of 'text'`,
     "any.required": `"vsResult" is a required field`,
   }),
-  dtResultDate: Joi.date().required().messages({
-    "string.base": `"dtResultDate" should be a type of 'text'`,
-    "any.required": `"dtResultDate" is a required field`,
-  }),
-  vsTotalMarks: Joi.date().required().messages({
-    "string.base": `"vsTotalMarks" should be a type of 'text'`,
-    "any.required": `"vsTotalMarks" is a required field`,
-  }),
+  // dtResultDate: Joi.date().required().messages({
+  //   "string.base": `"dtResultDate" should be a type of 'text'`,
+  //   "any.required": `"dtResultDate" is a required field`,
+  // }),
+  // vsTotalMarks: Joi.date().required().messages({
+  //   "string.base": `"vsTotalMarks" should be a type of 'text'`,
+  //   "any.required": `"vsTotalMarks" is a required field`,
+  // }),
 
-  fklTcId: Joi.number().required().label("Training Center ID").messages({
-    "string.empty": "Training Center ID is required.",
-  }),
+  // fklTcId: Joi.number().required().label("Training Center ID").messages({
+  //   "string.empty": "Training Center ID is required.",
+  // }),
   SDMSBatchId: Joi.string().optional().label("SDMS ID").messages({
     "string.empty": "SDMS ID is required.",
   }),
-  fklTpId: Joi.number().optional().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required.",
-  }),
-  vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
-    "string.empty": "SDMS ID is required.",
-  }),
-  vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
-    "string.empty": "SDMS ID is required.",
-  }),
+  // fklTpId: Joi.number().optional().label("SDMS ID").messages({
+  //   "string.empty": "SDMS ID is required.",
+  // }),
+  // vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
+  //   "string.empty": "SDMS ID is required.",
+  // }),
+  // vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
+  //   "string.empty": "SDMS ID is required.",
+  // }),
   vsCertificateUrl: Joi.string().optional().label("Obtain Marks").messages({
     "string.empty": "SDMS ID is required.",
   }),
@@ -465,40 +465,40 @@ export const placementValidationSchema = Joi.object({
     "string.base": `"Placement Type" should be a type of 'text'`,
     "any.required": `"Placement Type" is a required field`,
   }),
-  vsEmployeerName: Joi.string().required().messages({
-    "string.base": `"Employe Name" should be a type of 'text'`,
-    "any.required": `"Employe Name" is a required field`,
-  }),
-  vsEmployeerContactNumber: Joi.number()
-    .integer()
-    .min(1000000000) // Minimum 10-digit number
-    .max(9999999999) // Maximum 10-digit number
-    .required()
-    .messages({
-      "number.base": "Mobile number must be a number.",
-      "number.min": "Mobile number must be 10 digits.",
-      "number.max": "Mobile number must be 10 digits.",
-      "any.required": "Mobile number is required.",
-    }),
+  // vsEmployeerName: Joi.string().required().messages({
+  //   "string.base": `"Employe Name" should be a type of 'text'`,
+  //   "any.required": `"Employe Name" is a required field`,
+  // }),
+  // vsEmployeerContactNumber: Joi.number()
+  //   .integer()
+  //   .min(1000000000) // Minimum 10-digit number
+  //   .max(9999999999) // Maximum 10-digit number
+  //   .required()
+  //   .messages({
+  //     "number.base": "Mobile number must be a number.",
+  //     "number.min": "Mobile number must be 10 digits.",
+  //     "number.max": "Mobile number must be 10 digits.",
+  //     "any.required": "Mobile number is required.",
+  //   }),
 
-  vsPlacementState: Joi.number().required().messages({
-    "string.base": `"Placement State" should be a type of 'text'`,
-    "any.required": `"Placement State" is a required field`,
-  }),
-  vsPlacementDistrict: Joi.number().required().messages({
-    "string.base": `"Placement District" should be a type of 'text'`,
-    "any.required": `"Placement District" is a required field`,
-  }),
-  vsMonthlySalary: Joi.number().required().messages({
-    "string.base": `"Monthly Salary" should be a type of 'text'`,
-    "any.required": `"Monthly Salary" is a required field`,
-  }),
-  fklTcId: Joi.number().required().label("Training Center ID").messages({
-    "string.empty": "Training Center ID is required.",
-  }),
-  fklTpId: Joi.number().optional().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required.",
-  }),
+  // vsPlacementState: Joi.number().required().messages({
+  //   "string.base": `"Placement State" should be a type of 'text'`,
+  //   "any.required": `"Placement State" is a required field`,
+  // }),
+  // vsPlacementDistrict: Joi.number().required().messages({
+  //   "string.base": `"Placement District" should be a type of 'text'`,
+  //   "any.required": `"Placement District" is a required field`,
+  // }),
+  // vsMonthlySalary: Joi.number().required().messages({
+  //   "string.base": `"Monthly Salary" should be a type of 'text'`,
+  //   "any.required": `"Monthly Salary" is a required field`,
+  // }),
+  // fklTcId: Joi.number().required().label("Training Center ID").messages({
+  //   "string.empty": "Training Center ID is required.",
+  // }),
+  // fklTpId: Joi.number().optional().label("SDMS ID").messages({
+  //   "string.empty": "SDMS ID is required.",
+  // }),
 });
 
 export const invoiceValidationSchema = Joi.object({

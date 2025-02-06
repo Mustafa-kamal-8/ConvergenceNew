@@ -196,7 +196,7 @@ const TrainingCenterModel: React.FC = () => {
                   setValue("vsTpName", selectedOption.value.toString()); 
                 }}
                 className={errors.vsTpName ? "border-red-500" : ""}
-                placeholder="-- Select State --"
+                placeholder="-- TP Name --"
               />
             )}
           />
@@ -205,23 +205,7 @@ const TrainingCenterModel: React.FC = () => {
           )}
         </div>
 
-        <div>
-          <Label text="Partner Code" required/>
-          <Controller
-            name="partnerCode"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={errors.partnerCode ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.partnerCode && (
-            <p className="text-red-500">{errors.partnerCode.message}</p>
-          )}
-        </div>
+       
 
         {/* Second Row */}
         <div>
@@ -239,6 +223,24 @@ const TrainingCenterModel: React.FC = () => {
           />
           {errors.vsTcName && (
             <p className="text-red-500">{errors.vsTcName.message}</p>
+          )}
+        </div>
+
+        <div>
+          <Label text="Partner / Center Code" required/>
+          <Controller
+            name="partnerCode"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.partnerCode ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.partnerCode && (
+            <p className="text-red-500">{errors.partnerCode.message}</p>
           )}
         </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import CentralizedTable from "../components/CentralizedTable";
-import { schemeColumns, schemeDuplicateColumns } from "../utils/tableColumns";
+import { schemeColumns } from "../utils/tableColumns";
 import { getTableData } from "../services/state/api/tableDataApi";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import SearchInputBox from "../components/ui/SearchInputBox";
@@ -17,24 +17,22 @@ const Scheme: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => schemeColumns(navigate), [navigate]);
-  const duplicateTablecolumns = useMemo(
-    () => schemeDuplicateColumns(navigate),
-    [navigate]
-  );
+  const duplicateTablecolumns = useMemo(() => [
+    { Header: "Scheme Name", accessor: "vsSchemeName" },
+    { Header: "Scheme Type", accessor: "vsSchemeType" },
+    { Header: "Departments", accessor: "departmentNames" },
+  ], []);
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
-  const [totalCount, setTotalCount] = useState([]);
+  const [duplicateData, setDuplicateData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
-  const {
-    data: fetchedData,
-    isLoading,
-    isSuccess,
-  } = useQuery({
+  const { data: fetchedData, isLoading, isSuccess } = useQuery({
     queryKey: ["schemeData", searchKey, debouncedSearchValue],
     queryFn: () => getTableData("scheme", searchKey, debouncedSearchValue),
   });
@@ -46,6 +44,12 @@ const Scheme: React.FC = () => {
         setTotalCount(fetchedData.data.total_count);
       } else {
         setFilteredData([]);
+      }
+
+      if (fetchedData?.data?.duplicate_schemes && fetchedData.data.duplicate_schemes.length > 0) {
+        setDuplicateData(fetchedData.data.duplicate_schemes);
+      } else {
+        setDuplicateData([]);
       }
     }
   }, [fetchedData, isSuccess]);
@@ -77,10 +81,7 @@ const Scheme: React.FC = () => {
                 { label: "Scheme Code", value: "vsSchemeCode" },
                 { label: "Scheme Type", value: "vsSchemeType" },
                 { label: "Fund Name", value: "vsFundName" },
-                {
-                  label: "Sanction Date (yyyy/mm/dd)",
-                  value: "dtSanctionDate",
-                },
+                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
@@ -107,28 +108,12 @@ const Scheme: React.FC = () => {
             )}
           </div>
           <div className="flex gap-1">
-            <TemplateDownloadButton
-              templateType={0}
-              templateTitle="Scheme Template"
-              Icon={DownloadCloud}
-            />
-            <ModalOpenButton
-              modalType={11}
-              modalTitle="Bulk Upload"
-              bulkName="scheme"
-              Icon={UploadCloud}
-            />
-            <ModalOpenButton
-              modalType={0}
-              modalTitle="Add scheme"
-              bulkName="scheme"
-              Icon={Add}
-            />
+            <TemplateDownloadButton templateType={0} templateTitle="Scheme Template" Icon={DownloadCloud} />
+            <ModalOpenButton modalType={11} modalTitle="Bulk Upload" bulkName="scheme" Icon={UploadCloud} />
+            <ModalOpenButton modalType={0} modalTitle="Add scheme" bulkName="scheme" Icon={Add} />
           </div>
         </div>
-        <div className="py-2 text-lg text-green-600">
-          Total Count: {totalCount}
-        </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Unique Entries</p>
@@ -136,11 +121,7 @@ const Scheme: React.FC = () => {
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Duplicate Entries</p>
-        <CentralizedTable
-          columns={duplicateTablecolumns}
-          data={filteredData}
-          pageSize={5}
-        />
+        <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={5} />
       </div>
     </>
   );

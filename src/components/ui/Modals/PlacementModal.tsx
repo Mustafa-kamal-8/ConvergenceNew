@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Label from "../Label";
@@ -9,11 +9,10 @@ import { PlacementFormData } from "../../../utils/formTypes";
 import { placementValidationSchema } from "../../../utils/validation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  getBatch,
+
   getCandidateByBatch,
   getDistrictByState,
   getMasterData,
-  getTcByTp,
 } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitPlacementForm } from "../../../services/state/api/FormApi";
@@ -21,9 +20,9 @@ import { toast } from "react-toastify";
 import useModalStore from "../../../services/state/useModelStore";
 
 const PlacementModal: React.FC = () => {
-const {closeModal}  =useModalStore();
-  const [fklTpId, setTpId] = useState<number | null>(null);
-  const [fklTcId, setTcId] = useState<number | null>(null); 
+  const { closeModal } = useModalStore();
+
+
   const [batchId, setBatchId] = useState<number | null>(null);
   const [stateId, setStateId] = useState<number | null>(null);
   const {
@@ -36,18 +35,31 @@ const {closeModal}  =useModalStore();
     mode: "onChange",
   });
 
-  const { data: masterData } = useQuery({
-    queryKey: ["masterData", "tp"],
-    queryFn: () => getMasterData("tp"),
+
+
+  const { data: batchhData } = useQuery({
+    queryKey: ["masterData", "batchCandidate"],
+    queryFn: () => getMasterData("batchCandidate"),
   });
 
-  const tpOptions =
-    masterData?.data?.result?.tp?.map(
-      (tp: { pklTpId: number; vsTpName: string }) => ({
-        label: tp.vsTpName,
-        value: tp.pklTpId,
-      })
-    ) || [];
+  useEffect(() => {
+    if (batchhData) {
+      console.log("Fetched master data:", batchhData);
+    }
+  }, [batchhData]);
+
+  // const { data: masterData } = useQuery({
+  //   queryKey: ["masterData", "tp"],
+  //   queryFn: () => getMasterData("tp"),
+  // });
+
+  // const tpOptions =
+  //   masterData?.data?.result?.tp?.map(
+  //     (tp: { pklTpId: number; vsTpName: string }) => ({
+  //       label: tp.vsTpName,
+  //       value: tp.pklTpId,
+  //     })
+  //   ) || [];
 
   const { data: pTypeData } = useQuery({
     queryKey: ["masterData", "placementType"],
@@ -62,45 +74,46 @@ const {closeModal}  =useModalStore();
       })
     ) || [];
 
-  const { data: tcData } = useQuery({
-    queryKey: ["masterData", "tc", fklTpId],
-    queryFn: () => getTcByTp(fklTpId, "tc"),
-    enabled: !!fklTpId,
-  });
+  // const { data: tcData } = useQuery({
+  //   queryKey: ["masterData", "tc", fklTpId],
+  //   queryFn: () => getTcByTp(fklTpId, "tc"),
+  //   enabled: !!fklTpId,
+  // });
 
-  const tcOptions =
-    tcData?.data?.result?.tc?.map(
-      (tc: { pklTcId: number; vsTcName: string }) => ({
-        label: tc.vsTcName,
-        value: tc.pklTcId,
-      })
-    ) || [];
+  // const tcOptions =
+  //   tcData?.data?.result?.tc?.map(
+  //     (tc: { pklTcId: number; vsTcName: string }) => ({
+  //       label: tc.vsTcName,
+  //       value: tc.pklTcId,
+  //     })
+  //   ) || [];
 
-  const { data: batchData } = useQuery({
-    queryKey: ["getBatch", "tc", fklTpId, fklTcId],
-    queryFn: () => getBatch(fklTpId, "batch", fklTcId),
-    enabled: !!fklTcId && !!fklTpId,
-  });
+  // const { data: batchData } = useQuery({
+  //   queryKey: ["getBatch", "tc", fklTpId, fklTcId],
+  //   queryFn: () => getBatch(fklTpId, "batch", fklTcId),
+  //   enabled: !!fklTcId && !!fklTpId,
+  // });
+  // console.log(batchData)
 
   const batchOptions =
-    batchData?.data?.result?.batch?.map(
-      (batch: { pklBatchId: number; iBatchNumber: number }) => ({
+    batchhData?.data?.result?.batchCandidate?.map(
+      (batch: { id: number; iBatchNumber: number }) => ({
         label: batch.iBatchNumber,
-        value: batch.pklBatchId,
+        value: batch.id,
       })
     ) || [];
 
   const { data: candidateData } = useQuery({
-    queryKey: ["masterData", "candidateID", batchId],
-    queryFn: () => getCandidateByBatch(batchId, "candidateID"),
+    queryKey: ["masterData", "candidateByBatch", batchId],
+    queryFn: () => getCandidateByBatch(batchId, "candidateByBatch"),
     enabled: !!batchId,
   });
 
   const candidateOptions =
-    candidateData?.data?.result?.candidateID?.map(
-      (tc: { pklCandidateBasicId: number; candidateId: number }) => ({
-        label: tc.candidateId,
-        value: tc.candidateId,
+    candidateData?.data?.result?.candidateByBatchId?.map(
+      (tc: { id: number; name: string }) => ({
+        label: tc.name,
+        value: tc.id,
       })
     ) || [];
 
@@ -128,6 +141,7 @@ const {closeModal}  =useModalStore();
         value: districts.districtID,
       })
     ) || [];
+
 
   const mutation = useMutation({
     mutationFn: submitPlacementForm,
@@ -161,8 +175,8 @@ const {closeModal}  =useModalStore();
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-      
-        <div className="col-span-1">
+
+        {/* <div className="col-span-1">
           <Label text="Training Partner" />
           <Controller
             name="fklTpId"
@@ -212,11 +226,11 @@ const {closeModal}  =useModalStore();
           {errors.fklTcId && (
             <p className="text-red-500">{errors.fklTcId.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Batch ID */}
         <div className="col-span-1">
-          <Label text="Batch" />
+          <Label text="Batch" required />
           <Controller
             name="batchId"
             control={control}
@@ -243,7 +257,7 @@ const {closeModal}  =useModalStore();
 
         {/* Candidate ID */}
         <div className="col-span-1">
-          <Label text="Candidate ID" />
+          <Label text="Candidate ID" required />
           <Controller
             name="candidateId"
             control={control}
@@ -269,44 +283,44 @@ const {closeModal}  =useModalStore();
 
         {/* Is Candidate Placed? */}
         <div>
-  <Label text="Is Candidate Placed?" />
-  <Controller
-    name="bIsCandidatePlaced"
-    control={control}
-    render={({ field }) => (
-      <div className="flex items-center gap-4">
-        <label>
-          <input
-            {...field}
-            type="radio"
-            value="1"
-            checked={field.value === 1}
-            onChange={() => field.onChange(1)}
+          <Label text="Is Candidate Placed?" required />
+          <Controller
+            name="bIsCandidatePlaced"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-4">
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="1"
+                    checked={field.value === 1}
+                    onChange={() => field.onChange(1)}
+                  />
+                  Yes
+                </label>
+                <label>
+                  <input
+                    {...field}
+                    type="radio"
+                    value="0"
+                    checked={field.value === 0}
+                    onChange={() => field.onChange(0)}
+                  />
+                  No
+                </label>
+              </div>
+            )}
           />
-          Yes
-        </label>
-        <label>
-          <input
-            {...field}
-            type="radio"
-            value="0"
-            checked={field.value === 0}
-            onChange={() => field.onChange(0)}
-          />
-          No
-        </label>
-      </div>
-    )}
-  />
-  {errors.bIsCandidatePlaced && (
-    <p className="text-red-500">{errors.bIsCandidatePlaced.message}</p>
-  )}
-</div>
+          {errors.bIsCandidatePlaced && (
+            <p className="text-red-500">{errors.bIsCandidatePlaced.message}</p>
+          )}
+        </div>
 
 
         {/* Placement Type */}
         <div className="col-span-1">
-          <Label text="Placement Type" />
+          <Label text="Placement Type" required />
           <Controller
             name="vsPlacementType"
             control={control}
@@ -318,7 +332,7 @@ const {closeModal}  =useModalStore();
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                  setTpId(selectedOption.value);
+
                   setValue("vsPlacementType", selectedOption.value.toString());
                 }}
                 className={errors.vsPlacementType ? "border-red-500" : ""}
@@ -340,15 +354,15 @@ const {closeModal}  =useModalStore();
               <Input
                 {...field}
                 type="text"
-                className={`w-full ${
-                  errors.vsEmployeerName ? "border-red-500" : ""
-                }`}
+              // className={`w-full ${
+              //   errors.vsEmployeerName ? "border-red-500" : ""
+              // }`}
               />
             )}
           />
-          {errors.vsEmployeerName && (
+          {/* {errors.vsEmployeerName && (
             <p className="text-red-500">{errors.vsEmployeerName.message}</p>
-          )}
+          )} */}
         </div>
 
         {/* Employer Contact Number */}
@@ -361,17 +375,17 @@ const {closeModal}  =useModalStore();
               <Input
                 {...field}
                 type="text"
-                className={`w-full ${
-                  errors.vsEmployeerContactNumber ? "border-red-500" : ""
-                }`}
+              // className={`w-full ${
+              //   errors.vsEmployeerContactNumber ? "border-red-500" : ""
+              // }`}
               />
             )}
           />
-          {errors.vsEmployeerContactNumber && (
+          {/* {errors.vsEmployeerContactNumber && (
             <p className="text-red-500">
               {errors.vsEmployeerContactNumber.message}
             </p>
-          )}
+          )} */}
         </div>
 
         {/* Placement State */}
@@ -391,14 +405,14 @@ const {closeModal}  =useModalStore();
                   setStateId(selectedOption.value); // Update the stateID in local state
                   setValue("vsPlacementState", selectedOption.value); // Sync form value
                 }}
-                className={errors.vsPlacementState ? "border-red-500" : ""}
+                // className={errors.vsPlacementState ? "border-red-500" : ""}
                 placeholder="-- Select State --"
               />
             )}
           />
-          {errors.vsPlacementState && (
+          {/* {errors.vsPlacementState && (
             <p className="text-red-500">{errors.vsPlacementState.message}</p>
-          )}
+          )} */}
         </div>
 
         {/* Placement District */}
@@ -418,13 +432,13 @@ const {closeModal}  =useModalStore();
                   setValue("vsPlacementDistrict", selectedValue.value);
                 }}
                 placeholder="-- Select District --"
-                className={errors.vsPlacementDistrict ? "border-red-500" : ""}
+              // className={errors.vsPlacementDistrict ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.vsPlacementDistrict && (
+          {/* {errors.vsPlacementDistrict && (
             <p className="text-red-500">{errors.vsPlacementDistrict.message}</p>
-          )}
+          )} */}
         </div>
 
         {/* Monthly Salary */}
@@ -437,15 +451,15 @@ const {closeModal}  =useModalStore();
               <Input
                 {...field}
                 type="text"
-                className={`w-full ${
-                  errors.vsMonthlySalary ? "border-red-500" : ""
-                }`}
+              // className={`w-full ${
+              //   errors.vsMonthlySalary ? "border-red-500" : ""
+              // }`}
               />
             )}
           />
-          {errors.vsMonthlySalary && (
+          {/* {errors.vsMonthlySalary && (
             <p className="text-red-500">{errors.vsMonthlySalary.message}</p>
-          )}
+          )} */}
         </div>
 
         {/* Submit Button */}

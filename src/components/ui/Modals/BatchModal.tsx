@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import Label from "../Label";
 import Input from "../Input";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,7 +10,7 @@ import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
 import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCourses, getMasterData, getTcByTp } from "../../../services/state/api/masterApi";
+import {  getMasterData} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
@@ -19,10 +19,10 @@ const BatchModel : React.FC = () => {
 
   const {closeModal} = useModalStore()
 
- const [fklTpId, setTpId] = useState<number | null>(null);
+
 
  
- const [fklSectorId, setSectorId] = useState<number | null>(null);
+ 
 
   const { control, handleSubmit, setValue,formState: { errors } } = useForm<BatchFormData>({
     resolver: joiResolver(batchSchema),
@@ -32,45 +32,45 @@ const BatchModel : React.FC = () => {
 
   const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
-  const { data: masterData } = useQuery({
-    queryKey: ["masterData", "tp"], 
-    queryFn: () => getMasterData("tp"), 
-  });
+  // const { data: masterData } = useQuery({
+  //   queryKey: ["masterData", "tp"], 
+  //   queryFn: () => getMasterData("tp"), 
+  // });
   
-   useEffect(() => {
-     if (masterData) {
-      console.log("Fetched master data:", masterData);
-     }
-   }, [masterData]);
+  //  useEffect(() => {
+  //    if (masterData) {
+  //     console.log("Fetched master data:", masterData);
+  //    }
+  //  }, [masterData]);
 
-   const tpOptions =
-  masterData?.data?.result?.tp?.map(
-    (tp: { pklTpId: number; vsTpName: string }) => ({
-      label: tp.vsTpName,
-      value: tp.pklTpId,
-    })
-  ) || [];
+  //  const tpOptions =
+  // masterData?.data?.result?.tp?.map(
+  //   (tp: { pklTpId: number; vsTpName: string }) => ({
+  //     label: tp.vsTpName,
+  //     value: tp.pklTpId,
+  //   })
+  // ) || [];
 
 
-   const { data: tcData } = useQuery({
-        queryKey: ["masterData", "tc", fklTpId],
-        queryFn: () => getTcByTp(fklTpId, "tc"),
-        enabled: !!fklTpId,
-      });
+  //  const { data: tcData } = useQuery({
+  //       queryKey: ["masterData", "tc", fklTpId],
+  //       queryFn: () => getTcByTp(fklTpId, "tc"),
+  //       enabled: !!fklTpId,
+  //     });
 
-       useEffect(() => {
-          if (tcData) {
-            console.log("Fetched master data:", tcData);
-          }
-        }, [tcData]);
+  //      useEffect(() => {
+  //         if (tcData) {
+  //           console.log("Fetched master data:", tcData);
+  //         }
+  //       }, [tcData]);
 
-        const tcOptions =
-        tcData?.data?.result?.tc?.map(
-          (tc: { pklTcId: number; vsTcName: string }) => ({
-            label: tc.vsTcName,
-            value: tc.pklTcId,
-          })
-        ) || [];
+  //       const tcOptions =
+  //       tcData?.data?.result?.tc?.map(
+  //         (tc: { pklTcId: number; vsTcName: string }) => ({
+  //           label: tc.vsTcName,
+  //           value: tc.pklTcId,
+  //         })
+  //       ) || [];
 
         const { data: trainerData } = useQuery({
           queryKey: ["masterData", "trainner"], 
@@ -112,13 +112,13 @@ const BatchModel : React.FC = () => {
 
 
         const { data: courseData } = useQuery({
-          queryKey: ["getCourse", "tc", fklTpId,fklSectorId],
-          queryFn: () => getCourses(fklTpId,"course",fklSectorId ),
-          enabled: !!fklSectorId && !!fklTpId,
+          queryKey: ["masterData", "allCourse"], 
+          queryFn: () => getMasterData("allCourse"), 
+        
         });
 
           const courseOptions =
-          courseData?.data?.result?.course?.map(
+          courseData?.data?.result?.allCourse?.map(
            (tp: { pklCourseId: number; vsCourseName: string }) => ({
              label: tp.vsCourseName,
              value: tp.pklCourseId,
@@ -213,7 +213,7 @@ const BatchModel : React.FC = () => {
           )}
         </div>
 
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Training Partner" />
           <Controller
             name="fklTpId"
@@ -261,7 +261,7 @@ const BatchModel : React.FC = () => {
           {errors.fklTcId && (
             <p className="text-red-500">{errors.fklTcId.message}</p>
           )}
-        </div>
+        </div> */}
 
         <div className="col-span-1">
           <Label text="Trainers" />
@@ -301,7 +301,7 @@ const BatchModel : React.FC = () => {
                 getOptionValue={(option) => option.value} 
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value); 
-                  setSectorId(selectedOption.value);  
+                 
                   setValue("fklSectorId", selectedOption.value); 
                 }}
                 className={errors.fklSectorId ? "border-red-500" : ""}
