@@ -35,7 +35,7 @@ const TrainingCenterModel: React.FC = () => {
 
  
 
-  const vsTpName = watch("vsTpName");
+  
 
 
 
@@ -113,6 +113,26 @@ const TrainingCenterModel: React.FC = () => {
       ];
 
 
+      const { data: tpData } = useQuery({
+        queryKey: ["masterData", "tp"],
+        queryFn: () =>getMasterData("tp"),
+      });
+    
+      useEffect(() => {
+        if (tpData) {
+          console.log("Fetched master data:", tpData);
+        }
+      }, [tpData]);
+
+      const tpOptions =
+      tpData?.data?.result?.tp?.map(
+        (tp: { pklTpId: number; vsTpName: string }) => ({
+          label: tp.vsTpName,
+          value: tp.pklTpId,
+        })
+      ) || [];
+
+
       // const fetchPartnerData = useMutation({
       //   mutationFn: (id: string) => getPartnerById(id),
       //   onSuccess: (response) => {
@@ -159,17 +179,24 @@ const TrainingCenterModel: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* First Row */}
-        <div>
-          <Label text="TP Name"required />
+        <div className="col-span-1">
+          <Label text="TP Name" required/>
           <Controller
             name="vsTpName"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="text"
-                disabled={!!vsTpName} // Disable field if vsTpName has a value
+                options={tpOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                 
+                  setValue("vsTpName", selectedOption.value.toString()); 
+                }}
                 className={errors.vsTpName ? "border-red-500" : ""}
+                placeholder="-- Select State --"
               />
             )}
           />
