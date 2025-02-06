@@ -5,25 +5,27 @@ import Input from "../Input";
 import Label from "../Label";
 import Button from "../SubmitButton";
 import { toast } from "react-toastify";
-import { assessorSchema } from "../../../utils/validation"; 
+import { assessorSchema } from "../../../utils/validation";
 import { AssessorFormData } from "../../../utils/formTypes";
 import { submitAssessorForm } from "../../../services/state/api/FormApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useModalStore from "../../../services/state/useModelStore";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
 
 const AssessorsModal: React.FC = () => {
-
-  const {closeModal} = useModalStore();
+  const { closeModal } = useModalStore();
 
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<AssessorFormData>({
     resolver: joiResolver(assessorSchema),
   });
 
- const mutation = useMutation({
+  const mutation = useMutation({
     mutationFn: submitAssessorForm,
     onSuccess: (data) => {
       if (data?.success) {
@@ -33,7 +35,8 @@ const AssessorsModal: React.FC = () => {
         );
       } else {
         toast.error(
-          data.message || "An error occurred while submitting the Training Partner."
+          data.message ||
+            "An error occurred while submitting the Training Partner."
         );
       }
     },
@@ -41,14 +44,32 @@ const AssessorsModal: React.FC = () => {
     onError: (error: any) => {
       const errorMessage =
         error?.response?.data?.message || "An unknown error occurred.";
-      toast.error(errorMessage); 
+      toast.error(errorMessage);
     },
   });
-  
 
-   const onSubmit: SubmitHandler<AssessorFormData> = (data:AssessorFormData) => {
-      mutation.mutate(data);
-    };
+  const { data: QPNOS } = useQuery({
+    queryKey: ["QPNOSData", "QPNOS"],
+    queryFn: () => getMasterData("QPNOS"),
+  });
+
+  const QPNOSOptions =
+    QPNOS?.data?.result?.QPNOS?.map(
+      (QPNOS: {
+        QPNOS: string;
+      }) => ({
+        label: QPNOS.QPNOS,
+        value: QPNOS.QPNOS,
+      })
+    ) || [];
+
+  console.log(QPNOSOptions);
+
+  const onSubmit: SubmitHandler<AssessorFormData> = (
+    data: AssessorFormData
+  ) => {
+    mutation.mutate(data);
+  };
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
       <form
@@ -76,7 +97,7 @@ const AssessorsModal: React.FC = () => {
 
         {/* Assessor Name */}
         <div className="col-span-1">
-          <Label text="Assessor Name" />
+          <Label text="Assessor Name" required />
           <Controller
             name="vsAssosserName"
             control={control}
@@ -107,12 +128,14 @@ const AssessorsModal: React.FC = () => {
               />
             )}
           />
-          {errors.vsEmail && <p className="text-red-500">{errors.vsEmail.message}</p>}
+          {errors.vsEmail && (
+            <p className="text-red-500">{errors.vsEmail.message}</p>
+          )}
         </div>
 
         {/* Mobile */}
         <div className="col-span-1">
-          <Label text="Mobile" />
+          <Label text="Mobile" required />
           <Controller
             name="vsMobile"
             control={control}
@@ -124,12 +147,56 @@ const AssessorsModal: React.FC = () => {
               />
             )}
           />
-          {errors.vsMobile && <p className="text-red-500">{errors.vsMobile.message}</p>}
+          {errors.vsMobile && (
+            <p className="text-red-500">{errors.vsMobile.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="Pan Card" required />
+          <Controller
+            name="vsPan"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="text"
+                className={errors.vsPan ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.vsPan && (
+            <p className="text-red-500">{errors.vsPan.message}</p>
+          )}
+        </div>
+        <div className="col-span-1">
+          <Label text="QPNOS Code" required />
+          <Controller
+            name="vsQPNOS"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={QPNOSOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("vsQPNOS", selectedOption.value);
+                }}
+                className={errors.vsQPNOS ? "border-red-500" : ""}
+                placeholder="-- Select QPNOS Code--"
+              />
+            )}
+          />
+          {errors.vsQPNOS && (
+            <p className="text-red-500">{errors.vsQPNOS.message}</p>
+          )}
         </div>
 
         {/* Assessment Agency */}
         <div className="col-span-1">
-          <Label text="Assessment Agency" />
+          <Label text="Assessment Agency" required />
           <Controller
             name="vsAssesmentAgency"
             control={control}
@@ -148,7 +215,7 @@ const AssessorsModal: React.FC = () => {
 
         {/* Valid Up To */}
         <div className="col-span-1">
-          <Label text="Valid Up To" />
+          <Label text="Valid Up To" required />
           <Controller
             name="dtValidUpTo"
             control={control}
@@ -171,7 +238,6 @@ const AssessorsModal: React.FC = () => {
             text="Submit"
             loadingText="Submitting..."
             loading={mutation.isPending}
-          
             disabled={false}
           />
         </div>

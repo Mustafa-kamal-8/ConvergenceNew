@@ -1,14 +1,15 @@
 export interface SchemeFormData {
   schemeType: number;
   // selectedFundingType: string;
-  scheme:string;
+  scheme: string;
   schemeCode: string;
   fundName: string;
-  schemeFundingType: string;
-  schemeFundingRatio: string;
+  schemeFundingType: string | number;
+  schemeFundingRatio: string | number;
   sanctionOrderNo: string;
   dateOfSanction: string;
   otherSchemeName: string;
+  isSchemeFundingRatioDisabled?: boolean;
   // selectedScheme: string
 }
 
@@ -76,6 +77,8 @@ export interface AssessorFormData {
   vsMobile: string;
   vsAssesmentAgency: string;
   dtValidUpTo: string;
+  vsPan: string;
+  vsQPNOS: string | number;
 }
 
 export interface TrainerFormData {
@@ -168,13 +171,13 @@ export interface candidateFormData {
   iAge: string;
   vsFatherName: string;
   vsGender: number;
-  fklIdType: number;
+  fklIdType: string;
   vsUUID: string;
   fklReligionId: number;
   fklCategoryId: number;
   vsMobile: string;
   vsEmail: string;
-  vsEducationAttained: string;
+  vsEducationAttained: string | number;
   bDisability: number;
   bTeaTribe: number;
   bBPLcardHolder: number;
@@ -217,4 +220,3 @@ export interface candidateFormData {
   vsBranchName: number;
   vsBankIFSC: string;
 }
-
