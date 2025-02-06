@@ -668,7 +668,7 @@ interface CandidateData {
 export const candidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "SL No", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
@@ -713,7 +713,7 @@ export const CrossCandidateColumns = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
@@ -724,9 +724,7 @@ export const CrossCandidateColumns = (
     accessor: "vsDOB",
     Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
   },
-  { Header: "Mobile", accessor: "vsMobile" },
-  { Header: "Found in Department", accessor: "duplicate_count" },
-  { Header: "Departments", accessor: "department_names" },
+  { Header: "Departments", accessor: "departmentNames" },
 ];
 
 export const DuplicateCandidateColumns = (

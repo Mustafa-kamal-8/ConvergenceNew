@@ -145,7 +145,7 @@ const Candidate: React.FC = () => {
         </p>
         <CentralizedTable
           columns={CrossDuplicateTableColumns}
-          data={fetchedData?.data?.global_duplicate_candidate}
+          data={fetchedData?.data?.duplicate_candidate}
           pageSize={5}
         />
       </div>
