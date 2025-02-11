@@ -26,8 +26,8 @@ export interface CourseFormData {
   fklSectorId: string;
   vsCourseCode: string;
   vsCourseName: string;
-  iTheoryDurationInHours: string;
-  iPracticalDurationInHours: string;
+  iTheoryDurationInHours: number;
+  iPracticalDurationInHours: number;
 }
 
 export interface TrainingPartnerFormData {
@@ -48,11 +48,12 @@ export interface TrainingPartnerFormData {
 }
 
 export interface TrainingCenterFormData {
-  vsTpName: string;
+  // vsTpName: string;
   partnerCode: string;
   vsTcName: string;
+  fklTpId: string
   // vsTcCode: string;
-  vsLongitude : string;
+  vsLongitude: string;
   vsLatitude: string;
   vsSpocEmail: string;
   vsSpocName: string;
@@ -72,17 +73,19 @@ export interface TrainingCenterFormData {
 
 export interface AssessorFormData {
   // assosserId: number;
-  vsAssosserName: string;
+  vsAssessorName: string;
   vsEmail: string;
   vsMobile: string;
-  vsAssesmentAgency: string;
+  vsAssessmentAgency: string;
   dtValidUpTo: string;
-  vsPan: string;
-  vsQPNOS: string | number;
+  vsPAN: string;
+  QPNOS: string | number;
 }
 
 export interface TrainerFormData {
   // trainerId: string;
+  fklTcId: number;
+  vsTcName: string;
   vsTrainerName: string;
   vsMobile: string;
   vsEmail: string;
@@ -94,8 +97,8 @@ export interface BatchFormData {
   SDMSid: string;
   dtStartDate: string;
   dtEndDate: string;
-  fklSectorId: number;
-  QPNOS: string;
+  // fklSectorId: number;
+  // QPNOS: string;
   fklCourseId: number;
   fklTpId: number;
   fklTcId: number;
@@ -111,7 +114,7 @@ export type AssessmentFormData = {
   // agency: string;
   // agencyMobile: string;
   // agencyEmail: string;
-  accessorId: string;
+  accessorId: number;
   vsAccessorName: string;
   vsResult: string;
   dtResultDate: string;
@@ -150,7 +153,6 @@ export interface InvoiceFormData {
   iTotalCandidate: number;
   fRate: string;
   fAmount: string;
-  fklTpId: number;
   fklTcId: number;
   fklBatchId: number;
 }
@@ -161,7 +163,7 @@ export interface targetFormData {
   dtTargetDate: string;
   iTotalTarget: number;
   targetType: number
-  
+
 }
 
 export interface candidateFormData {

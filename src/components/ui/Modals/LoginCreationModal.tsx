@@ -54,7 +54,7 @@ const LoginCreationModal = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   const onSubmit: SubmitHandler<departmentCreationFormData> = (
     data: departmentCreationFormData
@@ -70,7 +70,7 @@ const LoginCreationModal = () => {
       >
         {/* Department Name */}
         <div className="col-span-1">
-          <Label text="Department Name" />
+          <Label text="Department Name" required/>
           <Controller
             name="departmentName"
             control={control}
@@ -137,7 +137,7 @@ const LoginCreationModal = () => {
 
         {/* Login Name */}
         <div className="col-span-1">
-          <Label text="Login Name" />
+          <Label text="Login Name" required />
           <Controller
             name="loginName"
             control={control}
@@ -156,7 +156,7 @@ const LoginCreationModal = () => {
         </div>
 
         {/* Password */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Password" />
           <Controller
             name="password"
@@ -173,7 +173,7 @@ const LoginCreationModal = () => {
           {errors.password && (
             <p className="text-red-500">{errors.password.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Phone Number */}
         <div className="col-span-1">

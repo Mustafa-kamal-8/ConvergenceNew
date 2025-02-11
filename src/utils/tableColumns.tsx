@@ -32,7 +32,7 @@ export const schemeColumns: (
   navigate: ReturnType<typeof useNavigate>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<SchemeData>[] = (_navigate) => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme", accessor: "vsSchemeName" },
   {
     Header: "Targets",
@@ -118,7 +118,7 @@ interface TargetData {
 export const targetColumns = (
   navigate: (path: string) => void
 ): Column<TargetData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
   { Header: "Target Order Number", accessor: "vsTargetNo" },
   { Header: "Target Type", accessor: "vsTargetType" },
@@ -128,18 +128,18 @@ export const targetColumns = (
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
   { Header: "Total Target", accessor: "iTotalTarget" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/target/${row.original.pklTargetId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/target/${row.original.pklTargetId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface CourseData {
@@ -159,7 +159,7 @@ interface CourseData {
 export const courseColumns = (
   navigate: (path: string) => void
 ): Column<CourseData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Sector Name", accessor: "vsSectorName" },
   { Header: "Job Role Name", accessor: "vsCourseName" },
   { Header: "QPNOS Code", accessor: "vsCourseCode" },
@@ -177,18 +177,18 @@ export const courseColumns = (
   { Header: "Total Theory Hours", accessor: "iTheoryDurationInHours" },
   { Header: "Total Practical Hours", accessor: "iPracticalDurationInHours" },
 
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/target/${row.original.id}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/target/${row.original.id}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface TrainingPartnerData {
@@ -217,7 +217,7 @@ export const trainingColumns: (
   navigate: ReturnType<typeof useNavigate>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<TrainingPartnerData>[] = (_navigate) => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
   { Header: "Partner Name", accessor: "vsTpName" },
   { Header: "PAN", accessor: "vsPAN" },
@@ -236,18 +236,14 @@ export const DuplicateTrainingColumns = (
 ): Column<TrainingPartnerData>[] => {
   const columns: Column<TrainingPartnerData>[] = [
     { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
-    {
-      Header: "Centers",
-      accessor: "count",
-    },
+    // {
+    //   Header: "Centers",
+    //   accessor: "count",
+    // },
     { Header: "Partner Name", accessor: "vsTpName" },
-    { Header: "SPOC Name", accessor: "vsSpocName" },
-    { Header: "SPOC Email", accessor: "vsSpocEmail" },
-    { Header: "SPOC Contact", accessor: "iSpocContactNum" },
-    { Header: "Address", accessor: "vsAddress" },
-    { Header: "State", accessor: "vsState" },
-    { Header: "District", accessor: "vsDistrict" },
-    { Header: "Department Name", accessor: "department_names" },
+    { Header: "PAN", accessor: "vsPan" },
+    { Header: "Department Names", accessor: "departmentNames" },
+   
   ];
   if (!isCrossDepartmentDuplicate) {
     columns.push(
@@ -301,23 +297,23 @@ interface TrainingCenterData {
 export const centerColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Name", accessor: "vsTcName" },
   { Header: "TC Code", accessor: "vsTcCode" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
   { Header: "Partner Code", accessor: "iPartnerCode" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/target/${row.original.pklTcId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface BatchData {
@@ -330,22 +326,22 @@ interface BatchData {
 export const batchColumns = (
   navigate: (path: string) => void
 ): Column<BatchData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "pklBatchId" },
   { Header: "SDMS  ID", accessor: "SDMSid" },
   { Header: "Batch Name", accessor: "iBatchNumber" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/batch/${row.original.pklBatchId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/batch/${row.original.pklBatchId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface AssessorsData {
@@ -362,7 +358,7 @@ interface AssessorsData {
 export const assessorsColumns = (
   navigate: (path: string) => void
 ): Column<AssessorsData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Assessor Name", accessor: "vsAssosserName" },
   { Header: "Name", accessor: "vsEmail" },
 
@@ -373,18 +369,18 @@ export const assessorsColumns = (
     accessor: "dtValidUpTo",
     Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"),
   },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/assessors/${row.original.id}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/assessors/${row.original.id}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface TrainerData {
@@ -400,24 +396,24 @@ interface TrainerData {
 export const trainerColumns = (
   navigate: (path: string) => void
 ): Column<TrainerData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   // { Header: "Trainer ID", accessor: "trainerId" },
   { Header: "Trainer Name", accessor: "vsTrainerName" },
   { Header: "Mobile", accessor: "vsMobile" },
   { Header: "Email", accessor: "vsEmail" },
   { Header: "IDCard", accessor: "vsPAN" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface AssessmentData {
@@ -487,20 +483,20 @@ export const assessmentColumns = (
       </a>
     ),
   },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() =>
-          navigate(`/assessment/${row.original.pklConvAssessmentId}`)
-        }
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() =>
+  //         navigate(`/assessment/${row.original.pklConvAssessmentId}`)
+  //       }
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface PlacementData {
@@ -525,20 +521,20 @@ export const placementColumns = (
   { Header: "Placement Type", accessor: "vsPlacementType" },
   { Header: "Employer Name", accessor: "vsEmployeerName" },
 
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() =>
-          navigate(`/placement/${row.original.pklConvPlacementId}`)
-        }
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() =>
+  //         navigate(`/placement/${row.original.pklConvPlacementId}`)
+  //       }
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface DepartmentListData {
@@ -569,12 +565,12 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
   },
   {
     Header: "User Name",
-    accessor: "password",
+    accessor: "userName",
     Cell: ({ value }) => value ?? "N/A",
   },
   {
     Header: "Password",
-    accessor: "userName",
+    accessor: "password",
     Cell: ({ value }) => value ?? "N/A",
   },
   {
@@ -626,7 +622,7 @@ interface InvoiceData {
 export const invoiceColumns = (
   navigate: (path: string) => void
 ): Column<InvoiceData>[] => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
   {
     Header: "Date",
@@ -683,18 +679,18 @@ export const candidateColumns = (
   { Header: "Gender", accessor: "pklGenderId" },
   { Header: "Mobile", accessor: "vsMobile" },
   { Header: "Qualification", accessor: "pklQualificationId" },
-  {
-    Header: "Action",
-    accessor: "Action",
-    Cell: ({ row }) => (
-      <button
-        onClick={() => navigate(`/candidate/${row.original.candidateId}`)}
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </button>
-    ),
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/candidate/${row.original.candidateId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
 ];
 
 interface DepartmentData {
@@ -702,6 +698,7 @@ interface DepartmentData {
   vsDepartmentName: string;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const departmentColumns = (): Column<DepartmentData>[] => [
   {
     Header: "ID",
@@ -709,6 +706,8 @@ export const departmentColumns = (): Column<DepartmentData>[] => [
   },
   { Header: "Department Name", accessor: "vsDepartmentName" },
 ];
+
+
 export const CrossCandidateColumns = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   navigate: (path: string) => void

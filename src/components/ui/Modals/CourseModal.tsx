@@ -196,13 +196,13 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="date"
-                  // className={errors.dtFromDate ? "border-red-500" : ""}
+                  className={errors.dtFromDate ? "border-red-500" : ""}
                 />
               )}
             />
-            {/* {errors.dtFromDate && (
+            {errors.dtFromDate && (
               <p className="text-red-500">{errors.dtFromDate.message}</p>
-            )} */}
+            )}
           </div>
           <div>
             <Label text="Date Valid Upto" />
@@ -213,13 +213,13 @@ const CourseModal: React.FC = () => {
                 <Input
                   {...field}
                   type="date"
-                  // className={errors.dtToDate ? "border-red-500" : ""}
+                  className={errors.dtToDate ? "border-red-500" : ""}
                 />
               )}
             />
-            {/* {errors.dtToDate && (
+            {errors.dtToDate && (
               <p className="text-red-500">{errors.dtToDate.message}</p>
-            )} */}
+            )}
           </div>
         </div>
 

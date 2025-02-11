@@ -16,9 +16,12 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     if (templateType === 0) {
       data = [['Sl No', 'Scheme Funding Type','Scheme Funding Ratio','Sanction Order No','Date of Sanction','Scheme Type','Fund Name','Scheme','Scheme Code' ]];
     } else if (templateType === 1) {
-      data = [['Sl No','Sanction No', 'Scheme Name','Scheme Code','Total Target','Sanction Date']];
+      data = [['Sl No',	'Target Type',	'Scheme Code'	,'Total Target',	'Target Date',	'Target Sanction Order No'
+      ]];
     } else if (templateType === 2) {
-      data = [['Sl No','Course Name', 'From Date','To Date','Theory Duration Hours','Practical Duration Hours','Practical Duration Hours','Sector Name']];
+      data = [['Sl No'	,'Course Name'	,'From Date',	'To Date',	'Theory Duration Hours',	'Practical Duration Hours',	'Sector Name',	'Course Code'
+
+      ]];
     }  else if (templateType === 3) {
     data = [['Sl No','TP Name', 'TP Code','Spoc Name','Spoc Email','Spoc Contact Number','Smart ID','Address','State','District','City or Village','City','ULB','Village','Block']];
   } 
@@ -26,23 +29,24 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
     data = [['Sl No','TP Name', 'TC Name','TC Code','Spoc Name','Spoc Email','Spoc Contact Number','State','District','Block/ULB','ULB','City or Village','Address','Assembly Constituency','Lok Sabha Constituency','Partner Code','Smart ID']];
   } 
   else if (templateType === 5) {
-    data = [['SL No','Assessor Name', 'Email','Mobile','Assessment Agency','Valid Up To']];
+    data = [['SL No',	'Assessor Name',	'Email',	'Mobile',	'Assessment Agency',	'Valid Up To',	'PAN',	'QPNOS Code'
+
+    ]];
   } 
   else if (templateType === 6) {
-    data = [['Sl No','Trainer Name', 'Email','Mobile','Aadhaar/PAN no']];
+    data = [['Sl No',	'Trainer Name',	'Email',	'Mobile',	'Aadhaar/PAN no',	'Tranning Center'  ]];
   }
   else if (templateType === 7) {
-    data = [['Sl No','TP Name', 'TC Name','Course Name','QPNOS','SDMS ID','Start Date','End Date','Sector','Batch ID']];
-  }
-  else if (templateType === 8) {
-    data = [['Sl No',	'Batch ID',	'Candidate ID',	'Candidate Name',	'DOB',	'Age',	'Father Name',	'Gender',	'Id Type', 'ID Card Number',	'Religion',	'Category',	'Mobile',	'Email',	'Education Attained',	'Disability',	'Tea Tribe',	'BPL Card Holder',	'Minority',	'Residential Address',	'Residential District',	'Residential State',	'Residential Block',	'Residential ULB',	'Residential Village/City',	'Residential Post Office',	'Residential Police',	'Residential PIN',	'Residential Council', 'Contituency',	'Residential Assembly Contituency',	'Permanent Address',	'Permanent State',	'Permanent District',	'Permanent Block',	'Permanent ULB',	'Permanent Village/City',	'Permanent Post Office',	'Permanent Police','Permanent PIN',	'Permanent Council Contituency',	'Permanent Assembly Contituency',	'Bank Holder Name',	'Bank Name',	'Branch Name',	'Account Number',	'Bank IFSC'
+    data = [['Sl No','TC Name',	'Course Name',	'Trainer Name',	'SDMS ID',	'Start Date' ,'End Date',	'Batch Number'
     ]];
   }
+  else if (templateType === 8) {
+    data = [['Sl No', 'Batch ID', 'Candidate ID', 'Candidate Name', 'DOB', 'Age', 'Father Name', 'Gender', 'ID Card Number', 'Religion', 'Category', 'Mobile', 'Email', 'Education Attained', 'Disability', 'Tea Tribe', 'BPL Card Holder', 'Minority', 'Residential Address', 'Residential District', 'Residential State', 'Residential Block', 'Residential ULB', 'Residential Village/City', 'Residential Post Office', 'Residential Police', 'Residential PIN', 'Residential Council Constituency', 'Residential Assembly Constituency', 'Permanent Address', 'Permanent State', 'Permanent District', 'Permanent Block', 'Permanent ULB', 'Permanent Village/City', 'Permanent Post Office', 'Permanent Police', 'Permanent PIN', 'Permanent Council Constituency', 'Permanent Assembly Constituency', 'Bank Holder Name', 'Bank Name', 'Branch Name', 'Account Number', 'Bank IFSC']];
+}
+
   else if (templateType === 9) {
-    data = [['Sl No', 'Batch ID', 'SDMS Batch ID', 'Candidate ID', 'Is Assessed', 
-             'Assessment Date', 'Agency', 'Agency Mobile', 'Agency Email', 
-             'Accessor Name', 'Result', 'Result Date', 'Total Marks', 
-             'Obtained Marks', 'Marksheet URL', 'Certificate URL']];
+    data = [['Sl No',	'Batch ID',	'SDMS Batch ID','Assessment Date',	'Is Result Declare',	'Result Date',	'Assessed ID'
+    ]];
   }
   else if (templateType === 10) {
     data = [['Sl No', 'Batch ID', 'Candidate Name', 'Is Candidate Placed', 

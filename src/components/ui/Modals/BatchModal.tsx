@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState} from "react";
 import Label from "../Label";
 import Input from "../Input";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,11 +6,10 @@ import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { BatchFormData } from "../../../utils/formTypes"; 
 import { batchSchema } from "../../../utils/validation"; 
-import Select from "../../ui/Select";
 import Button from "../../ui/SubmitButton";
 import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {  getMasterData} from "../../../services/state/api/masterApi";
+import {    getMasterData, gettrainerByTc} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
@@ -19,7 +18,7 @@ const BatchModel : React.FC = () => {
 
   const {closeModal} = useModalStore()
 
-
+  const [TcID, setTcId] = useState<number | null>(null);
 
  
  
@@ -28,28 +27,41 @@ const BatchModel : React.FC = () => {
     resolver: joiResolver(batchSchema),
   });
 
+      
+  const { data: courseData } = useQuery({
+    queryKey: ["courseData", "AllCourseData"], 
+    queryFn: () => getMasterData("AllCourseData"), 
+  });
+        
 
+          const courseOptions =
+          courseData?.data?.result?.course?.map(
+           (tp: { pklCourseId: number; vsCourseName: string }) => ({
+             label: tp.vsCourseName,
+             value: tp.pklCourseId,
+           })
+         ) || [];
 
-  const fundingTypes = ["Option 1", "Option 2", "Option 3"];
+  // const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
-  // const { data: masterData } = useQuery({
-  //   queryKey: ["masterData", "tp"], 
-  //   queryFn: () => getMasterData("tp"), 
-  // });
+  const { data: masterData } = useQuery({
+    queryKey: ["masterData", "AllDeptTc"], 
+    queryFn: () => getMasterData("AllDeptTc"), 
+  });
   
-  //  useEffect(() => {
-  //    if (masterData) {
-  //     console.log("Fetched master data:", masterData);
-  //    }
-  //  }, [masterData]);
+   useEffect(() => {
+     if (masterData) {
+      console.log("Fetched master data:", masterData);
+     }
+   }, [masterData]);
 
-  //  const tpOptions =
-  // masterData?.data?.result?.tp?.map(
-  //   (tp: { pklTpId: number; vsTpName: string }) => ({
-  //     label: tp.vsTpName,
-  //     value: tp.pklTpId,
-  //   })
-  // ) || [];
+   const tcOptions =
+  masterData?.data?.result?.tc?.map(
+    (tp: { pklTcId: number; vsTcName: string }) => ({
+      label: tp.vsTcName,
+      value: tp.pklTcId,
+    })
+  ) || [];
 
 
   //  const { data: tcData } = useQuery({
@@ -72,10 +84,10 @@ const BatchModel : React.FC = () => {
   //         })
   //       ) || [];
 
-        const { data: trainerData } = useQuery({
-          queryKey: ["masterData", "trainner"], 
-          queryFn: () => getMasterData("trainner"), 
-        });
+          const { data: trainerData } = useQuery({
+            queryKey: ["masterData", "TcTrainner", TcID],
+            queryFn: () => gettrainerByTc(TcID, "TcTrainner"),
+          });
         
          useEffect(() => {
            if (trainerData) {
@@ -91,39 +103,26 @@ const BatchModel : React.FC = () => {
           })
         ) || [];
 
-        const { data: sectorData } = useQuery({
-          queryKey: ["masterData", "sector"], 
-          queryFn: () => getMasterData("sector"), 
-        });
+        // const { data: sectorData } = useQuery({
+        //   queryKey: ["masterData", "sector"], 
+        //   queryFn: () => getMasterData("sector"), 
+        // });
         
-         useEffect(() => {
-           if (sectorData) {
-            console.log("Fetched master data:", sectorData);
-           }
-         }, [sectorData]);
+        //  useEffect(() => {
+        //    if (sectorData) {
+        //     console.log("Fetched master data:", sectorData);
+        //    }
+        //  }, [sectorData]);
 
-         const sectorOptions =
-         sectorData?.data?.result?.sectors?.map(
-          (tp: { sectorID: number; sectorName: string }) => ({
-            label: tp.sectorName,
-            value: tp.sectorID,
-          })
-        ) || [];
+        //  const sectorOptions =
+        //  sectorData?.data?.result?.sectors?.map(
+        //   (tp: { sectorID: number; sectorName: string }) => ({
+        //     label: tp.sectorName,
+        //     value: tp.sectorID,
+        //   })
+        // ) || [];
 
-
-        const { data: courseData } = useQuery({
-          queryKey: ["masterData", "allCourse"], 
-          queryFn: () => getMasterData("allCourse"), 
-        
-        });
-
-          const courseOptions =
-          courseData?.data?.result?.allCourse?.map(
-           (tp: { pklCourseId: number; vsCourseName: string }) => ({
-             label: tp.vsCourseName,
-             value: tp.pklCourseId,
-           })
-         ) || [];
+ 
 
  
      const mutation = useMutation({
@@ -155,8 +154,84 @@ const BatchModel : React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
+        <div className="col-span-1">
+          <Label text="Training Center"required />
+          <Controller
+            name="fklTcId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={tcOptions} // Pass full objects with label and value
+                getOptionLabel={(option) => option.label} // Display the `label`
+                getOptionValue={(option) => option.value} // Use the `value` (stateID)
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); // Update form with selected stateID
+                  setTcId(selectedOption.value); // Update the stateID in local state
+                  setValue("fklTcId", selectedOption.value); // Sync form value
+                }}
+                className={errors.fklTcId ? "border-red-500" : ""}
+                placeholder="-- Select Training Center --"
+              />
+            )}
+          />
+          {errors.fklTcId && (
+            <p className="text-red-500">{errors.fklTcId.message}</p>
+          )}
+        </div>
+         <div className="col-span-1">
+          <Label text="Trainer"required />
+          <Controller
+            name="fklTrainerId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={trainerOptions}
+                getOptionLabel={(option: { label: string }) => option.label}
+                getOptionValue={(option: { value: number }) => option.value}
+                onSelect={(selectedValue: { label: string; value: number }) => {
+                  field.onChange(selectedValue.value);
+                 
+                  setValue("fklTrainerId", selectedValue.value);
+                }}
+                placeholder="-- Select Trainer --"
+                className={errors.fklTrainerId ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.fklTrainerId && (
+            <p className="text-red-500">{errors.fklTrainerId.message}</p>
+          )}
+        </div>
+          
+        <div className="col-span-1">
+          <Label text="Courses" required />
+          <Controller
+            name="fklCourseId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={courseOptions} 
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value} 
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                  setValue("fklCourseId", selectedOption.value); 
+                }}
+                className={errors.fklCourseId ? "border-red-500" : ""}
+                placeholder="-- Select Courses --"
+              />
+            )}
+          />
+          {errors.fklCourseId && (
+            <p className="text-red-500">{errors.fklCourseId.message}</p>
+          )}
+        </div>
+       
         <div>
-          <Label text="Batch ID" />
+          <Label text="Batch Number" required/>
           <Controller
             name="iBatchNumber"
             control={control}
@@ -166,7 +241,7 @@ const BatchModel : React.FC = () => {
           {errors.iBatchNumber && <p className="text-red-500">{errors.iBatchNumber.message}</p>}
         </div>
         <div>
-          <Label text="SDMS Batch Id" />
+          <Label text="SDMS Batch Id"  />
           <Controller
             name="SDMSid"
             control={control}
@@ -177,7 +252,7 @@ const BatchModel : React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Batch Start Date" />
+          <Label text="Batch Start Date"required />
           <Controller
             name="dtStartDate"
             control={control}
@@ -195,7 +270,7 @@ const BatchModel : React.FC = () => {
           )}
         </div>
         <div className="col-span-1">
-          <Label text="Batch End Date" />
+          <Label text="Batch End Date" required/>
           <Controller
             name="dtEndDate"
             control={control}
@@ -213,7 +288,7 @@ const BatchModel : React.FC = () => {
           )}
         </div>
 
-        {/* <div className="col-span-1">
+        {/* {/* <div className="col-span-1">
           <Label text="Training Partner" />
           <Controller
             name="fklTpId"
@@ -237,58 +312,12 @@ const BatchModel : React.FC = () => {
           {errors.fklTpId && (
             <p className="text-red-500">{errors.fklTpId.message}</p>
           )}
-        </div>
-        <div className="col-span-1">
-          <Label text="Training Center" />
-          <Controller
-            name="fklTcId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={tcOptions}
-                getOptionLabel={(option: { label: string }) => option.label}
-                getOptionValue={(option: { value: number }) => option.value}
-                onSelect={(selectedValue: { label: string; value: number }) => {
-                  field.onChange(selectedValue.value);
-                  setValue("fklTcId", selectedValue.value);
-                }}
-                placeholder="-- Select Centers --"
-                className={errors.fklTcId ? "border-red-500" : ""}
-              />
-            )}
-          />
-          {errors.fklTcId && (
-            <p className="text-red-500">{errors.fklTcId.message}</p>
-          )}
         </div> */}
+       
 
-        <div className="col-span-1">
-          <Label text="Trainers" />
-          <Controller
-            name="fklTrainerId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={trainerOptions} 
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value} 
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value);  
-                  setValue("fklTrainerId", selectedOption.value); 
-                }}
-                className={errors.fklTrainerId ? "border-red-500" : ""}
-                placeholder="-- Select Trainers --"
-              />
-            )}
-          />
-          {errors.fklTrainerId && (
-            <p className="text-red-500">{errors.fklTrainerId.message}</p>
-          )}
-        </div>
+      
 
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Label text="Sectors" />
           <Controller
             name="fklSectorId"
@@ -312,33 +341,10 @@ const BatchModel : React.FC = () => {
           {errors.fklSectorId && (
             <p className="text-red-500">{errors.fklSectorId.message}</p>
           )}
-        </div>
-        <div className="col-span-1">
-          <Label text="Courses" />
-          <Controller
-            name="fklCourseId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={courseOptions} 
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value} 
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value); 
-                  setValue("fklCourseId", selectedOption.value); 
-                }}
-                className={errors.fklCourseId ? "border-red-500" : ""}
-                placeholder="-- Select Courses --"
-              />
-            )}
-          />
-          {errors.fklCourseId && (
-            <p className="text-red-500">{errors.fklCourseId.message}</p>
-          )}
-        </div>
+        </div> */}
+        
 
-        <div>
+        {/* <div>
           <Label text="QPNOS Code" />
           <Controller
             name="QPNOS"
@@ -353,7 +359,7 @@ const BatchModel : React.FC = () => {
             )}
           />
           {errors.QPNOS && <p className="text-red-500">{errors.QPNOS.message}</p>}
-        </div>
+        </div> */}
 
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button

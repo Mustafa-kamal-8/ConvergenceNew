@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import useModalStore from "../../../services/state/useModelStore";
 import { getMasterData } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
+import { format, isAfter } from "date-fns";
 
 const SchemeModalContent: React.FC = () => {
   const { closeModal } = useModalStore();
@@ -71,26 +72,27 @@ const SchemeModalContent: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitSchemeForm,
     onSuccess: (data) => {
-         if (data?.success) {
-           closeModal();
-           toast.success(
-             data.message || "Training Partner submitted successfully!"
-           );
-         } else {
-           toast.error(
-             data.message || "An error occurred while submitting the Training Partner."
-           );
-         }
-       },
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       onError: (error: any) => {
-         const errorMessage =
-           error?.response?.data?.message || "An unknown error occurred.";
-         toast.error(errorMessage); 
-       },
+      if (data?.success) {
+        closeModal();
+        toast.success(
+          data.message || "Training Partner submitted successfully!"
+        );
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Training Partner."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage);
+    },
   });
 
   const onSubmit = (data: SchemeFormData) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { isSchemeFundingRatioDisabled, ...filteredData } = data;
     mutation.mutate(filteredData);
   };
@@ -318,7 +320,7 @@ const SchemeModalContent: React.FC = () => {
 
         {/* Order Number */}
         <div className="col-span-full sm:col-span-2">
-          <Label text="Scheme Order Number" required />
+          <Label text="Scheme Sanction Order Number" required />
           <Controller
             control={control}
             name="sanctionOrderNo"
@@ -335,8 +337,22 @@ const SchemeModalContent: React.FC = () => {
           <Controller
             control={control}
             name="dateOfSanction"
+            rules={{
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                if (isAfter(selectedDate, new Date())) {
+                  return "Future dates are not allowed";
+                }
+                return true;
+              },
+            }}
             render={({ field }) => (
-              <Input {...field} type="date" className="w-full" />
+              <Input
+                {...field}
+                type="date"
+                className="w-full"
+                max={format(new Date(), "yyyy-MM-dd")} // Restrict future dates in UI
+              />
             )}
           />
           {errors.dateOfSanction && (

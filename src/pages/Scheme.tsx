@@ -119,6 +119,11 @@ const Scheme: React.FC = () => {
         <p className="text-2xl font-bold mb-4">Unique Entries</p>
         <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
       </div>
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are identified based on matching 'Scheme Name' and 'Scheme Code' across multiple logins, highlighting common entries found in different departments.
+      </div>
+
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Duplicate Entries</p>
         <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={5} />

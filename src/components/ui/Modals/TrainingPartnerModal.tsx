@@ -234,6 +234,7 @@ const TrainingPartnerModal: React.FC = () => {
               <Input
                 {...field}
                 type="tel"
+                maxLength={10}
                 className={errors.iSpocContactNum ? "border-red-500" : ""}
               />
             )}
@@ -245,7 +246,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* Email */}
         <div className="col-span-1">
-          <Label text="Email" />
+          <Label text="Email" required />
           <Controller
             name="vsSpocEmail"
             control={control}

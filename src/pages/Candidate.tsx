@@ -70,7 +70,8 @@ const Candidate: React.FC = () => {
   return (
     <>
       <div className="">
-        <p className="text-2xl font-bold mb-4">List Of Candidates</p>
+        <p className="text-2xl font-bold mb-4">List Of Candidates <span className="text-red-700 text-sm bg-yellow-100 p-2 flex items-center justify-start  mt-3"> ⚠️  Only the last four digits of the candidate's Aadhar number should be Insert</span></p>
+      
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
@@ -138,6 +139,11 @@ const Candidate: React.FC = () => {
       <div className="">
         <p className="text-2xl font-bold mb-4">Unique Candidates</p>
         <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      </div>
+
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are identified based on matching 'Candidate First Name', 'Date Of Birth', 'Phone No' and 'Aadhar Last 4 digit' across multiple logins, highlighting common entries found in different departments.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">

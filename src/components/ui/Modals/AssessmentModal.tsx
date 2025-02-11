@@ -182,7 +182,7 @@ const AssessmentModal: React.FC = () => {
 
         {/* Batch ID */}
         <div className="col-span-1">
-          <Label text="Batch" />
+          <Label text="Batch" required />
           <Controller
             name="batchId"
             control={control}
@@ -209,7 +209,7 @@ const AssessmentModal: React.FC = () => {
 
         {/* SDMS Batch ID */}
         <div className="col-span-1">
-          <Label text="SDMS Batch ID" />
+          <Label text="SDMS Batch ID" required />
           <Controller
             name="SDMSBatchId"
             control={control}
@@ -252,7 +252,7 @@ const AssessmentModal: React.FC = () => {
 
         {/* Assessed ID */}
         <div className="col-span-1">
-          <Label text="Assessed ID" />
+          <Label text="Assessed ID" required/>
           <Controller
             name="accessorId"
             control={control}
@@ -268,7 +268,7 @@ const AssessmentModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Assessment Date" />
+          <Label text="Assessment Date" required/>
           <Controller
             name="dtAssessmentDate"
             control={control}
@@ -334,7 +334,7 @@ const AssessmentModal: React.FC = () => {
 
         {/* Result Type */}
         <div className="col-span-1">
-          <Label text=" Is Result Declared" />
+          <Label text=" Is Result Declared" required />
           <Controller
             name="vsResult"
             control={control}
@@ -352,7 +352,7 @@ const AssessmentModal: React.FC = () => {
 
         {/* Result Date */}
         <div className="col-span-1">
-          <Label text="Result Date" />
+          <Label text="Result Date" required />
           <Controller
             name="dtResultDate"
             control={control}

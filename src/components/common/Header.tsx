@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, Bell } from "lucide-react";
+import { Menu } from "lucide-react";
 import logo from "../../assets/ASDMLOGO.png";
 import useAuthStore from "../../utils/cookies";
 
@@ -37,16 +37,20 @@ const Header = ({
               <button onClick={toggleSidebar}>
                 <Menu />
               </button>
-              <div>
-                <input placeholder="search" />
-              </div>
+              <div className="text-blue-500 font-bold text-xl ">
+ CONVERGENCE
+</div>
+
+
+
+
             </>
           )}
         </div>
         <div className="relative flex items-center gap-3">
-          <button>
+          {/* <button>
             <Bell />
-          </button>
+          </button> */}
           {userDetails ? (
             <div className="relative">
               <div

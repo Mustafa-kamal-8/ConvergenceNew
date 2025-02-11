@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
@@ -9,14 +9,14 @@ import Input from "../Input";
 import Button from "../../ui/SubmitButton";
 import "../../../custom.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getBatch, getMasterData, getTcByTp } from "../../../services/state/api/masterApi";
+import { getBatch, getMasterData} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitInvoiceForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 
 const InvoiceModal: React.FC = () => {
 
-    const [fklTpId, setTpId] = useState<number | null>(null);
+  
     const [fklTcId, setTcId] = useState<number | null>(null); 
  
 const {closeModal} = useModalStore()
@@ -45,38 +45,33 @@ const {closeModal} = useModalStore()
       })
     ) || [];
 
-     const { data: tpData } = useQuery({
-        queryKey: ["masterData", "tp"],
-        queryFn: () => getMasterData("tp"),
-      });
     
-      const tpOptions =
-      tpData?.data?.result?.tp?.map(
-          (tp: { pklTpId: number; vsTpName: string }) => ({
-            label: tp.vsTpName,
-            value: tp.pklTpId,
-          })
-        ) || [];
-
-         const { data: tcData } = useQuery({
-            queryKey: ["masterData", "tc", fklTpId],
-            queryFn: () => getTcByTp(fklTpId, "tc"),
-            enabled: !!fklTpId,
-          });
-        
-          const tcOptions =
-            tcData?.data?.result?.tc?.map(
-              (tc: { pklTcId: number; vsTcName: string }) => ({
-                label: tc.vsTcName,
-                value: tc.pklTcId,
-              })
-            ) || [];
+    
+    
+      const { data: tcData } = useQuery({
+        queryKey: ["masterData", "AllDeptTc"], 
+        queryFn: () => getMasterData("AllDeptTc"), 
+      });
+      
+       useEffect(() => {
+         if (masterData) {
+          console.log("Fetched master data:", masterData);
+         }
+       }, [masterData]);
+    
+       const tcOptions =
+       tcData?.data?.result?.tc?.map(
+        (tp: { pklTcId: number; vsTcName: string }) => ({
+          label: tp.vsTcName,
+          value: tp.pklTcId,
+        })
+      ) || [];
 
 
               const { data: batchData } = useQuery({
-                queryKey: ["getBatch", "tc", fklTpId, fklTcId],
-                queryFn: () => getBatch(fklTpId, "batch", fklTcId),
-                enabled: !!fklTcId && !!fklTpId,
+                queryKey: ["getBatch", "TcBatch",  fklTcId],
+                queryFn: () => getBatch("TcBatch", fklTcId),
+                enabled: !!fklTcId ,
               });
             
               const batchOptions =
@@ -119,50 +114,26 @@ const {closeModal} = useModalStore()
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-       <div className="col-span-1">
-          <Label text="Training Partner" />
-          <Controller
-            name="fklTpId"
-            control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                options={tpOptions}
-                getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value}
-                onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value);
-                  setTpId(selectedOption.value);
-                  setValue("fklTpId", selectedOption.value);
-                }}
-                className={errors.fklTpId ? "border-red-500" : ""}
-                placeholder="-- Select Partners --"
-              />
-            )}
-          />
-          {errors.fklTpId && (
-            <p className="text-red-500">{errors.fklTpId.message}</p>
-          )}
-        </div>
+       
 
-        <div className="col-span-1">
-          <Label text="Training Center" />
+       <div className="col-span-1">
+          <Label text="Training Center" required />
           <Controller
             name="fklTcId"
             control={control}
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={tcOptions}
-                getOptionLabel={(option: { label: string }) => option.label}
-                getOptionValue={(option: { value: number }) => option.value}
-                onSelect={(selectedValue: { label: string; value: number }) => {
-                  field.onChange(selectedValue.value);
-                  setTcId(selectedValue.value);
-                  setValue("fklTcId", selectedValue.value);
+                options={tcOptions} 
+                getOptionLabel={(option) => option.label} 
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+                  setTcId(selectedOption.value);
+                  setValue("fklTcId", selectedOption.value); 
                 }}
-                placeholder="-- Select Centers --"
                 className={errors.fklTcId ? "border-red-500" : ""}
+                placeholder="-- Select Training Center --"
               />
             )}
           />
@@ -170,10 +141,9 @@ const {closeModal} = useModalStore()
             <p className="text-red-500">{errors.fklTcId.message}</p>
           )}
         </div>
-
         {/* Batch ID */}
         <div className="col-span-1">
-          <Label text="Batch" />
+          <Label text="Batch" required />
           <Controller
             name="fklBatchId"
             control={control}
@@ -201,7 +171,7 @@ const {closeModal} = useModalStore()
 
         {/* Invoice Type */}
         <div className="col-span-1">
-          <Label text="Invoice Type" />
+          <Label text="Invoice Type" required/>
           <Controller
             name="fklInvoiceType"
             control={control}
@@ -228,7 +198,7 @@ const {closeModal} = useModalStore()
 
         {/* Invoice Tranche */}
         <div className="col-span-1">
-          <Label text="Invoice Tranche" />
+          <Label text="Invoice Tranche" required />
           <Controller
             name="vsInvoiceTranche"
             control={control}
@@ -246,7 +216,7 @@ const {closeModal} = useModalStore()
 
         {/* Invoice Number */}
         <div className="col-span-1">
-          <Label text="Invoice Number" />
+          <Label text="Invoice Number" required />
           <Controller
             name="vsInvoiceNo"
             control={control}
@@ -264,7 +234,7 @@ const {closeModal} = useModalStore()
 
         {/* Invoice Date */}
         <div className="col-span-1">
-          <Label text="Invoice Date" />
+          <Label text="Invoice Date" required />
           <Controller
             name="vsInvoiceDate"
             control={control}
@@ -281,7 +251,7 @@ const {closeModal} = useModalStore()
 
         {/* No of Candidates */}
         <div className="col-span-1">
-          <Label text="No of Candidates" />
+          <Label text="No of Candidates" required />
           <Controller
             name="iTotalCandidate"
             control={control}
@@ -301,7 +271,7 @@ const {closeModal} = useModalStore()
 
         {/* Rate */}
         <div className="col-span-1">
-          <Label text="Rate" />
+          <Label text="Rate"  />
           <Controller
             name="fRate"
             control={control}

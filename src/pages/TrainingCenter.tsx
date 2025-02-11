@@ -19,6 +19,8 @@ const TrainingCenter: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [duplicateData, setDuplicateData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -33,10 +35,17 @@ const TrainingCenter: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      if (fetchedData?.data && fetchedData.data.length > 0) {
-        setFilteredData(fetchedData.data);
+      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count);
       } else {
         setFilteredData([]);
+      }
+
+      if (fetchedData?.data?.duplicate_tc && fetchedData.data?.duplicate_tc.length > 0) {
+        setDuplicateData(fetchedData.data?.duplicate_tc);
+      } else {
+        setDuplicateData([]);
       }
     }
   }, [fetchedData, isSuccess]);
@@ -116,6 +125,7 @@ const TrainingCenter: React.FC = () => {
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <div>
         <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
@@ -123,7 +133,7 @@ const TrainingCenter: React.FC = () => {
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Training Centeres</p>
-        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+        <CentralizedTable columns={columns} data={duplicateData} pageSize={5} />
       </div>
     </>
   );

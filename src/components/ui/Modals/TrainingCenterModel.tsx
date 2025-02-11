@@ -182,7 +182,7 @@ const TrainingCenterModel: React.FC = () => {
         <div className="col-span-1">
           <Label text="TP Name" required/>
           <Controller
-            name="vsTpName"
+            name="fklTpId"
             control={control}
             render={({ field }) => (
               <Dropdown
@@ -193,15 +193,15 @@ const TrainingCenterModel: React.FC = () => {
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value); 
                  
-                  setValue("vsTpName", selectedOption.value.toString()); 
+                  setValue("fklTpId", selectedOption.value.toString()); 
                 }}
-                className={errors.vsTpName ? "border-red-500" : ""}
+                className={errors.fklTpId ? "border-red-500" : ""}
                 placeholder="-- TP Name --"
               />
             )}
           />
-          {errors.vsTpName && (
-            <p className="text-red-500">{errors.vsTpName.message}</p>
+          {errors.fklTpId && (
+            <p className="text-red-500">{errors.fklTpId.message}</p>
           )}
         </div>
 
@@ -299,7 +299,7 @@ const TrainingCenterModel: React.FC = () => {
         </div> */}
 
         <div>
-          <Label text="SPOC Email" />
+          <Label text="SPOC Email" required />
           <Controller
             name="vsSpocEmail"
             control={control}

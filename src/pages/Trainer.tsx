@@ -16,10 +16,10 @@ import SearchDropdown from "../components/ui/SearchDropdown";
 
 
 const Trainer: React.FC = () => {
- 
+
   const navigate = useNavigate();
 
-  
+
 
   const columns = useMemo(() => trainerColumns(navigate), [navigate]);
 
@@ -35,14 +35,14 @@ const Trainer: React.FC = () => {
     data: fetchedData,
     isLoading,
     isSuccess,
-   
+
   } = useQuery({
     queryKey: ["schemeData", searchKey, debouncedSearchValue],
     queryFn: () => getTableData("trainer", searchKey, debouncedSearchValue),
-   
+
   });
 
- useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data.data && fetchedData.data.data.length > 0) {
         setFilteredData(fetchedData.data.data);
@@ -55,13 +55,13 @@ const Trainer: React.FC = () => {
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
-    setSearchValue(""); 
+    setSearchValue("");
   };
-  
+
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-   
+
   };
 
   if (isLoading) {
@@ -69,17 +69,17 @@ const Trainer: React.FC = () => {
   }
 
 
- 
-;
+
+  ;
 
   return (
     <>
-    
+
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Trainers</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-          <SearchDropdown
+            <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "Scheme Name", value: "vsSchemeName" },
@@ -127,20 +127,20 @@ const Trainer: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="trainer"
               Icon={UploadCloud}
-            
+
             />
             <ModalOpenButton
               modalType={6}
               modalTitle="Add Trainer"
               bulkName="Trainer"
               Icon={Add}
-           
+
             />
           </div>
         </div>
       </div>
 
-       <CentralizedTable columns={columns} data={filteredData} pageSize={5} /> 
+      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
     </>
   );
 };

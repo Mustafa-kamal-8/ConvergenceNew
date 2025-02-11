@@ -1,6 +1,6 @@
 // src/components/modals/TrainerModalContent.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
@@ -9,19 +9,41 @@ import Label from "../Label";
 import Button from "../SubmitButton";
 import { TrainerFormData } from "../../../utils/formTypes";
 import { trainerSchema } from "../../../utils/validation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitTrainerForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
+import { getMasterData } from "../../../services/state/api/masterApi";
+import Dropdown from "../Dropdown";
 
 const TrainerModalContent: React.FC = () => {
   const { closeModal } = useModalStore();
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<TrainerFormData>({
     resolver: joiResolver(trainerSchema),
   });
+
+  const { data: masterData } = useQuery({
+    queryKey: ["masterData", "AllDeptTc"], 
+    queryFn: () => getMasterData("AllDeptTc"), 
+  });
+  
+   useEffect(() => {
+     if (masterData) {
+      console.log("Fetched master data:", masterData);
+     }
+   }, [masterData]);
+
+   const tcOptions =
+  masterData?.data?.result?.tc?.map(
+    (tp: { pklTcId: number; vsTcName: string }) => ({
+      label: tp.vsTcName,
+      value: tp.pklTcId,
+    })
+  ) || [];
 
   const mutation = useMutation({
     mutationFn: submitTrainerForm,
@@ -72,9 +94,35 @@ const TrainerModalContent: React.FC = () => {
             )}
           </div> */}
 
+<div className="col-span-1">
+          <Label text="Training Center"required />
+          <Controller
+            name="fklTcId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={tcOptions} 
+                getOptionLabel={(option) => option.label} 
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+              
+                  setValue("fklTcId", selectedOption.value); 
+                }}
+                className={errors.vsTcName ? "border-red-500" : ""}
+                placeholder="-- Select Training Center --"
+              />
+            )}
+          />
+          {errors.fklTcId && (
+            <p className="text-red-500">{errors.fklTcId.message}</p>
+          )}
+        </div>
+
         {/* Trainer Name */}
         <div className="col-span-1">
-          <Label text="Trainer Name" />
+          <Label text="Trainer Name" required />
           <Controller
             name="vsTrainerName"
             control={control}
@@ -93,7 +141,7 @@ const TrainerModalContent: React.FC = () => {
 
         {/* Mobile */}
         <div className="col-span-1">
-          <Label text="Mobile" />
+          <Label text="Mobile" required/>
           <Controller
             name="vsMobile"
             control={control}
@@ -131,7 +179,7 @@ const TrainerModalContent: React.FC = () => {
 
         {/* ID Card (PAN/Voter) */}
         <div className="col-span-1">
-          <Label text="PAN Card" />
+          <Label text="PAN Card" required/>
           <Controller
             name="vsPAN"
             control={control}

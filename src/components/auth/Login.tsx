@@ -68,7 +68,7 @@ const Login = () => {
               <div className="flex items-center gap-2">
                 <img className="h-24 w-24" src={Logo} alt="ASDM Logo" />
                 <p className="text-2xl text-theme-primary font-bold">
-                  ASDM CONVERGENCE
+                  ASSAM SKILL DEVELOPMENT MISSION CONVERGENCE
                 </p>
               </div>
               <form onSubmit={handleLogin} className="grid gap-2">

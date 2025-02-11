@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller} from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Input from "../Input";
 import Label from "../Label";
@@ -18,6 +18,7 @@ import {
 import Dropdown from "../Dropdown";
 import { submitCandidateForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
+import { format, isAfter, differenceInYears } from "date-fns";
 // import { Autocomplete, TextField } from "@mui/material";
 
 const CandidateModal: React.FC = () => {
@@ -41,6 +42,17 @@ const CandidateModal: React.FC = () => {
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
   });
+
+  const dob = watch("vsDOB");
+
+  useEffect(() => {
+    if (dob) {
+      const birthDate = new Date(dob);
+      const age = differenceInYears(new Date(), birthDate);
+      setValue("iAge", age.toString(), { shouldValidate: true }); // Convert number to string
+    }
+  }, [dob, setValue]);
+
 
   const { data: qualificationData } = useQuery({
     queryKey: ["masterData", "qualification"],
@@ -209,36 +221,36 @@ const CandidateModal: React.FC = () => {
   const ULBblockOptions =
     selectedRVillageCity === "Village"
       ? ULBblockData?.data?.result?.blocks?.map(
-          (blocks: { blockId: number; blockName: string }) => ({
-            label: blocks.blockName,
-            value: blocks.blockId,
-          })
-        ) || []
+        (blocks: { blockId: number; blockName: string }) => ({
+          label: blocks.blockName,
+          value: blocks.blockId,
+        })
+      ) || []
       : selectedRVillageCity === "City"
-      ? ULBblockData?.data?.result?.ulbs?.map(
+        ? ULBblockData?.data?.result?.ulbs?.map(
           (ulbs: { ulbId: number; ulbName: string }) => ({
             label: ulbs.ulbName,
             value: ulbs.ulbId,
           })
         ) || []
-      : [];
+        : [];
 
   const ULBblockOptionsP =
     selectedPVillageCity === "Village"
       ? ULBblockDataP?.data?.result?.blocks?.map(
-          (blocks: { blockId: number; blockName: string }) => ({
-            label: blocks.blockName,
-            value: blocks.blockId,
-          })
-        ) || []
+        (blocks: { blockId: number; blockName: string }) => ({
+          label: blocks.blockName,
+          value: blocks.blockId,
+        })
+      ) || []
       : selectedPVillageCity === "City"
-      ? ULBblockDataP?.data?.result?.ulbs?.map(
+        ? ULBblockDataP?.data?.result?.ulbs?.map(
           (ulbs: { ulbId: number; ulbName: string }) => ({
             label: ulbs.ulbName,
             value: ulbs.ulbId,
           })
         ) || []
-      : [];
+        : [];
 
   const { data: bankData } = useQuery({
     queryKey: ["masterData", "bank"],
@@ -312,11 +324,9 @@ const CandidateModal: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<candidateFormData> = (
-    data: candidateFormData
-  ) => {
-    mutation.mutate(data);
-  };
+  const onSubmit = (data: candidateFormData) => {
+       mutation.mutate(data);
+     };
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -333,7 +343,7 @@ const CandidateModal: React.FC = () => {
             render={({ field }) => (
               <Input
                 {...field}
-                type="number"
+                type="text"
                 className={errors.candidateId ? "border-red-500" : ""}
               />
             )}
@@ -399,24 +409,31 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
 
-        <div className="col-span-1">
+        <div>
           <Label text="Date Of Birth" required />
           <Controller
-            name="vsDOB"
             control={control}
+            name="vsDOB"
+            rules={{
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                if (isAfter(selectedDate, new Date())) {
+                  return "Future dates are not allowed";
+                }
+                return true;
+              },
+            }}
             render={({ field }) => (
               <Input
                 {...field}
                 type="date"
-                className={errors.vsDOB ? "border-red-500" : ""}
+                className="w-full"
+                max={format(new Date(), "yyyy-MM-dd")}
               />
             )}
           />
-          {errors.vsDOB && (
-            <p className="text-red-500">{errors.vsDOB.message}</p>
-          )}
+          {errors.vsDOB && <p className="text-red-500">{errors.vsDOB.message}</p>}
         </div>
-
         <div className="col-span-1">
           <Label text="Age" required />
           <Controller
@@ -426,6 +443,7 @@ const CandidateModal: React.FC = () => {
               <Input
                 {...field}
                 type="number"
+                disabled={!!field.value}
                 className={errors.iAge ? "border-red-500" : ""}
               />
             )}
@@ -501,8 +519,8 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.fklIdType.message}</p>
           )}
         </div>
-        <div className="col-span-1">
-          <Label text="ID Number" />
+        <div className="col-span-2">
+          <Label text="ID Number (Insert last 4 digit of aadhar)" />
           <Controller
             name="vsUUID"
             control={control}
@@ -510,6 +528,7 @@ const CandidateModal: React.FC = () => {
               <Input
                 {...field}
                 type="number"
+                value={field.value?.toString().slice(0, 4)}
                 className={errors.vsUUID ? "border-red-500" : ""}
               />
             )}
@@ -579,7 +598,8 @@ const CandidateModal: React.FC = () => {
             render={({ field }) => (
               <Input
                 {...field}
-                type="number"
+                type="tel"
+                maxLength={10}
                 className={errors.vsMobile ? "border-red-500" : ""}
               />
             )}
@@ -605,8 +625,8 @@ const CandidateModal: React.FC = () => {
             <p className="text-red-500">{errors.vsEmail.message}</p>
           )}
         </div>
-        <div className="col-span-1">
-          <Label text="Education Attained" />
+        <div className="col-span-2">
+          <Label text="Education Attained" required />
           <Controller
             name="vsEducationAttained"
             control={control}
@@ -850,9 +870,8 @@ const CandidateModal: React.FC = () => {
             render={({ field }) => (
               <select
                 {...field}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.isRCityVillage ? "border-red-500" : ""
-                }`}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.isRCityVillage ? "border-red-500" : ""
+                  }`}
               >
                 <option value="" disabled>
                   -- Select Village/City --
@@ -1226,9 +1245,8 @@ const CandidateModal: React.FC = () => {
                 render={({ field }) => (
                   <select
                     {...field}
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.vsPVillageCity ? "border-red-500" : ""
-                    }`}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.vsPVillageCity ? "border-red-500" : ""
+                      }`}
                   >
                     <option value="" disabled>
                       -- Select Village/City --
@@ -1603,15 +1621,17 @@ const CandidateModal: React.FC = () => {
         {/* Add all other fields similarly */}
 
         {/* Submit Button */}
+        <div className="col-span-2 md:col-span-2 lg:col-span-5 flex justify-end bg-gray-100 p-4 rounded-xl">
+          <Button
+            text="Submit"
+            loadingText="Submitting..."
+            loading={mutation.isPending}
+          
+            disabled={false}
+          />
+        </div>
       </form>
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
-        <Button
-          text="Submit"
-          loadingText="Submitting..."
-          loading={mutation.isPending}
-          disabled={false}
-        />
-      </div>
+     
     </div>
   );
 };

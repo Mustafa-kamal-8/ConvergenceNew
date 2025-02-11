@@ -99,18 +99,18 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Assessor Name" required />
           <Controller
-            name="vsAssosserName"
+            name="vsAssessorName"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.vsAssosserName ? "border-red-500" : ""}
+                className={errors.vsAssessorName ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.vsAssosserName && (
-            <p className="text-red-500">{errors.vsAssosserName.message}</p>
+          {errors.vsAssessorName && (
+            <p className="text-red-500">{errors.vsAssessorName.message}</p>
           )}
         </div>
 
@@ -155,24 +155,24 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Pan Card" required />
           <Controller
-            name="vsPan"
+            name="vsPAN"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.vsPan ? "border-red-500" : ""}
+                className={errors.vsPAN ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.vsPan && (
-            <p className="text-red-500">{errors.vsPan.message}</p>
+          {errors.vsPAN && (
+            <p className="text-red-500">{errors.vsPAN.message}</p>
           )}
         </div>
         <div className="col-span-1">
           <Label text="QPNOS Code" required />
           <Controller
-            name="vsQPNOS"
+            name="QPNOS"
             control={control}
             render={({ field }) => (
               <Dropdown
@@ -182,15 +182,15 @@ const AssessorsModal: React.FC = () => {
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                  setValue("vsQPNOS", selectedOption.value);
+                  setValue("QPNOS", selectedOption.value);
                 }}
-                className={errors.vsQPNOS ? "border-red-500" : ""}
+                className={errors.QPNOS ? "border-red-500" : ""}
                 placeholder="-- Select QPNOS Code--"
               />
             )}
           />
-          {errors.vsQPNOS && (
-            <p className="text-red-500">{errors.vsQPNOS.message}</p>
+          {errors.QPNOS && (
+            <p className="text-red-500">{errors.QPNOS.message}</p>
           )}
         </div>
 
@@ -198,18 +198,18 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="Assessment Agency" required />
           <Controller
-            name="vsAssesmentAgency"
+            name="vsAssessmentAgency"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
                 type="text"
-                className={errors.vsAssesmentAgency ? "border-red-500" : ""}
+                className={errors.vsAssessmentAgency ? "border-red-500" : ""}
               />
             )}
           />
-          {errors.vsAssesmentAgency && (
-            <p className="text-red-500">{errors.vsAssesmentAgency.message}</p>
+          {errors.vsAssessmentAgency && (
+            <p className="text-red-500">{errors.vsAssessmentAgency.message}</p>
           )}
         </div>
 

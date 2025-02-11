@@ -27,6 +27,8 @@ const TrainingPartner: React.FC = () => {
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+   const [duplicateData, setDuplicateData] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -39,16 +41,24 @@ const TrainingPartner: React.FC = () => {
     queryFn: () => getTableData("TP", searchKey, debouncedSearchValue),
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
-        setFilteredData(fetchedData.data.data);
-        // setTotalCount(fetchedData.data.total_count)
-      } else {
-        setFilteredData([]);
+   useEffect(() => {
+      if (isSuccess) {
+        if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+          setFilteredData(fetchedData.data.data);
+          setTotalCount(fetchedData.data.total_count);
+        } else {
+          setFilteredData([]);
+        }
+  
+        if (fetchedData?.data?.duplicate_tp && fetchedData.data?.duplicate_tp.length > 0) {
+          setDuplicateData(fetchedData.data?.duplicate_tp);
+        } else {
+          setDuplicateData([]);
+        }
       }
-    }
-  }, [fetchedData, isSuccess]);
+    }, [fetchedData, isSuccess]);
+
+    console.log("duplicate data are",duplicateData);
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
@@ -127,10 +137,16 @@ const TrainingPartner: React.FC = () => {
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <div className="pt-5">
         <p className="text-2xl font-bold mb-4">Unique Training Partners</p>
         <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      </div>
+
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are identified based on matching 'Training Paretner Name' and 'PAN No' across multiple logins, highlighting common entries found in different departments.
       </div>
 
       <div className="pt-5">
@@ -139,7 +155,7 @@ const TrainingPartner: React.FC = () => {
         </p>
         <CentralizedTable
           columns={CrossDuplicateTrainingColumns}
-          data={filteredData}
+          data={duplicateData}
           pageSize={5}
         />
       </div>

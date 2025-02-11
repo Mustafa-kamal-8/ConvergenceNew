@@ -176,8 +176,7 @@ export const submitTraningCenterForm = async (data: TrainingCenterFormData) => {
     throw new Error("User details are not available in the store.");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { vsTpName, ...filteredData } = data;
+  const { ...filteredData } = data;
 
   const requestData = {
     ...filteredData,

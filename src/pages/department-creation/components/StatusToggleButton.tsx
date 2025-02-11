@@ -3,6 +3,7 @@ import { updateDepartmentStatus } from "../../../services/state/api/departmentCr
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const StatusToggleButton = ({ initialStatus, pklTargetId }: any) => {
   const [isEnabled, setIsEnabled] = useState(initialStatus);
   const queryClient = useQueryClient();

@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { submitTargetForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 import Dropdown from "../Dropdown";
-
+import { format, isAfter } from "date-fns";
 
 const TargetModal: React.FC = () => {
   const { closeModal } = useModalStore();
@@ -180,12 +180,26 @@ const TargetModal: React.FC = () => {
         </div>
         {/* Date Of Target */}
         <div>
-          <Label text="Target date" required />
+          <Label text="Date Of Target" required />
           <Controller
             control={control}
             name="dtTargetDate"
+            rules={{
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                if (isAfter(selectedDate, new Date())) {
+                  return "Future dates are not allowed";
+                }
+                return true;
+              },
+            }}
             render={({ field }) => (
-              <Input {...field} type="date" className="w-full" />
+              <Input
+                {...field}
+                type="date"
+                className="w-full"
+                max={format(new Date(), "yyyy-MM-dd")} // Restrict future dates in UI
+              />
             )}
           />
           {errors.dtTargetDate && (
