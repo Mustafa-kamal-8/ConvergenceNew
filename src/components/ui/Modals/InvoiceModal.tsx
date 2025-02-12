@@ -13,7 +13,7 @@ import { getBatch, getMasterData} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitInvoiceForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
-
+import { format, isAfter } from "date-fns";
 const InvoiceModal: React.FC = () => {
 
   
@@ -233,16 +233,26 @@ const {closeModal} = useModalStore()
         </div>
 
         {/* Invoice Date */}
-        <div className="col-span-1">
+        <div>
           <Label text="Invoice Date" required />
           <Controller
-            name="vsInvoiceDate"
             control={control}
+            name="vsInvoiceDate"
+            rules={{
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                if (isAfter(selectedDate, new Date())) {
+                  return "Future dates are not allowed";
+                }
+                return true;
+              },
+            }}
             render={({ field }) => (
               <Input
                 {...field}
                 type="date"
-                className={`w-full ${errors.vsInvoiceDate ? "border-red-500" : ""}`}
+                className="w-full"
+                max={format(new Date(), "yyyy-MM-dd")}
               />
             )}
           />
@@ -258,7 +268,7 @@ const {closeModal} = useModalStore()
             render={({ field }) => (
               <Input
                 {...field}
-                type="text"
+                type="number"
                 placeholder="Enter number of candidates"
                 className={`w-full ${errors.iTotalCandidate ? "border-red-500" : ""}`}
               />
@@ -278,7 +288,7 @@ const {closeModal} = useModalStore()
             render={({ field }) => (
               <Input
                 {...field}
-                type="text"
+                type="number"
                 placeholder="Enter Rate"
                 className={`w-full ${errors.fRate ? "border-red-500" : ""}`}
               />

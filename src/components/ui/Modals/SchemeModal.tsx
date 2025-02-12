@@ -295,7 +295,7 @@ const SchemeModalContent: React.FC = () => {
           )}
         </div>
         <div>
-          <Label text="Scheme Funding Ratio" required />
+          <Label text="Scheme Funding Ratio  ( State : Central : CSR )" required />
           <Controller
             control={control}
             name="schemeFundingRatio"

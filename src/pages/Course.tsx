@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import {  DownloadCloud, UploadCloud } from "lucide-react";
+import { DownloadCloud, UploadCloud } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { courseColumns } from "../utils/tableColumns";
@@ -13,63 +13,78 @@ import { useNavigate } from "react-router-dom";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
+import { courseDuplicateColumns } from "../utils/tableColumns";
+const Course: React.FC = () => {
 
-  const Course: React.FC = () => {
 
-
-const [searchValue, setSearchValue] = useState<string>("");
- const [filteredData, setFilteredData] = useState([]);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [filteredData, setFilteredData] = useState([]);
   const navigate = useNavigate();
-    const [searchKey, setSearchKey] = useState<string>("");
- const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+  const [searchKey, setSearchKey] = useState<string>("");
+  const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 1000);
+  const [duplicateData, setDuplicateData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
-const { data: fetchedData, isSuccess , isLoading } = useQuery({
-  queryKey: ["courseData" , "course", searchKey, debouncedSearchValue],
-  queryFn: () => getTableData("course",searchKey, debouncedSearchValue),
-});
+  const { data: fetchedData, isSuccess, isLoading } = useQuery({
+    queryKey: ["courseData", "course", searchKey, debouncedSearchValue],
+    queryFn: () => getTableData("course", searchKey, debouncedSearchValue),
+  });
 
- useEffect(() => {
-    if (isSuccess && fetchedData?.data?.data) {
-      setFilteredData(fetchedData.data.data); 
+  useEffect(() => {
+    if (isSuccess) {
+      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count);
+      } else {
+        setFilteredData([]);
+      }
+
+      if (fetchedData?.data?.duplicate_course && fetchedData.data?.duplicate_course.length > 0) {
+        setDuplicateData(fetchedData.data?.duplicate_course);
+      } else {
+        setDuplicateData([]);
+      }
     }
   }, [fetchedData, isSuccess]);
 
-// Handle search logic
-const handleSearch = (value: string) => {
-  setSearchValue(value);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filtered = fetchedData.data.filter((item: any) =>
-    item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
-  );
-  setFilteredData(filtered);
-};
+  console.log("duplicate data courses are", duplicateData)
 
- const handleDropdownSelect = (option: { label: string; value: string }) => {
-  setSearchKey(option.value);
-  setSearchKeyLabel(option.label);
-  setSearchValue(""); 
-};
+  // Handle search logic
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filtered = fetchedData.data.filter((item: any) =>
+      item.vsSchemeName.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleDropdownSelect = (option: { label: string; value: string }) => {
+    setSearchKey(option.value);
+    setSearchKeyLabel(option.label);
+    setSearchValue("");
+  };
 
 
-if (isLoading) {
-  return <Loader />;
-}
+  if (isLoading) {
+    return <Loader />;
+  }
 
 
   return (
     <>
-     
+
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Course</p>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
-          <SearchDropdown
+            <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "Scheme Name", value: "vsSchemeName" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },  
+                { label: "Scheme Type", value: "vsSchemeType" },
                 { label: "Fund Name", value: "vsFundName" },
                 { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
               ]}
@@ -109,20 +124,29 @@ if (isLoading) {
               modalTitle="Bulk Upload"
               bulkName="course"
               Icon={UploadCloud}
-            
+
             />
             <ModalOpenButton
               modalType={2}
               modalTitle="Add Course"
               bulkName="course"
               Icon={Add}
-          
+
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
 
-       <CentralizedTable columns={courseColumns(navigate)} data={filteredData} pageSize={5} /> 
+      <CentralizedTable columns={courseColumns(navigate)} data={filteredData} pageSize={5} />
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are checked using 'Course Name' and 'Course Code' across multiple logins. These fields are the minimum required to identify duplicates.
+      </div>
+      <div className="pt-10">
+        <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Courses</p>
+        <CentralizedTable columns={courseDuplicateColumns(navigate)} data={duplicateData} pageSize={5} />
+      </div>
     </>
   );
 }

@@ -6,7 +6,7 @@ import { DownloadCloud, UploadCloud } from "lucide-react";
 import Loader from "../components/ui/Loader";
 import { getTableData } from "../services/state/api/tableDataApi";
 import { useQuery } from "@tanstack/react-query";
-import {  placementColumns } from "../utils/tableColumns";
+import {  placementColumns, placementDuplicateColumns } from "../utils/tableColumns";
 import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
@@ -21,12 +21,14 @@ const Placement: React.FC = () => {
   
 
   const columns = useMemo(() => placementColumns(navigate), [navigate]);
-
+  const duplicateColumns = useMemo(() => placementDuplicateColumns(navigate), [navigate]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
-  const [totalCount , setTotalCount] = useState([])
+  const [totalCount , setTotalCount] = useState([]);
+   const [duplicateData, setDuplicateData] = useState([]);
+  
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -41,13 +43,19 @@ const Placement: React.FC = () => {
    
   });
 
-  useEffect(() => {
+ useEffect(() => {
     if (isSuccess) {
       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
         setFilteredData(fetchedData.data.data);
-        setTotalCount(fetchedData.data.total_count)
+        setTotalCount(fetchedData.data.total_count);
       } else {
         setFilteredData([]);
+      }
+
+      if (fetchedData?.data?.duplicate_placements && fetchedData.data?.duplicate_placements.length > 0) {
+        setDuplicateData(fetchedData.data?.duplicate_placements);
+      } else {
+        setDuplicateData([]);
       }
     }
   }, [fetchedData, isSuccess]);
@@ -137,6 +145,16 @@ const Placement: React.FC = () => {
       </div>
 
       <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are checked using 'Candidate Name/ID' across multiple logins. These field is the minimum required to identify duplicates.
+      </div>
+
+      <div className="pt-10">
+     
+        <p className="text-2xl font-bold mb-4">Duplicate Entries of Placements</p>
+        <CentralizedTable columns={duplicateColumns} data={duplicateData} pageSize={5} />
+      </div>
     </>
   );
 };

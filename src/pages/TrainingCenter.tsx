@@ -11,10 +11,12 @@ import { getTableData } from "../services/state/api/tableDataApi";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
+import { centerDuplicateColumns } from "../utils/tableColumns";
 
 const TrainingCenter: React.FC = () => {
   const navigate = useNavigate();
   const columns = useMemo(() => centerColumns(navigate), [navigate]);
+  const duplicateColumns = useMemo(() => centerDuplicateColumns(navigate), [navigate]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");
@@ -133,7 +135,7 @@ const TrainingCenter: React.FC = () => {
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Training Centeres</p>
-        <CentralizedTable columns={columns} data={duplicateData} pageSize={5} />
+        <CentralizedTable columns={duplicateColumns} data={duplicateData} pageSize={5} />
       </div>
     </>
   );

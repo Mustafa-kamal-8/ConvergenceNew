@@ -146,9 +146,10 @@ const PlacementModal: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitPlacementForm,
     onSuccess: (data) => {
-      closeModal();
+    
       if (data?.success) {
         toast.success(data.message || "Assesment submitted successfully!");
+        closeModal();
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Trainer."

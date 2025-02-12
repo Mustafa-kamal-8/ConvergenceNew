@@ -452,7 +452,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Father's Name" required />
+          <Label text="Father's Name"  />
           <Controller
             name="vsFatherName"
             control={control}
@@ -520,15 +520,15 @@ const CandidateModal: React.FC = () => {
           )}
         </div>
         <div className="col-span-2">
-          <Label text="ID Number (Insert last 4 digit of aadhar)" />
+          <Label text="ID Number (Insert last 4 digit of aadhar)" required/>
           <Controller
             name="vsUUID"
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
-                type="number"
-                value={field.value?.toString().slice(0, 4)}
+                type="text"
+                // value={field.value?.toString().slice(0, 4)}
                 className={errors.vsUUID ? "border-red-500" : ""}
               />
             )}
@@ -653,7 +653,7 @@ const CandidateModal: React.FC = () => {
         <div className="md:col-span-3 lg:col-span-5  mt-4"></div>
 
         <div className="col-span-1">
-          <Label text="Disability" required />
+          <Label text="Disability" />
           <Controller
             name="bDisability"
             control={control}
@@ -686,7 +686,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div>
-          <Label text="Tea Tribe" required />
+          <Label text="Tea Tribe" />
           <Controller
             name="bTeaTribe"
             control={control}
@@ -720,7 +720,7 @@ const CandidateModal: React.FC = () => {
 
         {/* BPL Card Holder */}
         <div>
-          <Label text="BPL Card Holder" required />
+          <Label text="BPL Card Holder" />
           <Controller
             name="bBPLcardHolder"
             control={control}
@@ -754,7 +754,7 @@ const CandidateModal: React.FC = () => {
 
         {/* Minority */}
         <div>
-          <Label text="Minority" required />
+          <Label text="Minority" />
           <Controller
             name="bMinority"
             control={control}

@@ -51,58 +51,48 @@ export const schemeColumns: (
   },
 ];
 
+interface SchemeDuplicateData {
+  vsSchemeName: string;
+  vsSchemeType: string;
+  departmentNames: string;
+  Action?: unknown;
+}
+
 export const schemeDuplicateColumns: (
   navigate: ReturnType<typeof useNavigate>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-) => Column<SchemeData>[] = (_navigate) => [
-  { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+) => Column<SchemeDuplicateData>[] = (_navigate) => [
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme", accessor: "vsSchemeName" },
-  {
-    Header: "Targets",
-    accessor: "count",
-  },
+ 
   { Header: "Scheme Type", accessor: "vsSchemeType" },
-  { Header: "Scheme Code", accessor: "vsSchemeCode" },
-  { Header: "Fund Name", accessor: "vsFundName" },
-  { Header: "Fund Type", accessor: "vsSchemeFundingType" },
-  { Header: "Fund Ratio", accessor: "vsSchemeFUndingRatio" },
-  { Header: "Sanction Order Number", accessor: "sanctionOrderNo" },
-  { Header: "Departments", accessor: "department_names" },
-  // {
-  //   Header: "Action",
-  //   accessor: "Action",
-  //   Cell: ({ row }) => {
-  //     const [open, setOpen] = useState(false);
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
+  
+  
 
-  //     const handleDelete = () => {
-  //       console.log("Deleting scheme:", row.original);
-  //       setOpen(false);
-  //     };
-
-  //     return (
-  //       <>
-  //         <button className="text-red-500" onClick={() => setOpen(true)}>
-  //           <Trash2 className="w-5 h-5" />
-  //         </button>
-
-  //         {/* MUI Confirm Dialog */}
-  //         <Dialog open={open} onClose={() => setOpen(false)}>
-  //           <DialogTitle>Confirm Deletion</DialogTitle>
-  //           <DialogContent>Are you sure to delete this scheme?</DialogContent>
-  //           <DialogActions>
-  //             <Button onClick={() => setOpen(false)} color="primary">
-  //               Cancel
-  //             </Button>
-  //             <Button onClick={handleDelete} color="error">
-  //               Yes, Delete
-  //             </Button>
-  //           </DialogActions>
-  //         </Dialog>
-  //       </>
-  //     );
-  //   },
-  // },
 ];
+
 
 interface TargetData {
   pklTargetId: number;
@@ -191,6 +181,62 @@ export const courseColumns = (
   // },
 ];
 
+
+
+interface CourseDuplicateData {
+  id: string;
+  vsCourseName: string;
+  vsCourseCode: string;
+  departmentNames: string;
+  
+  Action: unknown;
+}
+
+export const courseDuplicateColumns = (
+  navigate: (path: string) => void
+): Column<CourseDuplicateData>[] => [
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+
+  { Header: "Job Role Name", accessor: "vsCourseName" },
+  { Header: "QPNOS Code", accessor: "vsCourseCode" },
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
+  
+
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/target/${row.original.id}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
+];
+
 interface TrainingPartnerData {
   id: string;
   vsTpName: string;
@@ -201,7 +247,7 @@ interface TrainingPartnerData {
   vsState: number;
   vsDistrict: number;
   vsBlock: number;
-  vsPAN: string
+  vsPan: string
   vsVillage: string;
   vsAddress: string;
   vsSmartId: string;
@@ -220,7 +266,7 @@ export const trainingColumns: (
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
   { Header: "Partner Name", accessor: "vsTpName" },
-  { Header: "PAN", accessor: "vsPAN" },
+  { Header: "PAN", accessor: "vsPan" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
  
   { Header: "SPOC Contact", accessor: "iSpocContactNum" },
@@ -235,14 +281,35 @@ export const DuplicateTrainingColumns = (
   isCrossDepartmentDuplicate: boolean = false
 ): Column<TrainingPartnerData>[] => {
   const columns: Column<TrainingPartnerData>[] = [
-    { Header: "ID", accessor: (_row, rowIndex) => rowIndex + 1 },
+    { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
     // {
     //   Header: "Centers",
     //   accessor: "count",
     // },
     { Header: "Partner Name", accessor: "vsTpName" },
     { Header: "PAN", accessor: "vsPan" },
-    { Header: "Department Names", accessor: "departmentNames" },
+    {
+      Header: "Department Name",
+      accessor: "departmentNames",
+      Cell: ({ value }) => (
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+          {value?.split(",").map((item, index) => (
+            <span 
+              key={index} 
+              style={{ 
+                backgroundColor: "#cce5ff", // Highlight color (Yellow)
+                padding: "5px 10px",
+                borderRadius: "5px",
+                fontWeight: "bold"
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )
+    }
+    
    
   ];
   if (!isCrossDepartmentDuplicate) {
@@ -316,10 +383,67 @@ export const centerColumns = (
   // },
 ];
 
+interface TrainingCenterDuplicateData {
+  pklTcId: number;
+  vsTcName: string;
+  vsDistrict: string;
+  vsLocation: string;
+  vsDepartmentName: string;
+  Action: unknown;
+}
+
+export const centerDuplicateColumns = (
+  navigate: (path: string) => void
+): Column<TrainingCenterDuplicateData>[] => [
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "TC Name", accessor: "vsTcName" },
+  { Header: "TC Code", accessor: "vsTcCode" },
+  { Header: "District", accessor: "vsDistrict" },
+  { Header: "Longitude/Latitude", accessor: "vsLocation" },
+  
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/target/${row.original.pklTcId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
+];
+
 interface BatchData {
   pklBatchId: string;
   SDMSid: string;
   iBatchNumber: string;
+  dtStartDate: string;
+  dtEndDate: string;
+  tcName: string;
   Action: unknown;
 }
 
@@ -327,9 +451,11 @@ export const batchColumns = (
   navigate: (path: string) => void
 ): Column<BatchData>[] => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "TC Name", accessor: "tcName" },
   { Header: "Batch ID", accessor: "pklBatchId" },
   { Header: "SDMS  ID", accessor: "SDMSid" },
-  { Header: "Batch Name", accessor: "iBatchNumber" },
+  { Header: "Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
+  { Header: "End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -383,6 +509,59 @@ export const assessorsColumns = (
   // },
 ];
 
+interface AssessorsDuplicateData {
+  id: number;
+  AssessorName: string;
+  vsPAN: string;
+  departmentNames: string;
+ 
+  Action: unknown;
+}
+
+export const assessorsDuplicateColumns = (
+  navigate: (path: string) => void
+): Column<AssessorsDuplicateData>[] => [
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Assessor Name", accessor: "AssessorName" },
+  { Header: "PAN", accessor: "vsPAN" },
+
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
+  
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/assessors/${row.original.id}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
+];
+
 interface TrainerData {
   pklConvTrainerId: number;
   // trainerId: string;
@@ -416,18 +595,70 @@ export const trainerColumns = (
   // },
 ];
 
+interface TrainerDuplicateData {
+ 
+  // trainerId: string;
+  TrainerName: string;
+  vsPAN: string;
+  departmentNames: string;
+ 
+}
+
+export const trainerDuplicateColumns = (
+  navigate: (path: string) => void
+): Column<TrainerDuplicateData>[] => [
+  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Trainer Name", accessor: "TrainerName" },
+  { Header: "PAN", accessor: "vsPAN" },
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
+ 
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() => navigate(`/trainer/${row.original.pklConvTrainerId}`)}
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
+];
+
 interface AssessmentData {
   pklConvAssessmentId: string;
   batchId: string;
   SDMSBatchId: string;
-  candidateId: string;
-  dtAssessmentDate: string;
-  vsAgency: string;
+  // candidateId: string;
+  // dtAssessmentDate: string;
+  // vsAgency: string;
   vsTotalMarks: string;
   vsObtainedMarks: string;
-  vsMarksheetUrl: string;
-  vsCertificateUrl: string;
-  vsAccessorName: string;
+  // vsMarksheetUrl: string;
+  // vsCertificateUrl: string;
+  // vsAccessorName: string;
   vsResult: string;
   dtResultDate: string;
   Action: unknown;
@@ -439,15 +670,15 @@ export const assessmentColumns = (
   { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "batchId" },
   { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
-  { Header: "Candidate ID", accessor: "candidateId" },
+  // { Header: "Candidate ID", accessor: "candidateId" },
   {
     Header: "Assessment Date",
     accessor: "dtAssessmentDate",
     Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
   },
-  { Header: "Agency", accessor: "vsAgency" },
+  // { Header: "Agency", accessor: "vsAgency" },
 
-  { Header: "Accessor Name", accessor: "vsAccessorName" },
+  // { Header: "Accessor Name", accessor: "vsAccessorName" },
   { Header: "Result", accessor: "vsResult" },
   {
     Header: "Result Date",
@@ -455,34 +686,34 @@ export const assessmentColumns = (
     Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
   },
 
-  {
-    Header: "Marksheet",
-    accessor: "vsMarksheetUrl",
-    Cell: ({ row }) => (
-      <a
-        href={row.original.vsMarksheetUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </a>
-    ),
-  },
-  {
-    Header: "Certificate",
-    accessor: "vsCertificateUrl",
-    Cell: ({ row }) => (
-      <a
-        href={row.original.vsCertificateUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 hover:underline"
-      >
-        View
-      </a>
-    ),
-  },
+  // {
+  //   Header: "Marksheet",
+  //   accessor: "vsMarksheetUrl",
+  //   Cell: ({ row }) => (
+  //     <a
+  //       href={row.original.vsMarksheetUrl}
+  //       target="_blank"
+  //       rel="noopener noreferrer"
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </a>
+  //   ),
+  // },
+  // {
+  //   Header: "Certificate",
+  //   accessor: "vsCertificateUrl",
+  //   Cell: ({ row }) => (
+  //     <a
+  //       href={row.original.vsCertificateUrl}
+  //       target="_blank"
+  //       rel="noopener noreferrer"
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </a>
+  //   ),
+  // },
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -520,6 +751,59 @@ export const placementColumns = (
   { Header: "Is Placed", accessor: "bIsCandidatePlaced" },
   { Header: "Placement Type", accessor: "vsPlacementType" },
   { Header: "Employer Name", accessor: "vsEmployeerName" },
+
+  // {
+  //   Header: "Action",
+  //   accessor: "Action",
+  //   Cell: ({ row }) => (
+  //     <button
+  //       onClick={() =>
+  //         navigate(`/placement/${row.original.pklConvPlacementId}`)
+  //       }
+  //       className="text-blue-500 hover:underline"
+  //     >
+  //       View
+  //     </button>
+  //   ),
+  // },
+];
+
+interface PlacementDuplicateData {
+  vsCandidateName: string;
+  vsDOB: string;
+  departmentNames: string;
+ 
+  Action: unknown;
+}
+
+export const placementDuplicateColumns = (
+  navigate: (path: string) => void
+): Column<PlacementDuplicateData>[] => [
+  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Candidate Name", accessor: "vsCandidateName" },
+  { Header: "DOB", accessor: "vsDOB" },
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
 
   // {
   //   Header: "Action",
@@ -723,7 +1007,28 @@ export const CrossCandidateColumns = (
     accessor: "vsDOB",
     Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
   },
-  { Header: "Departments", accessor: "departmentNames" },
+  {
+    Header: "Department Name",
+    accessor: "departmentNames",
+    Cell: ({ value }) => (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+        {value?.split(",").map((item, index) => (
+          <span 
+            key={index} 
+            style={{ 
+              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+              padding: "5px 10px",
+              borderRadius: "5px",
+              fontWeight: "bold"
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  
 ];
 
 export const DuplicateCandidateColumns = (

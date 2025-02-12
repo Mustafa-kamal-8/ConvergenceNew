@@ -434,10 +434,10 @@ export const assessmentValidationSchema = Joi.object({
   // fklTcId: Joi.number().required().label("Training Center ID").messages({
   //   "string.empty": "Training Center ID is required.",
   // }),
-  SDMSBatchId: Joi.string().optional().label("SDMS ID").messages({
+  SDMSBatchId: Joi.string().required().label("SDMS ID").messages({
     "string.empty": "SDMS ID is required.",
   }),
-  dtResultDate: Joi.string().optional().label("Result Date").messages({
+  dtResultDate: Joi.string().required().label("Result Date").messages({
     "string.empty": "Result Date is required.",
   }),
   // fklTpId: Joi.number().optional().label("SDMS ID").messages({
@@ -471,34 +471,17 @@ export const placementValidationSchema = Joi.object({
     "string.base": `"Placement Type" should be a type of 'text'`,
     "any.required": `"Placement Type" is a required field`,
   }),
+  vsEmployeerName: Joi.optional(),
+  
   // vsEmployeerName: Joi.string().required().messages({
   //   "string.base": `"Employe Name" should be a type of 'text'`,
   //   "any.required": `"Employe Name" is a required field`,
   // }),
-  // vsEmployeerContactNumber: Joi.number()
-  //   .integer()
-  //   .min(1000000000) // Minimum 10-digit number
-  //   .max(9999999999) // Maximum 10-digit number
-  //   .required()
-  //   .messages({
-  //     "number.base": "Mobile number must be a number.",
-  //     "number.min": "Mobile number must be 10 digits.",
-  //     "number.max": "Mobile number must be 10 digits.",
-  //     "any.required": "Mobile number is required.",
-  //   }),
+  vsEmployeerContactNumber: Joi.optional(),
 
-  // vsPlacementState: Joi.number().required().messages({
-  //   "string.base": `"Placement State" should be a type of 'text'`,
-  //   "any.required": `"Placement State" is a required field`,
-  // }),
-  // vsPlacementDistrict: Joi.number().required().messages({
-  //   "string.base": `"Placement District" should be a type of 'text'`,
-  //   "any.required": `"Placement District" is a required field`,
-  // }),
-  // vsMonthlySalary: Joi.number().required().messages({
-  //   "string.base": `"Monthly Salary" should be a type of 'text'`,
-  //   "any.required": `"Monthly Salary" is a required field`,
-  // }),
+   vsPlacementState: Joi.optional(),
+   vsPlacementDistrict: Joi.optional(),
+  vsMonthlySalary: Joi.optional(),
   // fklTcId: Joi.number().required().label("Training Center ID").messages({
   //   "string.empty": "Training Center ID is required.",
   // }),
@@ -564,7 +547,7 @@ export const targetSchema = Joi.object({
 });
 
 export const candidateSchema = Joi.object({
-  candidateId: Joi.number().required().label("Candidate ID").messages({
+  candidateId: Joi.string().required().label("Candidate ID").messages({
     "any.required": "Candidate ID is required.",
   }),
   batchId: Joi.number().required().label("ID Type").messages({
@@ -582,9 +565,7 @@ export const candidateSchema = Joi.object({
     "number.min": "Age must be a positive number.",
     "any.required": "Age is required.",
   }),
-  vsFatherName: Joi.string().required().label("Father's Name").messages({
-    "string.empty": "Father's Name is required.",
-  }),
+  vsFatherName: Joi.optional(),
   vsGender: Joi.number().required().label("Gender").messages({
     "any.only": "Gender must be Male, Female, or Other.",
     "any.required": "Gender is required.",
@@ -598,7 +579,9 @@ export const candidateSchema = Joi.object({
   fklCategoryId: Joi.number().required().label("Category ID").messages({
     "any.required": "Category ID is required.",
   }),
-  vsUUID: Joi.optional(),
+  vsUUID: Joi.string().required().label("UUID").messages({
+    "any.required": "UUID is required.",
+  }),
   vsMobile: Joi.string()
   .pattern(/^[0-9]{10}$/)
   .required()

@@ -91,7 +91,12 @@ const AssessmentModal: React.FC = () => {
       })
     ) || [];
 
-  const resultType = ["Yes", "No"];
+    const resultType = [
+      { value: "", label: "-- Select Result Type --", disabled: true },
+      { value: "Yes", label: "Yes" },
+      { value: "No", label: "No" },
+    ];
+    
 
   const mutation = useMutation({
     mutationFn: submitAssesmentForm,

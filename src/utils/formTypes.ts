@@ -167,7 +167,7 @@ export interface targetFormData {
 }
 
 export interface candidateFormData {
-  candidateId: number;
+  candidateId: string;
   vsCandidateName: string;
   vsDOB: string;
   iAge: string;

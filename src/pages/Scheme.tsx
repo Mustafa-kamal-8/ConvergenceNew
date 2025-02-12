@@ -12,16 +12,13 @@ import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import Loader from "../components/ui/Loader";
 import useDebounce from "../services/state/useDebounce";
+import { schemeDuplicateColumns } from "../utils/tableColumns";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => schemeColumns(navigate), [navigate]);
-  const duplicateTablecolumns = useMemo(() => [
-    { Header: "Scheme Name", accessor: "vsSchemeName" },
-    { Header: "Scheme Type", accessor: "vsSchemeType" },
-    { Header: "Departments", accessor: "departmentNames" },
-  ], []);
+  const duplicateTablecolumns = useMemo(() => schemeDuplicateColumns(navigate), [navigate]);
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import { assessorsColumns } from "../utils/tableColumns";
+import { assessorsDuplicateColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
@@ -23,11 +24,15 @@ const Assessors: React.FC = () => {
     
   
  const columns = useMemo(() => assessorsColumns(navigate), [navigate]);
+   
+ const duplicateColumns = useMemo(() => assessorsDuplicateColumns(navigate), [navigate]);
 
  const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
+    const [duplicateData, setDuplicateData] = useState([]);
+      const [totalCount, setTotalCount] = useState(0);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
   
@@ -43,14 +48,21 @@ const Assessors: React.FC = () => {
   });
 
   useEffect(() => {
-    if (isSuccess) {
-      if (fetchedData?.data.data && fetchedData.data.data.length > 0) {
-        setFilteredData(fetchedData.data.data);
-      } else {
-        setFilteredData([]);
-      }
-    }
-  }, [fetchedData, isSuccess]);
+     if (isSuccess) {
+       if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+         setFilteredData(fetchedData.data.data);
+         setTotalCount(fetchedData.data.total_count);
+       } else {
+         setFilteredData([]);
+       }
+ 
+       if (fetchedData?.data?.duplicate_Assessors && fetchedData.data?.duplicate_Assessors.length > 0) {
+         setDuplicateData(fetchedData.data?.duplicate_Assessors);
+       } else {
+         setDuplicateData([]);
+       }
+     }
+   }, [fetchedData, isSuccess]);
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
@@ -134,9 +146,18 @@ const Assessors: React.FC = () => {
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
 
        <CentralizedTable columns={columns} data={filteredData} pageSize={5} /> 
+       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Duplicate records are checked using 'PAN NO' across multiple logins. These field is the minimum required to identify duplicates.
+      </div>
+       <div className="pt-10">
+        <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Assessors</p>
+        <CentralizedTable columns={duplicateColumns} data={duplicateData} pageSize={5} />
+      </div>
     </>
   );
 };
