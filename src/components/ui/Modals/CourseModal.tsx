@@ -6,7 +6,7 @@ import Button from "../../ui/SubmitButton";
 import Label from "../Label";
 import Input from "../Input";
 import { CourseFormData } from "../../../utils/formTypes";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { submitCourseForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
@@ -25,6 +25,8 @@ const CourseModal: React.FC = () => {
   } = useForm<CourseFormData>({
     resolver: joiResolver(courseSchema),
   });
+
+  const queryClient = useQueryClient();
 
   const { data: masterData } = useQuery({
     queryKey: ["masterData", "sector"],
@@ -52,6 +54,7 @@ const CourseModal: React.FC = () => {
       closeModal();
       toast.success("Course submitted successfully!");
       console.log("Course submitted successfully", data);
+      queryClient.invalidateQueries({ queryKey: ["courseData"] });
     },
     onError: (error) => {
       toast.error("Error while submmiting courses");

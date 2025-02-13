@@ -43,14 +43,35 @@ export const SchemeValidation = Joi.object<SchemeFormData>({
     "string.empty": "Funding Type is required.",
   }),
 
-    schemeFundingRatio: Joi.string()
-  .pattern(/^\d+(:\d+)?$/) // Allows numbers (50) or ratio format (50:50)
+  schemeFundingRatio: Joi.string()
+  .pattern(/^\d+:\d+:\d+$/) // Ensures only "X:Y:Z" format
+  .custom((value, helpers) => {
+    const parts = value.split(":").map(Number);
+
+    if (parts.some((num: number) => num < 0)) {
+      return helpers.message({ custom: "Values must be non-negative integers." });
+    }
+
+    const total = parts.reduce((sum: number, num: number) => sum + num, 0);
+    if (total === 0) {
+      return helpers.message({ custom: "At least one value must be greater than zero." });
+    }
+
+    // Scale to 100%
+    const scaled = parts.map((num: number) => Math.round((num / total) * 100));
+    if (scaled.reduce((sum: number, num: number) => sum + num, 0) !== 100) {
+      return helpers.message({ custom: "Scaled ratio must sum to 100." });
+    }
+
+    return value;
+  })
   .required()
   .messages({
-    "string.pattern.base": "Funding Ratio must be a number (e.g., 50) or in 'X:Y' format (e.g., 50:50).",
+    "string.pattern.base": "Funding Ratio must be in 'X:Y:Z' format (e.g., 30:30:40).",
     "any.required": "Funding Ratio is required.",
     "string.empty": "Funding Ratio is required.",
   }),
+
 
   
   sanctionOrderNo: Joi.string().required().messages({
@@ -334,12 +355,9 @@ export const trainerSchema = Joi.object({
     }),
   vsEmail: Joi.string()
     .email({ tlds: { allow: false } })
-    .required()
-    .label("Email")
+    .label("Email").optional()
     .messages({
-      "string.empty": "Email is required.",
-      "string.email": "Email must be a valid email address.",
-      "any.required": "Email is required.",
+      "string.email": "Email must be a valid email address."
     }),
     fklTcId:  Joi.number().required().messages({
       "string.empty": "Training Center is required.",

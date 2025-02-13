@@ -7,7 +7,7 @@ import Label from "../../ui/Label";
 import Button from "../../ui/SubmitButton";
 import { SchemeFormData } from "../../../utils/formTypes";
 import { SchemeValidation } from "../../../utils/validation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { submitSchemeForm } from "../../../services/state/api/FormApi";
 import { toast } from "react-toastify";
 import useModalStore from "../../../services/state/useModelStore";
@@ -27,6 +27,7 @@ const SchemeModalContent: React.FC = () => {
     mode: "onChange",
   });
 
+  const queryClient = useQueryClient();
   // const [selectedScheme, setSelectedScheme] = useState<string>("new");
   const [isCustomDepartment, setIsCustomDepartment] = useState<boolean>(false);
 
@@ -75,8 +76,9 @@ const SchemeModalContent: React.FC = () => {
       if (data?.success) {
         closeModal();
         toast.success(
-          data.message || "Training Partner submitted successfully!"
+          data.message || "Scheme submitted successfully!"
         );
+        queryClient.invalidateQueries({ queryKey: ["schemeData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Training Partner."
@@ -273,17 +275,17 @@ const SchemeModalContent: React.FC = () => {
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
                   setValue("schemeFundingType", selectedOption.value);
-                  if (
-                    selectedOption.value === 1 ||
-                    selectedOption.value === 2 ||
-                    selectedOption.value === 3
-                  ) {
-                    setValue("schemeFundingRatio", "100");
-                    setValue("isSchemeFundingRatioDisabled", true);
+                  if (selectedOption.value === 1) {
+                    setValue("schemeFundingRatio", "100:0:0");
+                  } else if (selectedOption.value === 2) {
+                    setValue("schemeFundingRatio", "0:100:0");
+                  } else if (selectedOption.value === 3) {
+                    setValue("schemeFundingRatio", "0:0:100");
                   } else {
                     setValue("schemeFundingRatio", "");
                     setValue("isSchemeFundingRatioDisabled", false);
                   }
+                  
                 }}
                 className={errors.schemeType ? "border-red-500" : ""}
                 placeholder="-- Select Scheme Type --"

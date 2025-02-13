@@ -366,7 +366,7 @@ export const centerColumns = (
 ): Column<TrainingCenterData>[] => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Name", accessor: "vsTcName" },
-  { Header: "TC Code", accessor: "vsTcCode" },
+  // { Header: "TC Code", accessor: "vsTcCode" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
   { Header: "Partner Code", accessor: "iPartnerCode" },
   // {
@@ -452,7 +452,7 @@ export const batchColumns = (
 ): Column<BatchData>[] => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "TC Name", accessor: "tcName" },
-  { Header: "Batch ID", accessor: "pklBatchId" },
+  { Header: "Batch Number", accessor: "iBatchNumber" },
   { Header: "SDMS  ID", accessor: "SDMSid" },
   { Header: "Start Date", accessor: "dtStartDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
   { Header: "End Date", accessor: "dtEndDate", Cell: ({ value }: { value: string }) => moment(value).format("YYYY-MM-DD"), },
@@ -486,7 +486,7 @@ export const assessorsColumns = (
 ): Column<AssessorsData>[] => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Assessor Name", accessor: "vsAssosserName" },
-  { Header: "Name", accessor: "vsEmail" },
+  { Header: "PAN", accessor: "vsPan" },
 
   { Header: "Mobile", accessor: "vsMobile" },
   { Header: "Assessor Agency", accessor: "vsAssesmentAgency" },

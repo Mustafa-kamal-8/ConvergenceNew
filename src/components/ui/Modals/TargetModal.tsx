@@ -7,7 +7,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { targetSchema } from "../../../utils/validation";
 import { targetFormData } from "../../../utils/formTypes";
 import "react-datepicker/dist/react-datepicker.css";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMasterData } from "../../../services/state/api/masterApi";
 import { toast } from "react-toastify";
 import { submitTargetForm } from "../../../services/state/api/FormApi";
@@ -28,7 +28,7 @@ const TargetModal: React.FC = () => {
     resolver: joiResolver(targetSchema),
   });
 
-
+  const queryClient = useQueryClient();
 
   // Fetch scheme data
   const { data: schemeData } = useQuery({
@@ -80,6 +80,7 @@ const TargetModal: React.FC = () => {
            toast.success(
              data.message || "Training Partner submitted successfully!"
            );
+           queryClient.invalidateQueries({ queryKey: ["targetData"] });
          } else {
            toast.error(
              data.message || "An error occurred while submitting the Training Partner."
