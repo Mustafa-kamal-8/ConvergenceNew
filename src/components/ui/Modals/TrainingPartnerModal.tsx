@@ -8,7 +8,7 @@ import Input from "../Input";
 import { toast } from "react-toastify";
 import { TrainingPartnerFormData } from "../../../utils/formTypes";
 import { trainingPartnerSchema } from "../../../utils/validation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getDistrictByState,
   getMasterData,
@@ -28,9 +28,11 @@ const TrainingPartnerModal: React.FC = () => {
   } = useForm<TrainingPartnerFormData>({
     resolver: joiResolver(trainingPartnerSchema),
   });
-
+  const queryClient = useQueryClient();
   const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
+
+  
 
   console.log(districtId);
 
@@ -117,6 +119,7 @@ const TrainingPartnerModal: React.FC = () => {
         toast.success(
           data.message || "Training Partner submitted successfully!"
         );
+        queryClient.invalidateQueries({ queryKey: ["tcData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the scheme."

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "../../ui/SubmitButton";
 import Label from "../Label";
 import Input from "../Input";
@@ -36,7 +36,7 @@ const TrainingCenterModel: React.FC = () => {
  
 
   
-
+const queryClient = useQueryClient();
 
 
   const { data: masterData } = useQuery({
@@ -157,6 +157,7 @@ const TrainingCenterModel: React.FC = () => {
       const successMessage = response?.message || "Target submitted successfully!";
       closeModal();
       toast.success(successMessage);
+      queryClient.invalidateQueries({ queryKey: ["tcData"] });
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || "An error occurred!";

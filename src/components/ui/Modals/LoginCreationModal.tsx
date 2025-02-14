@@ -3,7 +3,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import { departmentCreationSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Input from "../Input";
 import Label from "../Label";
 import { createDepartmentLogin } from "../../../services/state/api/departmentCreationApi";
@@ -26,12 +26,16 @@ const LoginCreationModal = () => {
     resolver: joiResolver(departmentCreationSchema),
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: createDepartmentLogin,
     onSuccess: (data) => {
       if (data?.success) {
-        toast.success(data.message || "Login Creation submitted successfully!");
         closeModal();
+        toast.success(data.message || "Login Creation submitted successfully!");
+       
+        queryClient.invalidateQueries({ queryKey: ["getCreatedDepartments"] });
       } else {
         toast.error(
           data.message ||

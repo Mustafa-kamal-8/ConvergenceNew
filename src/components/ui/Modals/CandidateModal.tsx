@@ -7,7 +7,7 @@ import Button from "../SubmitButton";
 import { toast } from "react-toastify";
 import { candidateSchema } from "../../../utils/validation";
 import { candidateFormData } from "../../../utils/formTypes";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getBranchByBank,
   getDistrictByState,
@@ -42,6 +42,8 @@ const CandidateModal: React.FC = () => {
   } = useForm<candidateFormData>({
     resolver: joiResolver(candidateSchema),
   });
+
+  const queryClient = useQueryClient()
 
   const dob = watch("vsDOB");
 
@@ -310,6 +312,7 @@ const CandidateModal: React.FC = () => {
       if (data?.success) {
         closeModal();
         toast.success(data.message || "Candidate submitted successfully!");
+        queryClient.invalidateQueries({ queryKey: ["candidateData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Trainer."

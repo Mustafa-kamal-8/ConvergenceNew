@@ -8,7 +8,7 @@ import Label from "../Label";
 import Input from "../Input";
 import Button from "../../ui/SubmitButton";
 import "../../../custom.css";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBatch, getMasterData} from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitInvoiceForm } from "../../../services/state/api/FormApi";
@@ -20,7 +20,7 @@ const InvoiceModal: React.FC = () => {
     const [fklTcId, setTcId] = useState<number | null>(null); 
  
 const {closeModal} = useModalStore()
-
+const queryClient = useQueryClient();
 
   const {
     control,
@@ -88,6 +88,7 @@ const {closeModal} = useModalStore()
         closeModal();
         if (data?.success) {
           toast.success(data.message || "Assesment submitted successfully!");
+          queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
         } else {
           toast.error(
             data.message || "An error occurred while submitting the Trainer."

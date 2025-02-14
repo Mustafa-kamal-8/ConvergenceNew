@@ -40,7 +40,7 @@ const Trainer: React.FC = () => {
     isSuccess,
 
   } = useQuery({
-    queryKey: ["schemeData", searchKey, debouncedSearchValue],
+    queryKey: ["trainerData", searchKey, debouncedSearchValue],
     queryFn: () => getTableData("trainer", searchKey, debouncedSearchValue),
 
   });

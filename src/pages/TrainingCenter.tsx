@@ -31,7 +31,7 @@ const TrainingCenter: React.FC = () => {
     isSuccess,
     isLoading,
   } = useQuery({
-    queryKey: ["centerData", searchKey, debouncedSearchValue],
+    queryKey: ["tcData", searchKey, debouncedSearchValue],
     queryFn: () => getTableData("TC", searchKey, debouncedSearchValue),
   });
 

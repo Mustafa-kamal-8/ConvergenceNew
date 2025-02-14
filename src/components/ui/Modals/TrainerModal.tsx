@@ -9,7 +9,7 @@ import Label from "../Label";
 import Button from "../SubmitButton";
 import { TrainerFormData } from "../../../utils/formTypes";
 import { trainerSchema } from "../../../utils/validation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { submitTrainerForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 import { getMasterData } from "../../../services/state/api/masterApi";
@@ -25,6 +25,8 @@ const TrainerModalContent: React.FC = () => {
   } = useForm<TrainerFormData>({
     resolver: joiResolver(trainerSchema),
   });
+
+  const queryClient = useQueryClient();
 
   const { data: masterData } = useQuery({
     queryKey: ["masterData", "AllDeptTc"], 
@@ -51,6 +53,7 @@ const TrainerModalContent: React.FC = () => {
       if (data?.success) {
         closeModal();
         toast.success(data.message || "Trainer submitted successfully!");
+        queryClient.invalidateQueries({ queryKey: ["trainerData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Trainer."

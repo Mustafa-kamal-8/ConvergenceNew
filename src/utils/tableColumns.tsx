@@ -54,21 +54,66 @@ export const schemeColumns: (
 interface SchemeDuplicateData {
   vsSchemeName: string;
   vsSchemeType: string;
-  departmentNames: string;
+  vsFundingType: string;
+  vsFundName: string;
+  vsDepartmentName: string;
   Action?: unknown;
 }
 
 export const schemeDuplicateColumns: (
-  navigate: ReturnType<typeof useNavigate>
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-) => Column<SchemeDuplicateData>[] = (_navigate) => [
+  navigate: ReturnType<typeof useNavigate>,
+  duplicateQuery: string[] // Accept duplicateQuery here
+) => Column<SchemeDuplicateData>[] = (_navigate, duplicateQuery) => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Scheme", accessor: "vsSchemeName" },
+  
+  {
+    Header: "Scheme Name",
+    accessor: "vsSchemeName",
+    Cell: ({ value }) => (
+      <span
+        className={duplicateQuery.includes("vsSchemeName") ? "bg-yellow-200" : ""}
+      >
+        {value}
+      </span>
+    ),
+  },
  
-  { Header: "Scheme Type", accessor: "vsSchemeType" },
+  {
+    Header: "Scheme Type",
+    accessor: "vsSchemeType",
+    Cell: ({ value }) => (
+      <span
+        className={duplicateQuery.includes("vsSchemeType") ? "bg-yellow-200" : ""}
+      >
+        {value}
+      </span>
+    ),
+  },
+  {
+    Header: "Fund Name",
+    accessor: "vsFundName",
+    Cell: ({ value }) => (
+      <span
+        className={duplicateQuery.includes("vsFundName") ? "bg-yellow-200" : ""}
+      >
+        {value}
+      </span>
+    ),
+  },
+  {
+    Header: "Fund Type",
+    accessor: "vsFundingType",
+    Cell: ({ value }) => (
+      <span
+        className={duplicateQuery.includes("vsSchemeFundingType") ? "bg-yellow-200" : ""}
+      >
+        {value}
+      </span>
+    ),
+  },
   {
     Header: "Department Name",
-    accessor: "departmentNames",
+    accessor: "vsDepartmentName",
     Cell: ({ value }) => (
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
         {value?.split(",").map((item, index) => (
@@ -993,43 +1038,72 @@ export const departmentColumns = (): Column<DepartmentData>[] => [
 
 
 export const CrossCandidateColumns = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  navigate: (path: string) => void
+  navigate: (path: string) => void,
+  duplicateQuery: string[]
 ): Column<CandidateData>[] => [
   { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
-    Cell: ({ value }) => <span className="capitalize">{value}</span>,
+    Cell: ({ value }) => (
+      <span
+        className={`capitalize ${duplicateQuery.includes("vsCandidateName") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
+      >
+        {value}
+      </span>
+    ),
   },
   {
     Header: "Date Of Birth",
     accessor: "vsDOB",
-    Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
+    Cell: ({ value }: { value: string }) => (
+      <span className={duplicateQuery.includes("vsDOB") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+        {moment(value).format("DD-MM-YYYY")}
+      </span>
+    ),
+  },
+  {
+    Header: "UUID",
+    accessor: "vsUUID",
+    Cell: ({ value }: { value: string }) => (
+      <span className={duplicateQuery.includes("vsUUID") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+        {moment(value).format("DD-MM-YYYY")}
+      </span>
+    ),
+  },
+  {
+    Header: "Phone",
+    accessor: "vsMobile",
+    Cell: ({ value }: { value: string }) => (
+      <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+        {moment(value).format("DD-MM-YYYY")}
+      </span>
+    ),
   },
   {
     Header: "Department Name",
-    accessor: "departmentNames",
+    accessor: "vsDepartmentName",
     Cell: ({ value }) => (
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
         {value?.split(",").map((item, index) => (
-          <span 
-            key={index} 
-            style={{ 
-              backgroundColor: "#cce5ff", // Highlight color (Yellow)
+          <span
+            key={index}
+            style={{
+              backgroundColor: duplicateQuery.includes("departmentNames") ? "#ffeb3b" : "#cce5ff", // Highlight if selected
               padding: "5px 10px",
               borderRadius: "5px",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             {item}
           </span>
         ))}
       </div>
-    )
-  }
-  
+    ),
+  },
 ];
+
+
 
 export const DuplicateCandidateColumns = (
   navigate: (path: string) => void,

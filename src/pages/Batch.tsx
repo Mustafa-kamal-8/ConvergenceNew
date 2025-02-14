@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 
 
     const { data: fetchedData, isSuccess , isLoading } = useQuery({
-      queryKey: ["courseData" , "batch", searchKey, debouncedSearchValue],
+      queryKey: ["batchData" , "batch", searchKey, debouncedSearchValue],
       queryFn: () => getTableData("batch",searchKey, debouncedSearchValue),
     });
     

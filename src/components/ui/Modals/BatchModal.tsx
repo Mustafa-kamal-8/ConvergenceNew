@@ -1,67 +1,78 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Label from "../Label";
 import Input from "../Input";
 import "react-datepicker/dist/react-datepicker.css";
 import { useForm, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { BatchFormData } from "../../../utils/formTypes"; 
-import { batchSchema } from "../../../utils/validation"; 
+import { BatchFormData } from "../../../utils/formTypes";
+import { batchSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
 import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {    getMasterData, gettrainerByTc} from "../../../services/state/api/masterApi";
+import { getMasterData, gettrainerByTc } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
+import { isBefore, parseISO } from "date-fns";
 
-const BatchModel : React.FC = () => {
+const BatchModel: React.FC = () => {
 
-  const {closeModal} = useModalStore()
+  const { closeModal } = useModalStore()
 
   const [TcID, setTcId] = useState<number | null>(null);
 
- 
- 
 
-  const { control, handleSubmit, setValue,formState: { errors } } = useForm<BatchFormData>({
+  
+  const { control, handleSubmit,watch, setValue, formState: { errors } } = useForm<BatchFormData>({
     resolver: joiResolver(batchSchema),
   });
 
-      
-  const { data: courseData } = useQuery({
-    queryKey: ["courseData", "AllCourseData"], 
-    queryFn: () => getMasterData("AllCourseData"), 
-  });
-        
+  const dtStartDate = watch("dtStartDate"); // Watching changes of dtStartDate
 
-          const courseOptions =
-          courseData?.data?.result?.course?.map(
-           (tp: { pklCourseId: number; vsCourseName: string }) => ({
-             label: tp.vsCourseName,
-             value: tp.pklCourseId,
-           })
-         ) || [];
+  const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+
+  // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
+  useEffect(() => {
+    if (dtStartDate) {
+      setMinEndDate(dtStartDate); // Update the min date for Batch End Date based on Batch Start Date
+    }
+  }, [dtStartDate]);
+
+
+  const { data: courseData } = useQuery({
+    queryKey: ["courseData", "AllCourseData"],
+    queryFn: () => getMasterData("AllCourseData"),
+  });
+
+
+  const courseOptions =
+    courseData?.data?.result?.course?.map(
+      (tp: { pklCourseId: number; vsCourseName: string }) => ({
+        label: tp.vsCourseName,
+        value: tp.pklCourseId,
+      })
+    ) || [];
 
   // const fundingTypes = ["Option 1", "Option 2", "Option 3"];
 
   const { data: masterData } = useQuery({
-    queryKey: ["masterData", "AllDeptTc"], 
-    queryFn: () => getMasterData("AllDeptTc"), 
+    queryKey: ["masterData", "AllDeptTc"],
+    queryFn: () => getMasterData("AllDeptTc"),
   });
-  
-   useEffect(() => {
-     if (masterData) {
-      console.log("Fetched master data:", masterData);
-     }
-   }, [masterData]);
 
-   const tcOptions =
-  masterData?.data?.result?.tc?.map(
-    (tp: { pklTcId: number; vsTcName: string }) => ({
-      label: tp.vsTcName,
-      value: tp.pklTcId,
-    })
-  ) || [];
+  useEffect(() => {
+    if (masterData) {
+      console.log("Fetched master data:", masterData);
+    }
+  }, [masterData]);
+
+  const tcOptions =
+    masterData?.data?.result?.tc?.map(
+      (tp: { pklTcId: number; vsTcName: string }) => ({
+        label: tp.vsTcName,
+        value: tp.pklTcId,
+      })
+    ) || [];
 
 
   //  const { data: tcData } = useQuery({
@@ -84,78 +95,78 @@ const BatchModel : React.FC = () => {
   //         })
   //       ) || [];
 
-          const { data: trainerData } = useQuery({
-            queryKey: ["masterData", "TcTrainner", TcID],
-            queryFn: () => gettrainerByTc(TcID, "TcTrainner"),
-          });
-        
-         useEffect(() => {
-           if (trainerData) {
-            console.log("Fetched master data:", trainerData);
-           }
-         }, [trainerData]);
-      
-         const trainerOptions =
-         trainerData?.data?.result?.trainner?.map(
-          (tp: { pklConvTrainerId: number; vsTrainerName: string }) => ({
-            label: tp.vsTrainerName,
-            value: tp.pklConvTrainerId,
-          })
-        ) || [];
+  const { data: trainerData } = useQuery({
+    queryKey: ["masterData", "TcTrainner", TcID],
+    queryFn: () => gettrainerByTc(TcID, "TcTrainner"),
+  });
 
-        // const { data: sectorData } = useQuery({
-        //   queryKey: ["masterData", "sector"], 
-        //   queryFn: () => getMasterData("sector"), 
-        // });
-        
-        //  useEffect(() => {
-        //    if (sectorData) {
-        //     console.log("Fetched master data:", sectorData);
-        //    }
-        //  }, [sectorData]);
+  useEffect(() => {
+    if (trainerData) {
+      console.log("Fetched master data:", trainerData);
+    }
+  }, [trainerData]);
 
-        //  const sectorOptions =
-        //  sectorData?.data?.result?.sectors?.map(
-        //   (tp: { sectorID: number; sectorName: string }) => ({
-        //     label: tp.sectorName,
-        //     value: tp.sectorID,
-        //   })
-        // ) || [];
+  const trainerOptions =
+    trainerData?.data?.result?.trainner?.map(
+      (tp: { pklConvTrainerId: number; vsTrainerName: string }) => ({
+        label: tp.vsTrainerName,
+        value: tp.pklConvTrainerId,
+      })
+    ) || [];
 
- 
+  // const { data: sectorData } = useQuery({
+  //   queryKey: ["masterData", "sector"], 
+  //   queryFn: () => getMasterData("sector"), 
+  // });
 
- 
-     const mutation = useMutation({
-       mutationFn: submitBatchForm,
-       onSuccess: (data) => {
-         if (data?.success) {
-          closeModal();
-           toast.success(data.message || "Scheme submitted successfully!");
-         } else {
-           toast.error(data.error || "An error occurred while submitting the scheme.");
-         }
-       },
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       onError: (error: any) => {
-         const errorMessage = error?.response?.data?.error || "An unknown error occurred.";
-         toast.error(errorMessage);
-       },
-     });
-   
-     const onSubmit = (data: BatchFormData) => {
-       mutation.mutate(data);
-     };
+  //  useEffect(() => {
+  //    if (sectorData) {
+  //     console.log("Fetched master data:", sectorData);
+  //    }
+  //  }, [sectorData]);
+
+  //  const sectorOptions =
+  //  sectorData?.data?.result?.sectors?.map(
+  //   (tp: { sectorID: number; sectorName: string }) => ({
+  //     label: tp.sectorName,
+  //     value: tp.sectorID,
+  //   })
+  // ) || [];
+
+
+
+
+  const mutation = useMutation({
+    mutationFn: submitBatchForm,
+    onSuccess: (data) => {
+      if (data?.success) {
+        closeModal();
+        toast.success(data.message || "Scheme submitted successfully!");
+      } else {
+        toast.error(data.error || "An error occurred while submitting the scheme.");
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.error || "An unknown error occurred.";
+      toast.error(errorMessage);
+    },
+  });
+
+  const onSubmit = (data: BatchFormData) => {
+    mutation.mutate(data);
+  };
 
 
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
-    <form
+      <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         <div className="col-span-1">
-          <Label text="Training Center"required />
+          <Label text="Training Center" required />
           <Controller
             name="fklTcId"
             control={control}
@@ -179,8 +190,8 @@ const BatchModel : React.FC = () => {
             <p className="text-red-500">{errors.fklTcId.message}</p>
           )}
         </div>
-         <div className="col-span-1">
-          <Label text="Trainer"required />
+        <div className="col-span-1">
+          <Label text="Trainer" required />
           <Controller
             name="fklTrainerId"
             control={control}
@@ -192,7 +203,7 @@ const BatchModel : React.FC = () => {
                 getOptionValue={(option: { value: number }) => option.value}
                 onSelect={(selectedValue: { label: string; value: number }) => {
                   field.onChange(selectedValue.value);
-                 
+
                   setValue("fklTrainerId", selectedValue.value);
                 }}
                 placeholder="-- Select Trainer --"
@@ -204,7 +215,7 @@ const BatchModel : React.FC = () => {
             <p className="text-red-500">{errors.fklTrainerId.message}</p>
           )}
         </div>
-          
+
         <div className="col-span-1">
           <Label text="Courses" required />
           <Controller
@@ -213,12 +224,12 @@ const BatchModel : React.FC = () => {
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={courseOptions} 
+                options={courseOptions}
                 getOptionLabel={(option) => option.label}
-                getOptionValue={(option) => option.value} 
+                getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value); 
-                  setValue("fklCourseId", selectedOption.value); 
+                  field.onChange(selectedOption.value);
+                  setValue("fklCourseId", selectedOption.value);
                 }}
                 className={errors.fklCourseId ? "border-red-500" : ""}
                 placeholder="-- Select Courses --"
@@ -229,65 +240,77 @@ const BatchModel : React.FC = () => {
             <p className="text-red-500">{errors.fklCourseId.message}</p>
           )}
         </div>
-       
+
         <div>
-          <Label text="Batch Number" required/>
+          <Label text="Batch Number" required />
           <Controller
             name="iBatchNumber"
             control={control}
-            render={({ field }) => <Input {...field} type="text"  className={errors.iBatchNumber ? "border-red-500" : ""}/>} 
-           
+            render={({ field }) => <Input {...field} type="text" className={errors.iBatchNumber ? "border-red-500" : ""} />}
+
           />
           {errors.iBatchNumber && <p className="text-red-500">{errors.iBatchNumber.message}</p>}
         </div>
         <div>
-          <Label text="SDMS Batch Id"  />
+          <Label text="SDMS Batch Id" />
           <Controller
             name="SDMSid"
             control={control}
-            render={({ field }) => <Input {...field} type="text"  className={errors.SDMSid ? "border-red-500" : ""} />}
-          
+            render={({ field }) => <Input {...field} type="text" className={errors.SDMSid ? "border-red-500" : ""} />}
+
           />
           {errors.SDMSid && <p className="text-red-500">{errors.SDMSid.message}</p>}
         </div>
 
         <div className="col-span-1">
-          <Label text="Batch Start Date"required />
-          <Controller
-            name="dtStartDate"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="date"
-                className={errors.dtStartDate ? "border-red-500" : ""}
-             
-              />
-            )}
-          />
-          {errors.dtStartDate && (
-            <p className="text-red-500">{errors.dtStartDate.message}</p>
+        <Label text="Batch Start Date" required />
+        <Controller
+          name="dtStartDate"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="date"
+              value={field.value || ""}
+              className={errors.dtStartDate ? "border-red-500" : ""}
+            />
           )}
-        </div>
-        <div className="col-span-1">
-          <Label text="Batch End Date" required/>
-          <Controller
-            name="dtEndDate"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="date"
-                className={errors.dtEndDate ? "border-red-500" : ""}
-              
-              />
-            )}
-          />
-          {errors.dtEndDate && (
-            <p className="text-red-500">{errors.dtEndDate.message}</p>
-          )}
-        </div>
+        />
+        {errors.dtStartDate && (
+          <p className="text-red-500">{errors.dtStartDate.message}</p>
+        )}
+      </div>
 
+      {/* Batch End Date */}
+      <div className="col-span-1">
+        <Label text="Batch End Date" required />
+        <Controller
+          name="dtEndDate"
+          control={control}
+          rules={{
+            validate: (value) => {
+              if (!dtStartDate) return "Select 'Batch Start Date' first";
+              if (isBefore(parseISO(value), parseISO(dtStartDate))) {
+                return "Batch End Date must be after Batch Start Date";
+              }
+              return true;
+            },
+          }}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="date"
+              value={field.value || ""}
+              min={minEndDate || ""} // Set min to Batch Start Date
+              disabled={!dtStartDate} // Disable Batch End Date if no Batch Start Date is selected
+              className={errors.dtEndDate ? "border-red-500" : ""}
+            />
+          )}
+        />
+        {errors.dtEndDate && (
+          <p className="text-red-500">{errors.dtEndDate.message}</p>
+        )}
+      </div>
         {/* {/* <div className="col-span-1">
           <Label text="Training Partner" />
           <Controller
@@ -313,9 +336,9 @@ const BatchModel : React.FC = () => {
             <p className="text-red-500">{errors.fklTpId.message}</p>
           )}
         </div> */}
-       
 
-      
+
+
 
         {/* <div className="col-span-1">
           <Label text="Sectors" />
@@ -342,7 +365,7 @@ const BatchModel : React.FC = () => {
             <p className="text-red-500">{errors.fklSectorId.message}</p>
           )}
         </div> */}
-        
+
 
         {/* <div>
           <Label text="QPNOS Code" />
@@ -366,13 +389,13 @@ const BatchModel : React.FC = () => {
             text="Submit"
             loadingText="Submitting..."
             loading={mutation.isPending}
-          
+
             disabled={false}
           />
         </div>
-        </form>
-      </div>
-   
+      </form>
+    </div>
+
   );
 };
 

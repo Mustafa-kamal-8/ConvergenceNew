@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { courseSchema } from "../../../utils/validation";
@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import Dropdown from "../Dropdown";
 import { getMasterData } from "../../../services/state/api/masterApi";
 import useModalStore from "../../../services/state/useModelStore";
-
+import { isBefore, parseISO } from "date-fns";
 const CourseModal: React.FC = () => {
 
   const {closeModal} = useModalStore()
@@ -27,6 +27,18 @@ const CourseModal: React.FC = () => {
   });
 
   const queryClient = useQueryClient();
+
+   const dtFromDate = watch("dtFromDate"); // Watching changes of dtStartDate
+  
+    const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+  
+    // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
+    useEffect(() => {
+      if (dtFromDate) {
+        setMinEndDate(dtFromDate); // Update the min date for Batch End Date based on Batch Start Date
+      }
+    }, [dtFromDate]);
+  
 
   const { data: masterData } = useQuery({
     queryKey: ["masterData", "sector"],
@@ -73,6 +85,8 @@ const CourseModal: React.FC = () => {
         value: sector.sectorID,
       })
     ) || [];
+
+ 
 
   return (
     <div className="px-4 py-4 md:px-8 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -190,40 +204,57 @@ const CourseModal: React.FC = () => {
 
         {/* Date Valid From and Date Valid Upto */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
-          <div>
-            <Label text="Date Valid From"/>
-            <Controller
-              name="dtFromDate"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="date"
-                  className={errors.dtFromDate ? "border-red-500" : ""}
-                />
-              )}
+        <div>
+        <Label text="Date Valid From" />
+        <Controller
+          name="dtFromDate"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="date"
+              className={errors.dtFromDate ? "border-red-500" : ""}
+              value={dtFromDate}
+              onChange={(e) => {
+                field.onChange(e);
+              
+              }}
             />
-            {errors.dtFromDate && (
-              <p className="text-red-500">{errors.dtFromDate.message}</p>
-            )}
-          </div>
-          <div>
-            <Label text="Date Valid Upto" />
-            <Controller
-              name="dtToDate"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="date"
-                  className={errors.dtToDate ? "border-red-500" : ""}
-                />
-              )}
+          )}
+        />
+        {errors.dtFromDate && (
+          <p className="text-red-500">{errors.dtFromDate.message}</p>
+        )}
+      </div>
+          <div className="col-span-1">
+        <Label text="Batch End Date" required />
+        <Controller
+          name="dtToDate"
+          control={control}
+          rules={{
+            validate: (value) => {
+              if (!dtFromDate) return "Select 'Batch Start Date' first";
+              if (isBefore(parseISO(value), parseISO(dtFromDate))) {
+                return "Batch End Date must be after Batch Start Date";
+              }
+              return true;
+            },
+          }}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="date"
+              value={field.value || ""}
+              min={minEndDate || ""} // Set min to Batch Start Date
+              disabled={!dtFromDate} // Disable Batch End Date if no Batch Start Date is selected
+              className={errors.dtFromDate ? "border-red-500" : ""}
             />
-            {errors.dtToDate && (
-              <p className="text-red-500">{errors.dtToDate.message}</p>
-            )}
-          </div>
+          )}
+        />
+        {errors.dtToDate && (
+          <p className="text-red-500">{errors.dtToDate.message}</p>
+        )}
+      </div>
         </div>
 
         {/* Submit Button */}

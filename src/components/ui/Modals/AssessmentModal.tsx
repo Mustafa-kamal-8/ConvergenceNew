@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { assessmentValidationSchema } from "../../../utils/validation";
 import { AssessmentFormData } from "../../../utils/formTypes";
 import {  getMasterData, getsdmsByBatch} from "../../../services/state/api/masterApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Dropdown from "../Dropdown";
 import { submitAssesmentForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
@@ -30,6 +30,8 @@ const AssessmentModal: React.FC = () => {
     resolver: joiResolver(assessmentValidationSchema),
     mode: "onChange",
   });
+
+  const queryClient = useQueryClient();
 
   // const { data: masterData } = useQuery({
   //   queryKey: ["masterData", "tp"],
@@ -106,6 +108,7 @@ const AssessmentModal: React.FC = () => {
         toast.success(
           data.message || "Assesment submitted successfully!"
         );
+        queryClient.invalidateQueries({ queryKey: ["assessmentData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Trainer."

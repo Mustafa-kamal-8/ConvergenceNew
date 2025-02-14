@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from "../../ui/SubmitButton";
 import { PlacementFormData } from "../../../utils/formTypes";
 import { placementValidationSchema } from "../../../utils/validation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 
   getCandidateByBatch,
@@ -35,7 +35,7 @@ const PlacementModal: React.FC = () => {
     mode: "onChange",
   });
 
-
+const queryClient = useQueryClient();
 
   const { data: batchhData } = useQuery({
     queryKey: ["masterData", "batchCandidate"],
@@ -148,8 +148,10 @@ const PlacementModal: React.FC = () => {
     onSuccess: (data) => {
     
       if (data?.success) {
-        toast.success(data.message || "Assesment submitted successfully!");
         closeModal();
+        toast.success(data.message || "Assesment submitted successfully!");
+       
+        queryClient.invalidateQueries({ queryKey: ["placementData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the Trainer."

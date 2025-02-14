@@ -18,7 +18,7 @@ const Scheme: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => schemeColumns(navigate), [navigate]);
-  const duplicateTablecolumns = useMemo(() => schemeDuplicateColumns(navigate), [navigate]);
+
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -26,12 +26,38 @@ const Scheme: React.FC = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [selectedDuplicates, setSelectedDuplicates] = useState<{
+    vsSchemeName: boolean;
+    vsFundName: boolean;
+    vsSchemeFundingType: boolean;
+    vsSchemeType: boolean
+  }>({
+    vsSchemeName: true,
+    vsFundName: false,
+    vsSchemeFundingType: false,
+    vsSchemeType: true
+  });
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    
+    setSelectedDuplicates((prevState) => ({
+      ...prevState,
+      [name]: checked, // Update selectedDuplicates with the name of the checkbox as the key
+    }));
+  };
+  
+  
+ const duplicateQuery = Object.keys(selectedDuplicates)
+  .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
+  .map((key) => key as string);  // Declare duplicateQuery here
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
+  const duplicateTablecolumns = useMemo(() => schemeDuplicateColumns(navigate, duplicateQuery), [navigate, duplicateQuery]);
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["schemeData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("scheme", searchKey, debouncedSearchValue),
+    queryKey: ["schemeData", searchKey, debouncedSearchValue, ...duplicateQuery],
+    queryFn: () => getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery),
   });
 
   useEffect(() => {
@@ -91,7 +117,7 @@ const Scheme: React.FC = () => {
                   placeholder={`Enter ${searchKeyLabel}`}
                 />
                 <button
-                  className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                  className="p-2 px-4 bg-red-500 text-white rounded hover:bg-red-800"
                   onClick={() => {
                     setSearchValue("");
                     setSearchKey("");
@@ -122,7 +148,49 @@ const Scheme: React.FC = () => {
       </div>
 
       <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">Duplicate Entries</p>
+        <p className="text-2xl font-bold mb-4">Duplicate Check By </p>
+        <div className="mb-4 flex justify-start">
+          <label className="mr-6">
+            <input
+              type="checkbox"
+              name="vsSchemeName"
+              checked={selectedDuplicates.vsSchemeName}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+            Scheme Name
+          </label>
+          <label className="mr-6">
+            <input
+              type="checkbox"
+              name="vsSchemeType"
+              checked={selectedDuplicates.vsSchemeType}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+            Scheme Type
+          </label>
+          <label className="mr-6 ">
+            <input
+              type="checkbox"
+              name="vsFundName"
+              checked={selectedDuplicates.vsFundName}
+              onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+            />
+            Fund Name
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="vsSchemeFundingType"
+              checked={selectedDuplicates.vsSchemeFundingType}
+              onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+            />
+            Funding Type
+          </label>
+        </div>
         <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={5} />
       </div>
     </>

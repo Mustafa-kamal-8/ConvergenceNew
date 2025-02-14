@@ -60,12 +60,13 @@ interface InputProps {
   disabled?: boolean;
   name?: string;
   max?: string; 
+  min?: string;
   maxLength?: number
 }
 
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type, placeholder, value, onChange, className, onBlur, disabled, name, max, maxLength }, ref) => {
+  ({ type, placeholder, value, onChange, className, onBlur, disabled, name, max,min, maxLength }, ref) => {
     return (
       <div>
         <input
@@ -79,6 +80,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           onBlur={onBlur}
           disabled={disabled}
           max={max} 
+          min={min}
           maxLength={maxLength} 
         />
       </div>

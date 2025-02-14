@@ -20,26 +20,62 @@ const Candidate: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => candidateColumns(navigate), [navigate]);
-  const CrossDuplicateTableColumns = useMemo(
-    () => CrossCandidateColumns(navigate),
-    [navigate]
-  );
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [totalCount, setTotalCount] = useState([]);
+  const [selectedDuplicates, setSelectedDuplicates] = useState<{
+    vsCandidateName: boolean;
+    vsDOB: boolean;
+    vsUUID: boolean;
+    vsMobile: boolean;
+  }>({
+    vsCandidateName: true,
+    vsDOB: true,
+    vsUUID: true,
+    vsMobile: true,
+  });
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+
+    setSelectedDuplicates((prevState) => ({
+      ...prevState,
+      [name]: checked, // Update selectedDuplicates with the name of the checkbox as the key
+    }));
+  };
+
+  const duplicateQuery = Object.keys(selectedDuplicates)
+    .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
+    .map((key) => key as string); // Declare duplicateQuery here
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
+  const duplicateTablecolumns = useMemo(
+    () => CrossCandidateColumns(navigate, duplicateQuery),
+    [navigate, duplicateQuery]
+  );
+
 
   const {
     data: fetchedData,
     isLoading,
     isSuccess,
   } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue),
+    queryKey: [
+      "candidateData",
+      searchKey,
+      debouncedSearchValue,
+      ...duplicateQuery,
+    ],
+    queryFn: () =>
+      getTableData(
+        "candidate",
+        searchKey,
+        debouncedSearchValue,
+        duplicateQuery
+      ),
   });
 
   useEffect(() => {
@@ -70,8 +106,12 @@ const Candidate: React.FC = () => {
   return (
     <>
       <div className="">
-        <p className="text-2xl font-bold mb-4">List Of Candidates <span className="text-red-700 text-sm bg-yellow-100 p-2 flex items-center justify-start  mt-3"> ⚠️  Only the last four digits of the candidate's Aadhar number should be Insert</span></p>
-      
+        <p className="text-2xl font-bold mb-4">List Of Candidates</p>
+        <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
+          <span className="text-red-500 text-2xl mr-2">⚠️</span>
+          Only the last four digits of the candidate's Aadhar number should be
+          Insert.
+        </div>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
@@ -143,14 +183,59 @@ const Candidate: React.FC = () => {
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        Duplicate records are identified based on matching 'Candidate First Name', 'Date Of Birth', 'Phone No' and 'Aadhar Last 4 digit' across multiple logins, highlighting common entries found in different departments.
+        Duplicate records are identified based on matching 'Candidate First
+        Name', 'Date Of Birth', 'Phone No' and 'Aadhar Last 4 digit' across
+        multiple logins, highlighting common entries found in different
+        departments.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">
           Cross-Department Duplicate Candidates
         </p>
+        <div className="mb-4 flex justify-start">
+          <label className="mr-6">
+            <input
+              type="checkbox"
+              name="vsCandidateName"
+              checked={selectedDuplicates.vsCandidateName}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+            Candidate Name
+          </label>
+          <label className="mr-6">
+            <input
+              type="checkbox"
+              name="vsDOB"
+              checked={selectedDuplicates.vsDOB}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+           DOB
+          </label>
+          <label className="mr-6 ">
+            <input
+              type="checkbox"
+              name="vsUUID"
+              checked={selectedDuplicates.vsUUID}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+            UUID
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="vsMobile"
+              checked={selectedDuplicates.vsMobile}
+              onChange={handleCheckboxChange}
+              className="transform scale-150 mr-2"
+            />
+            Mobile
+          </label>
+        </div>
         <CentralizedTable
-          columns={CrossDuplicateTableColumns}
+          columns={duplicateTablecolumns}
           data={fetchedData?.data?.duplicate_candidate}
           pageSize={5}
         />

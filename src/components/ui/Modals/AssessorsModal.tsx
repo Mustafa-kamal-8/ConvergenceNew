@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { assessorSchema } from "../../../utils/validation";
 import { AssessorFormData } from "../../../utils/formTypes";
 import { submitAssessorForm } from "../../../services/state/api/FormApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useModalStore from "../../../services/state/useModelStore";
 import { getMasterData } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
@@ -25,6 +25,8 @@ const AssessorsModal: React.FC = () => {
     resolver: joiResolver(assessorSchema),
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: submitAssessorForm,
     onSuccess: (data) => {
@@ -33,6 +35,7 @@ const AssessorsModal: React.FC = () => {
         toast.success(
           data.message || "Training Partner submitted successfully!"
         );
+        queryClient.invalidateQueries({ queryKey: ["assessorData"] });
       } else {
         toast.error(
           data.message ||
