@@ -13,6 +13,7 @@ import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import Loader from "../components/ui/Loader";
 import useDebounce from "../services/state/useDebounce";
 import { schemeDuplicateColumns } from "../utils/tableColumns";
+import * as XLSX from "xlsx";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
@@ -33,24 +34,24 @@ const Scheme: React.FC = () => {
     vsSchemeType: boolean
   }>({
     vsSchemeName: true,
-    vsFundName: false,
+    vsFundName: true,
     vsSchemeFundingType: false,
-    vsSchemeType: true
+    vsSchemeType: false
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    
+
     setSelectedDuplicates((prevState) => ({
       ...prevState,
-      [name]: checked, // Update selectedDuplicates with the name of the checkbox as the key
+      [name]: checked,
     }));
   };
-  
-  
- const duplicateQuery = Object.keys(selectedDuplicates)
-  .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
-  .map((key) => key as string);  // Declare duplicateQuery here
+
+
+  const duplicateQuery = Object.keys(selectedDuplicates)
+    .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
+    .map((key) => key as string);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
   const duplicateTablecolumns = useMemo(() => schemeDuplicateColumns(navigate, duplicateQuery), [navigate, duplicateQuery]);
@@ -76,6 +77,71 @@ const Scheme: React.FC = () => {
       }
     }
   }, [fetchedData, isSuccess]);
+
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsSchemeName: "Scheme Name",
+      vsSchemeType: "Scheme Type",
+      vsSchemeCode: "Scheme Code",
+      vsFundName: "Fund Name",
+      vsSchemeFundingType: "Funding Type",
+      vsSchemeFUndingRatio: "Funding Ratio",
+      sanctionOrderNo: "Sanction Order No",
+      dtSanctionDate: "Sanction Date",
+    };
+
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "SchemesData.xlsx");
+  };
+
+
+  const exportToExcelDuplicate = () => {
+    if (!duplicateData || duplicateData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsSchemeName: "Scheme Name",
+      vsSchemeType: "Scheme Type",
+      vsFundName: "Fund Name",
+      vsFundingType: "Funding Type",
+      vsDepartmentName: "Department Name",
+
+    };
+
+
+    const formattedData = duplicateData.map((item) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "SchemesDuplicateData.xlsx");
+  };
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
@@ -138,10 +204,25 @@ const Scheme: React.FC = () => {
         </div>
         <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
+
+
       <div className="pt-10">
-        <p className="text-2xl font-bold mb-4">Unique Entries</p>
-        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Unique Entries</p>
+          <button
+            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={exportToExcel}
+          >
+            <DownloadCloud size={18} />
+            Download Report
+          </button>
+        </div>
+
+        {/* Table Component */}
+        <CentralizedTable columns={columns} data={filteredData} pageSize={20} />
       </div>
+
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
         Duplicate records are identified based on matching 'Scheme Name' and 'Scheme Code' across multiple logins, highlighting common entries found in different departments.
@@ -149,49 +230,60 @@ const Scheme: React.FC = () => {
 
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Duplicate Check By </p>
-        <div className="mb-4 flex justify-start">
-          <label className="mr-6">
-            <input
-              type="checkbox"
-              name="vsSchemeName"
-              checked={selectedDuplicates.vsSchemeName}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-            Scheme Name
-          </label>
-          <label className="mr-6">
-            <input
-              type="checkbox"
-              name="vsSchemeType"
-              checked={selectedDuplicates.vsSchemeType}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-            Scheme Type
-          </label>
-          <label className="mr-6 ">
-            <input
-              type="checkbox"
-              name="vsFundName"
-              checked={selectedDuplicates.vsFundName}
-              onChange={handleCheckboxChange}
+        <div className="mb-4 flex justify-between">
+          <div>
+            <label className="mr-6">
+              <input
+                type="checkbox"
+                name="vsSchemeName"
+                checked={selectedDuplicates.vsSchemeName}
+                onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
-            />
-            Fund Name
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="vsSchemeFundingType"
-              checked={selectedDuplicates.vsSchemeFundingType}
-              onChange={handleCheckboxChange}
+              />
+              Scheme Name
+            </label>
+            <label className="mr-6">
+              <input
+                type="checkbox"
+                name="vsSchemeType"
+                checked={selectedDuplicates.vsSchemeType}
+                onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
-            />
-            Funding Type
-          </label>
+              />
+              Scheme Type
+            </label>
+            <label className="mr-6 ">
+              <input
+                type="checkbox"
+                name="vsFundName"
+                checked={selectedDuplicates.vsFundName}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              Fund Name
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="vsSchemeFundingType"
+                checked={selectedDuplicates.vsSchemeFundingType}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              Funding Type
+            </label>
+          </div>
+          <div>
+            <button
+              className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+              onClick={exportToExcelDuplicate}
+            >
+              <DownloadCloud size={18} />
+              Download Report
+            </button>
+          </div>
         </div>
-        <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={5} />
+        <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={20} />
       </div>
     </>
   );

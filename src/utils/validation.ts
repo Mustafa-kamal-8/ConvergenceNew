@@ -597,8 +597,12 @@ export const candidateSchema = Joi.object({
   fklCategoryId: Joi.number().required().label("Category ID").messages({
     "any.required": "Category ID is required.",
   }),
-  vsUUID: Joi.string().required().label("UUID").messages({
-    "any.required": "UUID is required.",
+  vsUUID: Joi.when("fklIdType", {
+    is: 1, 
+    then: Joi.string().required().label("UUID").messages({
+      "any.required": "UUID is required.",
+    }),
+    otherwise: Joi.string().optional(), 
   }),
   vsMobile: Joi.string()
   .pattern(/^[0-9]{10}$/)

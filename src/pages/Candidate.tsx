@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import CentralizedTable from "../components/CentralizedTable";
+import * as XLSX from "xlsx";
 
 const Candidate: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Candidate: React.FC = () => {
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [totalCount, setTotalCount] = useState([]);
+  const [duplicateData, setDuplicateData] = useState([]);
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsCandidateName: boolean;
     vsDOB: boolean;
@@ -43,13 +45,13 @@ const Candidate: React.FC = () => {
 
     setSelectedDuplicates((prevState) => ({
       ...prevState,
-      [name]: checked, // Update selectedDuplicates with the name of the checkbox as the key
+      [name]: checked,
     }));
   };
 
   const duplicateQuery = Object.keys(selectedDuplicates)
     .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
-    .map((key) => key as string); // Declare duplicateQuery here
+    .map((key) => key as string);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
   const duplicateTablecolumns = useMemo(
@@ -58,24 +60,9 @@ const Candidate: React.FC = () => {
   );
 
 
-  const {
-    data: fetchedData,
-    isLoading,
-    isSuccess,
-  } = useQuery({
-    queryKey: [
-      "candidateData",
-      searchKey,
-      debouncedSearchValue,
-      ...duplicateQuery,
-    ],
-    queryFn: () =>
-      getTableData(
-        "candidate",
-        searchKey,
-        debouncedSearchValue,
-        duplicateQuery
-      ),
+  const { data: fetchedData, isLoading, isSuccess } = useQuery({
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery],
+    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery),
   });
 
   useEffect(() => {
@@ -86,8 +73,78 @@ const Candidate: React.FC = () => {
       } else {
         setFilteredData([]);
       }
+
+      if (fetchedData?.data?.duplicate_candidate && fetchedData.data.duplicate_candidate.length > 0) {
+        setDuplicateData(fetchedData.data.duplicate_candidate);
+      } else {
+        setDuplicateData([]);
+      }
     }
   }, [fetchedData, isSuccess]);
+
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsCandidateName: "Candidate Name",
+      vsDOB: "Date Of Birth",
+      iAge: "Age",
+      pklGenderId: "Gender",
+      vsMobile: "Mobile",
+      pklQualificationId: "Qualification",
+
+    };
+
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "CandidateData.xlsx");
+  };
+
+
+  const exportToExcelDuplicate = () => {
+    if (!fetchedData?.data?.duplicate_candidate || fetchedData?.data?.duplicate_candidate.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsCandidateName: "Candidate Name",
+      vsDOB: "Date Of Birth",
+      vsUUID: "UUID",
+      vsMobile: "Mobile",
+      vsDepartmentName: "Department Name",
+
+    };
+
+
+    const formattedData = fetchedData?.data?.duplicate_candidate.map((item: { [x: string]: unknown; }) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "CandidateDuplicateData.xlsx");
+  };
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
@@ -117,13 +174,17 @@ const Candidate: React.FC = () => {
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
-                { label: "Scheme Name", value: "vsSchemeName" },
-                { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },
-                { label: "Fund Name", value: "vsFundName" },
+                { label: "Candidate Name", value: "vsCandidateName" },
+                { label: "Batch ID", value: "batchId" },
+                { label: "Candidate ID", value: "candidateId" },
+                { label: "Gender", value: "gender" },
                 {
-                  label: "Sanction Date (yyyy/mm/dd)",
-                  value: "dtSanctionDate",
+                  label: "Mobile Number",
+                  value: "mobile",
+                },
+                {
+                  label: "Qualification",
+                  value: "qualification",
                 },
               ]}
               onSelect={handleDropdownSelect}
@@ -176,9 +237,21 @@ const Candidate: React.FC = () => {
           Total Count: {totalCount}
         </div>
       </div>
-      <div className="">
-        <p className="text-2xl font-bold mb-4">Unique Candidates</p>
-        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      <div className="pt-10">
+
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Unique Entries</p>
+          <button
+            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={exportToExcel}
+          >
+            <DownloadCloud size={18} />
+            Download Report
+          </button>
+        </div>
+
+        {/* Table Component */}
+        <CentralizedTable columns={columns} data={filteredData} pageSize={20} />
       </div>
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
@@ -192,52 +265,63 @@ const Candidate: React.FC = () => {
         <p className="text-2xl font-bold mb-4">
           Cross-Department Duplicate Candidates
         </p>
-        <div className="mb-4 flex justify-start">
-          <label className="mr-6">
-            <input
-              type="checkbox"
-              name="vsCandidateName"
-              checked={selectedDuplicates.vsCandidateName}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-            Candidate Name
-          </label>
-          <label className="mr-6">
-            <input
-              type="checkbox"
-              name="vsDOB"
-              checked={selectedDuplicates.vsDOB}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-           DOB
-          </label>
-          <label className="mr-6 ">
-            <input
-              type="checkbox"
-              name="vsUUID"
-              checked={selectedDuplicates.vsUUID}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-            UUID
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="vsMobile"
-              checked={selectedDuplicates.vsMobile}
-              onChange={handleCheckboxChange}
-              className="transform scale-150 mr-2"
-            />
-            Mobile
-          </label>
+        <div className="mb-4 flex justify-between">
+          <div>
+            <label className="mr-6">
+              <input
+                type="checkbox"
+                name="vsCandidateName"
+                checked={selectedDuplicates.vsCandidateName}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              Candidate Name
+            </label>
+            <label className="mr-6">
+              <input
+                type="checkbox"
+                name="vsDOB"
+                checked={selectedDuplicates.vsDOB}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              DOB
+            </label>
+            <label className="mr-6 ">
+              <input
+                type="checkbox"
+                name="vsUUID"
+                checked={selectedDuplicates.vsUUID}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              UUID
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="vsMobile"
+                checked={selectedDuplicates.vsMobile}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+              />
+              Mobile
+            </label>
+          </div>
+          <div>
+            <button
+              className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+              onClick={exportToExcelDuplicate}
+            >
+              <DownloadCloud size={18} />
+              Download Report
+            </button>
+          </div>
         </div>
         <CentralizedTable
           columns={duplicateTablecolumns}
-          data={fetchedData?.data?.duplicate_candidate}
-          pageSize={5}
+          data={duplicateData}
+          pageSize={20}
         />
       </div>
     </>

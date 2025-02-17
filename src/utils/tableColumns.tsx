@@ -1067,7 +1067,7 @@ export const CrossCandidateColumns = (
     accessor: "vsUUID",
     Cell: ({ value }: { value: string }) => (
       <span className={duplicateQuery.includes("vsUUID") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-        {moment(value).format("DD-MM-YYYY")}
+      {value}
       </span>
     ),
   },
@@ -1076,7 +1076,7 @@ export const CrossCandidateColumns = (
     accessor: "vsMobile",
     Cell: ({ value }: { value: string }) => (
       <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-        {moment(value).format("DD-MM-YYYY")}
+        {value}
       </span>
     ),
   },

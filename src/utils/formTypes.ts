@@ -173,7 +173,7 @@ export interface candidateFormData {
   iAge: string;
   vsFatherName: string;
   vsGender: number;
-  fklIdType: string;
+  fklIdType: number;
   vsUUID: string;
   fklReligionId: number;
   fklCategoryId: number;
