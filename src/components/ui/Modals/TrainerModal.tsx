@@ -47,6 +47,25 @@ const TrainerModalContent: React.FC = () => {
     })
   ) || [];
 
+  const { data: courseData } = useQuery({
+    queryKey: ["courseData", "courseRoleName"], 
+    queryFn: () => getMasterData("courseRoleName"), 
+  });
+  
+   useEffect(() => {
+     if (courseData) {
+      console.log("Fetched master data:", courseData);
+     }
+   }, [courseData]);
+
+   const courseOptions =
+   courseData?.data?.result?.courses?.map(
+     (tp: { pklCourseId: number; vsCourseName: string }) => ({
+       label: tp.vsCourseName,
+       value: tp.pklCourseId,
+     })
+   ) || [];
+
   const mutation = useMutation({
     mutationFn: submitTrainerForm,
     onSuccess: (data) => {
@@ -120,6 +139,32 @@ const TrainerModalContent: React.FC = () => {
           />
           {errors.fklTcId && (
             <p className="text-red-500">{errors.fklTcId.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="Course"required />
+          <Controller
+            name="fklCourseId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={courseOptions} 
+                getOptionLabel={(option) => option.label} 
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); 
+              
+                  setValue("fklCourseId", selectedOption.value); 
+                }}
+                className={errors.fklCourseId ? "border-red-500" : ""}
+                placeholder="-- Select Course --"
+              />
+            )}
+          />
+          {errors.fklCourseId && (
+            <p className="text-red-500">{errors.fklCourseId.message}</p>
           )}
         </div>
 

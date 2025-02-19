@@ -724,13 +724,12 @@ export const assessmentColumns = (
   // { Header: "Agency", accessor: "vsAgency" },
 
   // { Header: "Accessor Name", accessor: "vsAccessorName" },
-  { Header: "Result", accessor: "vsResult" },
   {
     Header: "Result Date",
     accessor: "dtResultDate",
-    Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
+    Cell: ({ value }) =>
+      value ? moment(value).format("YYYY-MM-DD") : "N/A", // Check if value exists before formatting
   },
-
   // {
   //   Header: "Marksheet",
   //   accessor: "vsMarksheetUrl",

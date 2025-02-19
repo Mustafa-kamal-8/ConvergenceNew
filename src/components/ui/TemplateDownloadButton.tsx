@@ -138,20 +138,34 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({ templat
       return;
     }
 
-    const generateExcel = (data: string[][], fileName: string) => {
-      const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const generateExcel = (
+      primaryData: string[][],
+      instructionData: string[][] | null,
+      fileName: string
+    ) => {
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    
+      // Add Primary Template Data as Sheet1
+      const primaryWorksheet = XLSX.utils.aoa_to_sheet(primaryData);
+      XLSX.utils.book_append_sheet(workbook, primaryWorksheet, "Primary Template");
+    
+      // Add Instruction Template Data as Sheet2 (if exists)
+      if (instructionData) {
+        const instructionWorksheet = XLSX.utils.aoa_to_sheet(instructionData);
+        XLSX.utils.book_append_sheet(workbook, instructionWorksheet, "Instruction Template");
+      }
+    
+      // Generate Excel File
       const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
       const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
       saveAs(blob, `${fileName}.xlsx`);
     };
+    
+    // Call this function instead of separate downloads
+    generateExcel(primaryTemplateData, instructionTemplateData.length > 0 ? instructionTemplateData : null, templateTitle);
 
-    // Download both templates
-    generateExcel(primaryTemplateData, `${templateTitle}`);
-    generateExcel(instructionTemplateData, `${templateTitle}_Instruction`);
-  };
-
+    
+  }
   return (
     <button
       onClick={downloadTemplate}

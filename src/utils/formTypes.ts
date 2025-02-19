@@ -89,6 +89,7 @@ export interface TrainerFormData {
   vsTrainerName: string;
   vsMobile: string;
   vsEmail: string;
+  fklCourseId: number;
   vsPAN: string;
 }
 

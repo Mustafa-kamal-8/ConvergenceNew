@@ -24,6 +24,7 @@ const AssessmentModal: React.FC = () => {
   const {
     control,
     handleSubmit,
+    watch,
     setValue,
     formState: { errors },
   } = useForm<AssessmentFormData>({
@@ -76,6 +77,20 @@ const AssessmentModal: React.FC = () => {
       })
     ) || [];
 
+    const { data: accessorData } = useQuery({
+      queryKey: ["masterData", "assessorName"],
+      queryFn: () => getMasterData("assessorName"),
+    });
+ 
+ 
+   const accessorOptions =
+   accessorData?.data?.result?.assessor?.map(
+       (batch: { pklConvAssessorId: number; vsAssosserName: string }) => ({
+         label: batch.vsAssosserName,
+         value: batch.pklConvAssessorId,
+       })
+     ) || [];
+
 
 
   const { data: sdmsData } = useQuery({
@@ -99,6 +114,8 @@ const AssessmentModal: React.FC = () => {
       { value: "No", label: "No" },
     ];
     
+    const vsResultValue = watch("vsResult");
+    const dtAssessmentDate = watch("dtAssessmentDate");
 
   const mutation = useMutation({
     mutationFn: submitAssesmentForm,
@@ -260,19 +277,29 @@ const AssessmentModal: React.FC = () => {
 
         {/* Assessed ID */}
         <div className="col-span-1">
-          <Label text="Assessed ID" required/>
+          <Label text="Accessor Name" required />
           <Controller
             name="accessorId"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="text"
-                className={`w-full ${errors.accessorId ? "border-red-500" : ""}`}
+                options={accessorOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                
+                  setValue("accessorId", selectedOption.value);
+                }}
+                className={errors.batchId ? "border-red-500" : ""}
+                placeholder="-- Select Accessor --"
               />
             )}
           />
-          {errors.accessorId && <p className="text-red-500">{errors.accessorId.message}</p>}
+          {errors.accessorId && (
+            <p className="text-red-500">{errors.accessorId.message}</p>
+          )}
         </div>
 
         <div className="col-span-1">
@@ -359,21 +386,34 @@ const AssessmentModal: React.FC = () => {
         </div>
 
         {/* Result Date */}
-        <div className="col-span-1">
-          <Label text="Result Date" required />
-          <Controller
-            name="dtResultDate"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="date"
-                className={`w-full ${errors.dtResultDate ? "border-red-500" : ""}`}
-              />
-            )}
-          />
-          {errors.dtResultDate && <p className="text-red-500">{errors.dtResultDate.message}</p>}
-        </div>
+        {vsResultValue === "Yes" && (
+  <div className="col-span-1">
+    <Label text="Result Date" required />
+    <Controller
+      name="dtResultDate"
+      control={control}
+      rules={{
+        required: dtAssessmentDate ? "Result Date is required." : false,
+        validate: (value) => {
+          if (dtAssessmentDate && value && value <= dtAssessmentDate) {
+            return "Result Date must be after Assessment Date.";
+          }
+          return true;
+        },
+      }}
+      render={({ field }) => (
+        <Input
+          {...field}
+          type="date"
+          className={`w-full ${errors.dtResultDate ? "border-red-500" : ""}`}
+          min={dtAssessmentDate || ""} // Restrict past date selection
+          disabled={!dtAssessmentDate} // Disable if Assessment Date is not selected
+        />
+      )}
+    />
+    {errors.dtResultDate && <p className="text-red-500">{errors.dtResultDate.message}</p>}
+  </div>
+)}
 
         {/* <div className="col-span-1">
           <Label text="total Marks" />

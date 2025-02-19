@@ -345,6 +345,11 @@ export const trainerSchema = Joi.object({
     "string.empty": "Trainer Name is required.",
     "any.required": "Trainer Name is required.",
   }),
+
+  fklCourseId: Joi.number().required().messages({
+    "string.empty": "Course Name is required.",
+    "any.required": "Course Name is required.",
+  }),
  
   vsMobile: Joi.string()
     .pattern(/^[0-9]{10}$/)
@@ -455,9 +460,12 @@ export const assessmentValidationSchema = Joi.object({
   SDMSBatchId: Joi.string().required().label("SDMS ID").messages({
     "string.empty": "SDMS ID is required.",
   }),
-  dtResultDate: Joi.string().required().label("Result Date").messages({
-    "string.empty": "Result Date is required.",
-  }),
+  dtResultDate: Joi.string()
+    .when("vsResult", {
+      is: "Yes",
+      then: Joi.required().messages({ "string.empty": "Result Date is required." }),
+      otherwise: Joi.optional(),
+    }),
   // fklTpId: Joi.number().optional().label("SDMS ID").messages({
   //   "string.empty": "SDMS ID is required.",
   // }),
