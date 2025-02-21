@@ -152,9 +152,9 @@ const CandidateModal: React.FC = () => {
 
   const batchOptions =
     batchIdOptions?.data?.result?.batchCandidate?.map(
-      (item: { iBatchNumber: number }) => ({
-        label: item.iBatchNumber,
-        value: item.iBatchNumber,
+      (item: { iBatchNumber: number , id: number}) => ({
+        label: String(item.iBatchNumber), 
+        value: item.id,
       })
     ) || [];
 
@@ -350,7 +350,7 @@ const CandidateModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Batch ID" required />
+          <Label text="Batch ID"  />
           <Controller
             name="batchId"
             control={control}
@@ -368,18 +368,7 @@ const CandidateModal: React.FC = () => {
                 className={errors.fklCategoryId ? "border-red-500" : ""}
                 placeholder="-- Select Batch--"
               />
-              // <Autocomplete
-              //   disablePortal
-              //   options={batchOptions || []}
-              //   // onChange={handleDepartmentChange}
-              //   renderInput={(params) => (
-              //     <TextField
-              //       sx={{ padding: "-10px" }}
-              //       {...params}
-              //       className="capitalize"
-              //     />
-              //   )}
-              // />
+            
             )}
           />
           {errors.batchId && (

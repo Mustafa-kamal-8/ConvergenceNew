@@ -412,10 +412,10 @@ export const assessmentValidationSchema = Joi.object({
     "string.empty": "Batch ID is required.",
   }),
 
-  // candidateId: Joi.string().required().messages({
-  //   "string.base": `"candidateId" should be a type of 'text'`,
-  //   "any.required": `"candidateId" is a required field`,
-  // }),
+  candidateId: Joi.number().required().messages({
+    "string.base": `"candidateId" should be a type of 'text'`,
+    "any.required": `"candidateId" is a required field`,
+  }),
   accessorId: Joi.number().required().messages({
     "string.base": `"assessedId" should be a type of 'text'`,
     "any.required": `"assessedId" is a required field`,
@@ -442,24 +442,19 @@ export const assessmentValidationSchema = Joi.object({
   //     "any.required": "Email is required.",
   //   }),
   vsResult: Joi.string().required().messages({
-    "string.base": `"vsResult" should be a type of 'text'`,
-    "any.required": `"vsResult" is a required field`,
+    "string.base": `"Result Type" should be a type of 'text'`,
+    "any.required": `"Result Type" is a required field`,
   }),
   // dtResultDate: Joi.date().required().messages({
   //   "string.base": `"dtResultDate" should be a type of 'text'`,
   //   "any.required": `"dtResultDate" is a required field`,
   // }),
-  // vsTotalMarks: Joi.date().required().messages({
-  //   "string.base": `"vsTotalMarks" should be a type of 'text'`,
-  //   "any.required": `"vsTotalMarks" is a required field`,
-  // }),
+  vsTotalMarks: Joi.optional(),
 
   // fklTcId: Joi.number().required().label("Training Center ID").messages({
   //   "string.empty": "Training Center ID is required.",
   // }),
-  SDMSBatchId: Joi.string().required().label("SDMS ID").messages({
-    "string.empty": "SDMS ID is required.",
-  }),
+  SDMSBatchId: Joi.optional().label("SDMS ID"),
   dtResultDate: Joi.string()
     .when("vsResult", {
       is: "Yes",
@@ -469,12 +464,12 @@ export const assessmentValidationSchema = Joi.object({
   // fklTpId: Joi.number().optional().label("SDMS ID").messages({
   //   "string.empty": "SDMS ID is required.",
   // }),
-  // vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
-  //   "string.empty": "SDMS ID is required.",
-  // }),
-  // vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
-  //   "string.empty": "SDMS ID is required.",
-  // }),
+  vsObtainedMarks: Joi.string().optional().label("Obtain Marks").messages({
+    "string.empty": "SDMS ID is required.",
+  }),
+  vsMarksheetUrl: Joi.string().optional().label("Obtain Marks").messages({
+    "string.empty": "SDMS ID is required.",
+  }),
   vsCertificateUrl: Joi.string().optional().label("Obtain Marks").messages({
     "string.empty": "SDMS ID is required.",
   }),
@@ -576,9 +571,7 @@ export const candidateSchema = Joi.object({
   candidateId: Joi.string().required().label("Candidate ID").messages({
     "any.required": "Candidate ID is required.",
   }),
-  batchId: Joi.number().required().label("ID Type").messages({
-    "any.required": "ID Type is required.",
-  }),
+  batchId: Joi.number(),
   vsCandidateName: Joi.string().required().label("Candidate Name").messages({
     "string.empty": "Candidate Name is required.",
   }),

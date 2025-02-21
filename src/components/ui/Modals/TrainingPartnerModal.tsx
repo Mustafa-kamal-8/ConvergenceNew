@@ -19,7 +19,7 @@ import { submitTrainingPartnerForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 
 const TrainingPartnerModal: React.FC = () => {
-  const {closeModal} = useModalStore()
+  const { closeModal } = useModalStore()
   const {
     handleSubmit,
     control,
@@ -32,7 +32,7 @@ const TrainingPartnerModal: React.FC = () => {
   const [stateId, setStateId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
 
-  
+
 
   console.log(districtId);
 
@@ -85,8 +85,8 @@ const TrainingPartnerModal: React.FC = () => {
       })
     ) || [];
 
-  
-  
+
+
 
   const selectedVillageCity = watch("isVillageCity", "") as unknown as string;
 
@@ -96,20 +96,20 @@ const TrainingPartnerModal: React.FC = () => {
   ];
 
   const ULBblockOptions = selectedVillageCity === "Village"
-  ? ULBblockData?.data?.result?.blocks?.map(
+    ? ULBblockData?.data?.result?.blocks?.map(
       (blocks: { blockId: number; blockName: string }) => ({
         label: blocks.blockName,
         value: blocks.blockId,
       })
     ) || []
-  : selectedVillageCity === "City"
-  ? ULBblockData?.data?.result?.ulbs?.map(
-      (ulbs: { ulbId: number; ulbName: string }) => ({
-        label: ulbs.ulbName,
-        value: ulbs.ulbId,
-      })
-    ) || []
-  : [];
+    : selectedVillageCity === "City"
+      ? ULBblockData?.data?.result?.ulbs?.map(
+        (ulbs: { ulbId: number; ulbName: string }) => ({
+          label: ulbs.ulbName,
+          value: ulbs.ulbId,
+        })
+      ) || []
+      : [];
 
   const mutation = useMutation({
     mutationFn: submitTrainingPartnerForm,
@@ -129,10 +129,10 @@ const TrainingPartnerModal: React.FC = () => {
     onError: (error: any) => {
       const errorMessage =
         error?.response?.data?.message || "An unknown error occurred.";
-      toast.error(errorMessage); 
+      toast.error(errorMessage);
     },
   });
-  
+
 
   const onSubmit: SubmitHandler<TrainingPartnerFormData> = (
     data: TrainingPartnerFormData
@@ -151,7 +151,7 @@ const TrainingPartnerModal: React.FC = () => {
         className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
         {/* Name */}
-        <div className="col-span-2">
+        <div className="col-span-1">
           <Label text="Name" required />
           <Controller
             name="vsTpName"
@@ -169,8 +169,8 @@ const TrainingPartnerModal: React.FC = () => {
           )}
         </div>
 
-          {/* Smart ID */}
-          <div className="col-span-1">
+        {/* Smart ID */}
+        <div className="col-span-2">
           <Label text="Smart ID (If Registered From NSDC)" />
           <Controller
             name="vsSmartId"
@@ -179,7 +179,7 @@ const TrainingPartnerModal: React.FC = () => {
               <Input
                 {...field}
                 type="text"
-                // className={errors.vsSmartId ? "border-red-500" : ""}
+              // className={errors.vsSmartId ? "border-red-500" : ""}
               />
             )}
           />
@@ -208,7 +208,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* SPOC Name */}
         <div className="col-span-2">
-          <Label text="SPOC Name"required />
+          <Label text="SPOC Name" required />
           <Controller
             name="vsSpocName"
             control={control}
@@ -225,11 +225,11 @@ const TrainingPartnerModal: React.FC = () => {
           )}
         </div>
 
-      
+
 
         {/* Mobile */}
         <div className="col-span-1">
-          <Label text="Mobile"required />
+          <Label text="Mobile" required />
           <Controller
             name="iSpocContactNum"
             control={control}
@@ -268,7 +268,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* Address */}
         <div className="col-span-2">
-          <Label text="Address" required/>
+          <Label text="Address" required />
           <Controller
             name="vsAddress"
             control={control}
@@ -287,7 +287,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* State */}
         <div className="col-span-1">
-          <Label text="State" required/>
+          <Label text="State" required />
           <Controller
             name="vsState"
             control={control}
@@ -314,7 +314,7 @@ const TrainingPartnerModal: React.FC = () => {
 
         {/* District */}
         <div className="col-span-1">
-          <Label text="District" required/>
+          <Label text="District" required />
           <Controller
             name="vsDistrict"
             control={control}
@@ -340,39 +340,38 @@ const TrainingPartnerModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-  <Label text="Village/City"/>
-  <Controller
-    name="isVillageCity"
-    control={control}
-    defaultValue="" // Ensure the initial value is an empty string
-    render={({ field }) => (
-      <select
-        {...field}
-        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-          errors.isVillageCity ? "border-red-500" : ""
-        }`}
-      >
-        <option value="" disabled>
-          -- Select Village/City --
-        </option>
-        {isCityVillage.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-  {/* {errors.isVillageCity && (
+          <Label text="Village/City" />
+          <Controller
+            name="isVillageCity"
+            control={control}
+            defaultValue="" // Ensure the initial value is an empty string
+            render={({ field }) => (
+              <select
+                {...field}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.isVillageCity ? "border-red-500" : ""
+                  }`}
+              >
+                <option value="" disabled>
+                  -- Select Village/City --
+                </option>
+                {isCityVillage.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+          {/* {errors.isVillageCity && (
     <p className="text-red-500">{errors.isVillageCity.message}</p>
   )} */}
-</div>
+        </div>
 
 
         {selectedVillageCity === "Village" && (
           <>
             <div className="col-span-1">
-              <Label text="Block" required/>
+              <Label text="Block" required />
               <Controller
                 name="vsBlock"
                 control={control}
@@ -397,7 +396,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Village" required/>
+              <Label text="Village" required />
               <Controller
                 name="vsVillage"
                 control={control}
@@ -444,7 +443,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="City" required/>
+              <Label text="City" required />
               <Controller
                 name="vsCity"
                 control={control}

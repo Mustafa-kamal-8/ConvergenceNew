@@ -1003,10 +1003,12 @@ export const candidateColumns = (
     accessor: "vsDOB",
     Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
   },
-  { Header: "Age", accessor: "iAge" },
-  { Header: "Gender", accessor: "pklGenderId" },
+  { Header: "caste", accessor: "caste" ,  Cell: ({ value }) => value ? value : "N/A"},
+  { Header: "Gender", accessor: "vsGenderName"},
   { Header: "Mobile", accessor: "vsMobile" },
-  { Header: "Qualification", accessor: "pklQualificationId" },
+  { Header: "Qualification", accessor: "vsQualification" },
+  { Header: "Unique key*", accessor: "vsCandidateKey",  Cell: ({ value }) => value ? value : "N/A" },
+  
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -1067,6 +1069,17 @@ export const CrossCandidateColumns = (
     Cell: ({ value }: { value: string }) => (
       <span className={duplicateQuery.includes("vsUUID") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
       {value}
+      </span>
+    ),
+  },
+  {
+    Header: "Gender",
+    accessor: "vsGenderName",
+    Cell: ({ value }) => (
+      <span
+        className={`capitalize ${duplicateQuery.includes("vsGender") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
+      >
+        {value}
       </span>
     ),
   },

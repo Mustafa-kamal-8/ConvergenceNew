@@ -9,7 +9,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import { assessmentValidationSchema } from "../../../utils/validation";
 import { AssessmentFormData } from "../../../utils/formTypes";
-import {  getMasterData, getsdmsByBatch} from "../../../services/state/api/masterApi";
+import {  getCandidateByBatch, getMasterData} from "../../../services/state/api/masterApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Dropdown from "../Dropdown";
 import { submitAssesmentForm } from "../../../services/state/api/FormApi";
@@ -20,7 +20,7 @@ const AssessmentModal: React.FC = () => {
   const { closeModal } = useModalStore();
 
   
-  const [pklBatchId, setBatchId] = useState<number | null>(null);
+ 
   const {
     control,
     handleSubmit,
@@ -33,6 +33,7 @@ const AssessmentModal: React.FC = () => {
   });
 
   const queryClient = useQueryClient();
+   const [batchId, setBatchId] = useState<number | null>(null);
 
   // const { data: masterData } = useQuery({
   //   queryKey: ["masterData", "tp"],
@@ -63,17 +64,18 @@ const AssessmentModal: React.FC = () => {
   //   ) || [];
 
 
-   const { data: batchData } = useQuery({
-     queryKey: ["masterData", "BATCH"],
-     queryFn: () => getMasterData("BATCH"),
-   });
+   const { data: batchhData } = useQuery({
+      queryKey: ["masterData", "batchCandidate"],
+      queryFn: () => getMasterData("batchCandidate"),
+    });
+  
 
 
-  const batchOptions =
-    batchData?.data?.result?.BATCH?.map(
-      (batch: { pklBatchId: number; iBatchNumber: number }) => ({
-        label: batch.iBatchNumber,
-        value: batch.pklBatchId,
+    const batchOptions =
+    batchhData?.data?.result?.batchCandidate?.map(
+      (batch: { id: number; iBatchNumber: number }) => ({
+        label: String(batch.iBatchNumber),
+        value: batch.id,
       })
     ) || [];
 
@@ -82,6 +84,20 @@ const AssessmentModal: React.FC = () => {
       queryFn: () => getMasterData("assessorName"),
     });
  
+
+    const { data: candidateData } = useQuery({
+        queryKey: ["masterData", "candidateByBatch", batchId],
+        queryFn: () => getCandidateByBatch(batchId, "candidateByBatch"),
+        enabled: !!batchId,
+      });
+    
+      const candidateOptions =
+        candidateData?.data?.result?.candidateByBatchId?.map(
+          (tc: { id: number; name: string }) => ({
+            label: tc.name,
+            value: tc.id,
+          })
+        ) || [];
  
    const accessorOptions =
    accessorData?.data?.result?.assessor?.map(
@@ -93,20 +109,20 @@ const AssessmentModal: React.FC = () => {
 
 
 
-  const { data: sdmsData } = useQuery({
-    queryKey: ["masterData", "SDMSBatchid", pklBatchId],
-    queryFn: () => getsdmsByBatch(pklBatchId, "SDMSBatchid"),
-    enabled: !!pklBatchId,
-  });
+  // const { data: sdmsData } = useQuery({
+  //   queryKey: ["masterData", "SDMSBatchid", pklBatchId],
+  //   queryFn: () => getsdmsByBatch(pklBatchId, "SDMSBatchid"),
+  //   enabled: !!pklBatchId,
+  // });
 
 
-  const sdmsOptions =
-    sdmsData?.data?.result?.SDMSBatchid?.map(
-      (sdms: { pklBatchId: string; SDMSid: string }) => ({
-        label: sdms.SDMSid,
-        value: sdms.SDMSid,
-      })
-    ) || [];
+  // const sdmsOptions =
+  //   sdmsData?.data?.result?.SDMSBatchid?.map(
+  //     (sdms: { pklBatchId: string; SDMSid: string }) => ({
+  //       label: sdms.SDMSid,
+  //       value: sdms.SDMSid,
+  //     })
+  //   ) || [];
 
     const resultType = [
       { value: "", label: "-- Select Result Type --", disabled: true },
@@ -233,8 +249,8 @@ const AssessmentModal: React.FC = () => {
         </div>
 
         {/* SDMS Batch ID */}
-        <div className="col-span-1">
-          <Label text="SDMS Batch ID" required />
+        {/* <div className="col-span-1">
+          <Label text="SDMS Batch ID"  />
           <Controller
             name="SDMSBatchId"
             control={control}
@@ -256,24 +272,33 @@ const AssessmentModal: React.FC = () => {
           {errors.SDMSBatchId && (
             <p className="text-red-500">{errors.SDMSBatchId.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Candidate ID */}
-        {/* <div className="col-span-1">
-          <Label text="Candidate ID" />
+        <div className="col-span-1">
+          <Label text="Candidate Name" required />
           <Controller
             name="candidateId"
             control={control}
             render={({ field }) => (
-              <Input
+              <Dropdown
                 {...field}
-                type="text"
-                className={`w-full ${errors.candidateId ? "border-red-500" : ""}`}
+                options={candidateOptions}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value);
+                  setValue("candidateId", selectedOption.value);
+                }}
+                className={errors.candidateId ? "border-red-500" : ""}
+                placeholder="-- Select Candidate Name --"
               />
             )}
           />
-          {errors.candidateId && <p className="text-red-500">{errors.candidateId.message}</p>}
-        </div> */}
+          {errors.candidateId && (
+            <p className="text-red-500">{errors.candidateId.message}</p>
+          )}
+        </div>
 
         {/* Assessed ID */}
         <div className="col-span-1">
@@ -414,8 +439,8 @@ const AssessmentModal: React.FC = () => {
     {errors.dtResultDate && <p className="text-red-500">{errors.dtResultDate.message}</p>}
   </div>
 )}
-
-        {/* <div className="col-span-1">
+    {vsResultValue === "Yes" && (
+         <div className="col-span-1">
           <Label text="total Marks" />
           <Controller
             name="vsTotalMarks"
@@ -429,8 +454,11 @@ const AssessmentModal: React.FC = () => {
             )}
           />
           {errors.vsTotalMarks && <p className="text-red-500">{errors.vsTotalMarks.message}</p>}
-        </div> */}
-        {/* <div className="col-span-1">
+        </div> 
+    )}
+
+{vsResultValue === "Yes" && (
+         <div className="col-span-1">
           <Label text="Obtain Marks" />
           <Controller
             name="vsObtainedMarks"
@@ -445,6 +473,9 @@ const AssessmentModal: React.FC = () => {
           />
           {errors.vsObtainedMarks && <p className="text-red-500">{errors.vsObtainedMarks.message}</p>}
         </div>
+)}
+
+{vsResultValue === "Yes" && (
         <div className="col-span-1">
           <Label text="Marksheet URL" />
           <Controller
@@ -460,6 +491,9 @@ const AssessmentModal: React.FC = () => {
           />
           {errors.vsMarksheetUrl && <p className="text-red-500">{errors.vsMarksheetUrl.message}</p>}
         </div>
+)}
+
+{vsResultValue === "Yes" && (
         <div className="col-span-1">
           <Label text="Certificate URL" />
           <Controller
@@ -474,7 +508,8 @@ const AssessmentModal: React.FC = () => {
             )}
           />
           {errors.vsCertificateUrl && <p className="text-red-500">{errors.vsCertificateUrl.message}</p>}
-        </div> */}
+        </div>
+)} 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button

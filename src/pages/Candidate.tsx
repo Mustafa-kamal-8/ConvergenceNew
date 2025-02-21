@@ -33,11 +33,13 @@ const Candidate: React.FC = () => {
     vsDOB: boolean;
     vsUUID: boolean;
     vsMobile: boolean;
+    vsGender: boolean;
   }>({
     vsCandidateName: true,
     vsDOB: true,
     vsUUID: true,
-    vsMobile: true,
+    vsMobile: false,
+    vsGender: true,
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,10 +94,63 @@ const Candidate: React.FC = () => {
     const headersMap = {
       vsCandidateName: "Candidate Name",
       vsDOB: "Date Of Birth",
-      iAge: "Age",
-      pklGenderId: "Gender",
+      vsUUID: "UUID(Aadhar last 4 DIGIT)",
       vsMobile: "Mobile",
-      pklQualificationId: "Qualification",
+      vsDepartmentName: "Department Name",
+      // vsFatherName: "FATHER 2",
+      vsGenderName: "Gender",
+      // vsQualificaion: "Education attained",
+      // UUID: "UUID",
+      religion: "Religion",
+      caste: "Caste",
+      vsQualification: "Qualification",
+      disability: "Disability",
+      teaTribe: "Tea Tribe",
+      BPLcardHolder: "BPL Card Holder",
+      Minority: "Minority",
+      batchNo: "Batch No",
+      // SDMSBatchId: "SDMS Batch ID",
+      startDate: "Batch Start Date",
+      endDate: "Batch End Date",
+      courseName: "Course Name",
+      courseCode: "Course Code",
+      TC: "TC",
+      tcPartnerCode: "TP Code",
+      tcSpocName: "TC SPOC Name",
+      tcSpocContactNo: "TC SPOC Contact No",
+      tcAddress: "TC Address",
+      tcSpocEmail: "SPOC Email",
+      tcVillage: "TC Village",
+      tcCity: "TC City",
+      tcState: "TC State",
+      tcDistrict: "TC District",
+      // tcBlock: "TC Block",
+      // tcUlb: "TC ULB",
+      // smartId: "Smart ID",
+      tcLongitude: "TC Longitude",
+      tcLatitude: "TC Latitude",
+      // tcAssembly: "TC Asembly",
+      // tcLoksabha: "TC Loksabha",
+      TP: "TP",
+      tpCode: "TP Code",
+      tpSpocName: "TP SPOC Name",
+      tpSpocContactNo: "TP SPOC Contact No",
+      tpSpocEmail: "TP SPOC Email",
+      state: "State",
+      district: "Dsitrict",
+      tpAddress: "TP Address",
+      tpVillage: "TP VIllage",
+      tpCity: "TP CIty",
+      tpBlock: "TP BLock",
+      tpULB: "TP ULB",
+      tpSmartId: "TP Smart ID",
+      sector: "Sector",
+      candidatePlaced: "Candidate PLaced",
+      employeerName: "Employee Name",
+      EmployeerContactNumber: "Employer Contact Number",
+      placementType: "Placement Type",
+      placementState: "Placement State",
+      placementDistrict: "Placement District"
 
     };
 
@@ -125,9 +180,14 @@ const Candidate: React.FC = () => {
     const headersMap = {
       vsCandidateName: "Candidate Name",
       vsDOB: "Date Of Birth",
+
       vsUUID: "UUID",
-      vsMobile: "Mobile",
-      vsDepartmentName: "Department Name",
+      vsMobile: "Mobile No",
+      vsDepartmentName	: "Department Name",
+
+      vsGenderName: "Gender",
+
+
 
     };
 
@@ -167,7 +227,7 @@ const Candidate: React.FC = () => {
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
           <span className="text-red-500 text-2xl mr-2">⚠️</span>
           Only the last four digits of the candidate's Aadhar number should be
-          Insert.
+          Insert.{<br></br>}The Candidate Unique ID is generated using the first 4 letters of the name, the last digit of the Aadhaar number, DOB (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
         </div>
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
@@ -256,10 +316,7 @@ const Candidate: React.FC = () => {
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        Duplicate records are identified based on matching 'Candidate First
-        Name', 'Date Of Birth', 'Phone No' and 'Aadhar Last 4 digit' across
-        multiple logins, highlighting common entries found in different
-        departments.
+        NOTE:  Data in the 'Cross-Department Duplicate Candidates' table is filtered based on essential identity parameters, including Candidate Name, Date of Birth (DOB), UUID, and Gender. Users may also apply an additional filter using the Mobile Number to narrow down results further.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">
@@ -274,6 +331,7 @@ const Candidate: React.FC = () => {
                 checked={selectedDuplicates.vsCandidateName}
                 onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
+                disabled
               />
               Candidate Name
             </label>
@@ -284,6 +342,7 @@ const Candidate: React.FC = () => {
                 checked={selectedDuplicates.vsDOB}
                 onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
+                disabled
               />
               DOB
             </label>
@@ -294,8 +353,20 @@ const Candidate: React.FC = () => {
                 checked={selectedDuplicates.vsUUID}
                 onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
+                disabled
               />
               UUID
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="vsGender"
+                checked={selectedDuplicates.vsGender}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2 "
+                disabled
+              />
+              Gender
             </label>
             <label>
               <input
@@ -303,10 +374,11 @@ const Candidate: React.FC = () => {
                 name="vsMobile"
                 checked={selectedDuplicates.vsMobile}
                 onChange={handleCheckboxChange}
-                className="transform scale-150 mr-2"
+                className="transform scale-150 mr-2 ml-4"
               />
               Mobile
             </label>
+
           </div>
           <div>
             <button

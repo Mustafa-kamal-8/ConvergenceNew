@@ -98,7 +98,7 @@ const queryClient = useQueryClient();
   const batchOptions =
     batchhData?.data?.result?.batchCandidate?.map(
       (batch: { id: number; iBatchNumber: number }) => ({
-        label: batch.iBatchNumber,
+        label: String(batch.iBatchNumber),
         value: batch.id,
       })
     ) || [];
@@ -260,7 +260,7 @@ const queryClient = useQueryClient();
 
         {/* Candidate ID */}
         <div className="col-span-1">
-          <Label text="Candidate ID" required />
+          <Label text="Candidate Name" required />
           <Controller
             name="candidateId"
             control={control}
@@ -275,7 +275,7 @@ const queryClient = useQueryClient();
                   setValue("candidateId", selectedOption.value);
                 }}
                 className={errors.candidateId ? "border-red-500" : ""}
-                placeholder="-- Select Candidate ID --"
+                placeholder="-- Select Candidate Name --"
               />
             )}
           />
