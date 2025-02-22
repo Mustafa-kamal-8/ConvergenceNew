@@ -3,22 +3,26 @@ import DropInput from "../DropInput";
 import Button from "../Button";
 import { toast } from "react-toastify";
 
-import * as XLSX from "xlsx"; 
+import * as XLSX from "xlsx";
 import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../../../services/state/api-setup/axiosInstance";
+import { useErrorStore } from "../../../services/useErrorStore";
+import useModalStore from "../../../services/state/useModelStore";
 
 interface BulkUploadModalProps {
   bulkName: string;
- 
+  onUploadError?: (errorMessage: string) => void;
 }
 
-
-
-
-
-const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
+const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
+  bulkName,
+  onUploadError,
+}) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const { setErrorMessage } = useErrorStore.getState();
+  const { closeModal } = useModalStore();
 
   const handleClearFile = () => {
     setFile(null);
@@ -46,22 +50,24 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
     reader.onload = (e) => {
       const data = e.target?.result;
       if (data instanceof ArrayBuffer) {
-        if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel") {
-      
+        if (
+          file.type ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          file.type === "application/vnd.ms-excel"
+        ) {
           const workbook = XLSX.read(data, { type: "binary" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet);
-          console.log("Parsed Excel data:", jsonData); 
+          console.log("Parsed Excel data:", jsonData);
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const updatedData = jsonData.map((row: any) => {
             return {
               ...row,
-             
             };
           });
-  
+
           console.log("Updated parsed Excel data:", updatedData);
         }
       } else {
@@ -69,7 +75,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
       }
     };
     if (file) {
-      reader.readAsArrayBuffer(file); 
+      reader.readAsArrayBuffer(file);
     }
 
     setUploading(true);
@@ -77,22 +83,62 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ bulkName }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", bulkName); 
+      formData.append("type", bulkName);
       formData.append("fklDepartmentId", userDetails?.departmentId);
-   
-    
-      const { data: resData } = await axiosInstance.post(`/file-upload/upload`, formData, {
-       
-      });
 
+      const { data: resData } = await axiosInstance.post(
+        `/file-upload/upload`,
+        formData,
+        {}
+      );
       if (resData.success === true) {
-        toast.success(resData.message);
+        // toast.success(resData.message);
         handleClearFile();
-      } else {
-        const errorMessage = resData.message || "Error while uploading the file.";
-        toast.error(errorMessage);
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      useErrorStore.getState().setBulkName(bulkName);
+
+      // Extract error messages if any errors exist in the data array
+      if (resData.data?.some((item: any) => item.error?.length > 0)) {
+        // Extract error details
+        const errorDetails = resData.data
+          .filter((item: any) => item.error)
+          .flatMap((item: any) =>
+            item.error.map((err: any) => ({
+              row: err.rowNumber,
+              message: `Row ${err.rowNumber}: ${err.error}`,
+            }))
+          )
+          .sort((a: { row: number; }, b: { row: number; }) => a.row - b.row) // Sort by row number
+          .map((item: { message: any; }) => item.message) // Extract messages
+          .join("\n");
+
+        const errorMessage = `Errors occurred:\n${errorDetails}`;
+
+        // Count inserted rows
+        const totalInserted = resData.data.filter(
+          (item: any) => item.insertedRow
+        ).length;
+        const successMessage = `Total data inserted: ${totalInserted}`;
+
+        // Store in Zustand as an object
+        setErrorMessage({ errorMessage, successMessage });
+
+        // Call error callback if provided
+        onUploadError?.(errorMessage);
+      } else {
+        // Success case: No errors, all data processed successfully
+        const totalInserted = resData.data.length; // Count all inserted rows
+        const successMessage = `All Data processed successfully. Total inserted: ${totalInserted}`;
+
+        setErrorMessage({ errorMessage: "", successMessage }); // Clear error message on success
+      }
+
+      // Call closeModal() after processing response
+      closeModal();
+
+      // Call closeModal() after processing response
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("An error occurred while uploading. Please try again later.");
     } finally {

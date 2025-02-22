@@ -24,6 +24,7 @@ const CustomModal: React.FC = () => {
   const { isOpen, modalType, modalTitle, bulkName,  closeModal} = useModalStore();
 
 
+
   const renderModalContent = () => {
     switch (modalType) {
       case 0:
@@ -49,7 +50,7 @@ const CustomModal: React.FC = () => {
       case 10:
         return <InvoiceModal />;
       case 11:
-        return <BulkUploadModal bulkName={bulkName}  />;
+        return <BulkUploadModal bulkName={bulkName} />; 
       case 12:
         return <TrainingCenterModel />;
       case 13:
@@ -79,7 +80,7 @@ const CustomModal: React.FC = () => {
           </button>
         </div>
         {renderModalContent()}
-
+     
       </Box>
     </Modal>
   );

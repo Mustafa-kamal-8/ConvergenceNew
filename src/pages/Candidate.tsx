@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 
-import { DownloadCloud, UploadCloud } from "lucide-react";
+import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
 
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
@@ -16,18 +16,24 @@ import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import CentralizedTable from "../components/CentralizedTable";
 import * as XLSX from "xlsx";
+import { useErrorStore } from "../services/useErrorStore";
 
 const Candidate: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => candidateColumns(navigate), [navigate]);
-
+  const errorMessage = useErrorStore((state) => state.errorMessage);
+  const successMessage = useErrorStore((state) => state.successMessage);
+  const { bulkName } = useErrorStore();
+  const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+  const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [totalCount, setTotalCount] = useState([]);
   const [duplicateData, setDuplicateData] = useState([]);
+
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsCandidateName: boolean;
     vsDOB: boolean;
@@ -157,7 +163,9 @@ const Candidate: React.FC = () => {
 
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce((acc, key) => {
-        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        acc[headersMap[headerKey]] = item[itemKey] ?? "N/A"; // If value is missing, replace it with "N/A"
         return acc;
       }, {} as Record<string, unknown>);
     });
@@ -183,7 +191,7 @@ const Candidate: React.FC = () => {
 
       vsUUID: "UUID",
       vsMobile: "Mobile No",
-      vsDepartmentName	: "Department Name",
+      vsDepartmentName: "Department Name",
 
       vsGenderName: "Gender",
 
@@ -216,6 +224,8 @@ const Candidate: React.FC = () => {
     setSearchValue(value);
   };
 
+
+
   if (isLoading) {
     return <Loader />;
   }
@@ -224,11 +234,46 @@ const Candidate: React.FC = () => {
     <>
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Candidates</p>
+        {bulkName === "candidate" && (
+  <>
+    {successMessage && (
+      <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+        <div className="flex items-center">
+          <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+          <p>{successMessage}</p>
+        </div>
+        <button onClick={clearSuccessMessage} className="absolute right-4 top-2">
+          <X className="w-5 h-5 text-green-700 cursor-pointer" />
+        </button>
+      </div>
+    )}
+
+    {errorMessage && (
+      <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+        <div className="flex items-center">
+          <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+          <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
+        </div>
+        <button onClick={clearErrorMessage} className="absolute right-4 top-2">
+          <X className="w-5 h-5 text-red-700 cursor-pointer" />
+        </button>
+      </div>
+    )}
+  </>
+)}
+
+
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
           <span className="text-red-500 text-2xl mr-2">⚠️</span>
           Only the last four digits of the candidate's Aadhar number should be
           Insert.{<br></br>}The Candidate Unique ID is generated using the first 4 letters of the name, the last digit of the Aadhaar number, DOB (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
+
+
+
+
+
         </div>
+
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
@@ -284,6 +329,7 @@ const Candidate: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="candidate"
               Icon={UploadCloud}
+
             />
             <ModalOpenButton
               modalType={5}

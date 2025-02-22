@@ -442,13 +442,19 @@ export const centerDuplicateColumns = (
 ): Column<TrainingCenterDuplicateData>[] => [
   { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "TC Name", accessor: "vsTcName" },
-  { Header: "TC Code", accessor: "vsTcCode" },
-  { Header: "District", accessor: "vsDistrict" },
-  { Header: "Longitude/Latitude", accessor: "vsLocation" },
+  { Header: "Tp Name", accessor: "vsTpName" },
+  { Header: "District", accessor: "vsDistrictName" },
+  {
+    Header: "Latitude/Longitude",
+    accessor: "location",
+    Cell: ({ row }) => `${row.original.vsLatitude} , ${row.original.vsLongitude}`
+  },
+  
+  { Header: "Partner Code", accessor: "iPartnerCode" },
   
   {
     Header: "Department Name",
-    accessor: "departmentNames",
+    accessor: "vsDepartmentName",
     Cell: ({ value }) => (
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}> 
         {value?.split(",").map((item, index) => (
@@ -996,7 +1002,9 @@ export const candidateColumns = (
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
+   Cell: ({ value }) => value ? value : "N/A",
     Cell: ({ value }) => <span className="capitalize">{value}</span>,
+    
   },
   {
     Header: "Date Of Birth",
@@ -1004,9 +1012,9 @@ export const candidateColumns = (
     Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
   },
   { Header: "caste", accessor: "caste" ,  Cell: ({ value }) => value ? value : "N/A"},
-  { Header: "Gender", accessor: "vsGenderName"},
-  { Header: "Mobile", accessor: "vsMobile" },
-  { Header: "Qualification", accessor: "vsQualification" },
+  { Header: "Gender", accessor: "vsGenderName",  Cell: ({ value }) => value ? value : "N/A"},
+  { Header: "Mobile", accessor: "vsMobile",  Cell: ({ value }) => value ? value : "N/A" },
+  { Header: "Qualification", accessor: "vsQualification" ,  Cell: ({ value }) => value ? value : "N/A"},
   { Header: "Unique key*", accessor: "vsCandidateKey",  Cell: ({ value }) => value ? value : "N/A" },
   
   // {
@@ -1126,21 +1134,24 @@ export const DuplicateCandidateColumns = (
     {
       Header: "Candidate Name",
       accessor: "vsCandidateName",
+        Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }) => <span className="capitalize">{value}</span>,
     },
     {
       Header: "Date Of Birth",
       accessor: "vsDOB",
+        Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }: { value: string }) =>
         moment(value).format("DD-MM-YYYY"),
     },
-    { Header: "Age", accessor: "iAge" },
-    { Header: "Gender", accessor: "pklGenderId" },
-    { Header: "Mobile", accessor: "vsMobile" },
-    { Header: "Qualification", accessor: "pklQualificationId" },
+    { Header: "Age", accessor: "iAge",  Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Gender", accessor: "pklGenderId",  Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Mobile", accessor: "vsMobile",  Cell: ({ value }) => value ? value : "N/A" },
+    { Header: "Qualification", accessor: "pklQualificationId",  Cell: ({ value }) => value ? value : "N/A" },
     {
       Header: "Department",
       accessor: "department_names",
+        Cell: ({ value }) => value ? value : "N/A",
       Cell: ({ value }) => {
         return value ? value : "N/A";
       },

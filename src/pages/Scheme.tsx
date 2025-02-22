@@ -7,19 +7,25 @@ import { getTableData } from "../services/state/api/tableDataApi";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import SearchInputBox from "../components/ui/SearchInputBox";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
-import { DownloadCloud, UploadCloud } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  DownloadCloud,
+  UploadCloud,
+  X,
+} from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import Loader from "../components/ui/Loader";
 import useDebounce from "../services/state/useDebounce";
 import { schemeDuplicateColumns } from "../utils/tableColumns";
 import * as XLSX from "xlsx";
+import { useErrorStore } from "../services/useErrorStore";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
 
   const columns = useMemo(() => schemeColumns(navigate), [navigate]);
-
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -27,16 +33,23 @@ const Scheme: React.FC = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const errorMessage = useErrorStore((state) => state.errorMessage);
+  const successMessage = useErrorStore((state) => state.successMessage);
+  const { bulkName } = useErrorStore();
+  const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+  const clearSuccessMessage = useErrorStore(
+    (state) => state.clearSuccessMessage
+  );
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsSchemeName: boolean;
     vsFundName: boolean;
     vsSchemeFundingType: boolean;
-    vsSchemeType: boolean
+    vsSchemeType: boolean;
   }>({
     vsSchemeName: true,
     vsFundName: true,
     vsSchemeFundingType: false,
-    vsSchemeType: false
+    vsSchemeType: false,
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,17 +61,29 @@ const Scheme: React.FC = () => {
     }));
   };
 
-
   const duplicateQuery = Object.keys(selectedDuplicates)
     .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
     .map((key) => key as string);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
-  const duplicateTablecolumns = useMemo(() => schemeDuplicateColumns(navigate, duplicateQuery), [navigate, duplicateQuery]);
+  const duplicateTablecolumns = useMemo(
+    () => schemeDuplicateColumns(navigate, duplicateQuery),
+    [navigate, duplicateQuery]
+  );
 
-  const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["schemeData", searchKey, debouncedSearchValue, ...duplicateQuery],
-    queryFn: () => getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery),
+  const {
+    data: fetchedData,
+    isLoading,
+    isSuccess,
+  } = useQuery({
+    queryKey: [
+      "schemeData",
+      searchKey,
+      debouncedSearchValue,
+      ...duplicateQuery,
+    ],
+    queryFn: () =>
+      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery),
   });
 
   useEffect(() => {
@@ -70,7 +95,10 @@ const Scheme: React.FC = () => {
         setFilteredData([]);
       }
 
-      if (fetchedData?.data?.duplicate_schemes && fetchedData.data.duplicate_schemes.length > 0) {
+      if (
+        fetchedData?.data?.duplicate_schemes &&
+        fetchedData.data.duplicate_schemes.length > 0
+      ) {
         setDuplicateData(fetchedData.data.duplicate_schemes);
       } else {
         setDuplicateData([]);
@@ -84,7 +112,6 @@ const Scheme: React.FC = () => {
       return;
     }
 
-
     const headersMap = {
       vsSchemeName: "Scheme Name",
       vsSchemeType: "Scheme Type",
@@ -94,15 +121,26 @@ const Scheme: React.FC = () => {
       vsSchemeFUndingRatio: "Funding Ratio",
       sanctionOrderNo: "Sanction Order No",
       dtSanctionDate: "Sanction Date",
+      vsDepartmentName: "Department Name",
     };
 
-
     const formattedData = filteredData.map((item) => {
-      return Object.keys(headersMap).reduce((acc, key) => {
-        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key]; // Ensure value is of type any
+    
+        // Format 'Sanction Date' field
+        if (key === "dtSanctionDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB"); // Formats as DD/MM/YYYY
+        }
+    
+        acc[headersMap[key as keyof typeof headersMap]] = value;
         return acc;
-      }, {} as Record<string, unknown>);
+      }, {}); // Define an empty object as the initial value
     });
+    
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
@@ -111,13 +149,11 @@ const Scheme: React.FC = () => {
     XLSX.writeFile(workbook, "SchemesData.xlsx");
   };
 
-
   const exportToExcelDuplicate = () => {
     if (!duplicateData || duplicateData.length === 0) {
       alert("No data available to export");
       return;
     }
-
 
     const headersMap = {
       vsSchemeName: "Scheme Name",
@@ -125,9 +161,7 @@ const Scheme: React.FC = () => {
       vsFundName: "Fund Name",
       vsFundingType: "Funding Type",
       vsDepartmentName: "Department Name",
-
     };
-
 
     const formattedData = duplicateData.map((item) => {
       return Object.keys(headersMap).reduce((acc, key) => {
@@ -161,6 +195,47 @@ const Scheme: React.FC = () => {
     <>
       <div>
         <p className="text-2xl font-bold mb-4">List Of Schemes</p>
+        {bulkName === "scheme" && (
+          <>
+            <div>
+              {successMessage && (
+                <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                    <p>{successMessage}</p>
+                  </div>
+                  <button
+                    onClick={clearSuccessMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-green-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div>
+              {errorMessage && (
+                <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                    <p
+                      style={{ color: "red" }}
+                      dangerouslySetInnerHTML={{
+                        __html: errorMessage.replace(/\n/g, "<br />"),
+                      }}
+                    ></p>
+                  </div>
+                  <button
+                    onClick={clearErrorMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
@@ -170,7 +245,10 @@ const Scheme: React.FC = () => {
                 { label: "Scheme Code", value: "vsSchemeCode" },
                 { label: "Scheme Type", value: "vsSchemeType" },
                 { label: "Fund Name", value: "vsFundName" },
-                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
+                {
+                  label: "Sanction Date (yyyy/mm/dd)",
+                  value: "dtSanctionDate",
+                },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
@@ -197,17 +275,31 @@ const Scheme: React.FC = () => {
             )}
           </div>
           <div className="flex gap-1">
-            <TemplateDownloadButton templateType={0} templateTitle="Scheme Template" Icon={DownloadCloud} />
-            <ModalOpenButton modalType={11} modalTitle="Bulk Upload" bulkName="scheme" Icon={UploadCloud} />
-            <ModalOpenButton modalType={0} modalTitle="Add scheme" bulkName="scheme" Icon={Add} />
+            <TemplateDownloadButton
+              templateType={0}
+              templateTitle="Scheme Template"
+              Icon={DownloadCloud}
+            />
+            <ModalOpenButton
+              modalType={11}
+              modalTitle="Bulk Upload"
+              bulkName="scheme"
+              Icon={UploadCloud}
+            />
+            <ModalOpenButton
+              modalType={0}
+              modalTitle="Add scheme"
+              bulkName="scheme"
+              Icon={Add}
+            />
           </div>
         </div>
-        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
+        <div className="py-2 text-lg text-green-600">
+          Total Count: {totalCount}
+        </div>
       </div>
 
-
       <div className="pt-10">
-
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Unique Entries</p>
           <button
@@ -225,7 +317,7 @@ const Scheme: React.FC = () => {
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        Duplicate records are identified based on matching 'Scheme Name' and 'Scheme Code' across multiple logins, highlighting common entries found in different departments.
+       NOTE: Data in the 'Cross-Department Duplicate Schemes' table is filtered based on essential identity parameters, including Scheme Name, Fund Name. Users may also apply an additional filter using the Scheme Type and Fund Type to narrow down results further.
       </div>
 
       <div className="pt-10">
@@ -239,8 +331,20 @@ const Scheme: React.FC = () => {
                 checked={selectedDuplicates.vsSchemeName}
                 onChange={handleCheckboxChange}
                 className="transform scale-150 mr-2"
+                disabled
               />
               Scheme Name
+            </label>
+            <label className="mr-6 ">
+              <input
+                type="checkbox"
+                name="vsFundName"
+                checked={selectedDuplicates.vsFundName}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+                disabled
+              />
+              Fund Name
             </label>
             <label className="mr-6">
               <input
@@ -252,16 +356,7 @@ const Scheme: React.FC = () => {
               />
               Scheme Type
             </label>
-            <label className="mr-6 ">
-              <input
-                type="checkbox"
-                name="vsFundName"
-                checked={selectedDuplicates.vsFundName}
-                onChange={handleCheckboxChange}
-                className="transform scale-150 mr-2"
-              />
-              Fund Name
-            </label>
+           
             <label>
               <input
                 type="checkbox"
@@ -283,7 +378,11 @@ const Scheme: React.FC = () => {
             </button>
           </div>
         </div>
-        <CentralizedTable columns={duplicateTablecolumns} data={duplicateData} pageSize={20} />
+        <CentralizedTable
+          columns={duplicateTablecolumns}
+          data={duplicateData}
+          pageSize={20}
+        />
       </div>
     </>
   );
