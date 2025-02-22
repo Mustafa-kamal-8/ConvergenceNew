@@ -981,7 +981,7 @@ export const invoiceColumns = (
   },
 ];
 
-interface CandidateData {
+export interface CandidateData {
   candidateId: string;
   iBatchNumber: string;
   vsCandidateName: string;
@@ -992,31 +992,55 @@ interface CandidateData {
   pklGenderId: string;
   vsMobile: string;
   pklQualificationId: string;
-  Action: unknown;
+  vsCandidateKey?: string;
+  caste?: string;
+  vsGenderName?: string;
+  vsQualification?: string;
+  Action?: unknown;
 }
 
 export const candidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
-  { Header: "SL No", accessor: (_row, rowIndex) => rowIndex + 1 },
+ 
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
-   Cell: ({ value }) => value ? value : "N/A",
-    Cell: ({ value }) => <span className="capitalize">{value}</span>,
-    
+    Cell: ({ value }: { value: string }) => (
+      <span className="capitalize">{value || "N/A"}</span>
+    ),
   },
   {
     Header: "Date Of Birth",
     accessor: "vsDOB",
-    Cell: ({ value }: { value: string }) => moment(value).format("DD-MM-YYYY"),
+    Cell: ({ value }: { value: string }) =>
+      value ? moment(value).format("DD-MM-YYYY") : "N/A",
   },
-  { Header: "caste", accessor: "caste" ,  Cell: ({ value }) => value ? value : "N/A"},
-  { Header: "Gender", accessor: "vsGenderName",  Cell: ({ value }) => value ? value : "N/A"},
-  { Header: "Mobile", accessor: "vsMobile",  Cell: ({ value }) => value ? value : "N/A" },
-  { Header: "Qualification", accessor: "vsQualification" ,  Cell: ({ value }) => value ? value : "N/A"},
-  { Header: "Unique key*", accessor: "vsCandidateKey",  Cell: ({ value }) => value ? value : "N/A" },
-  
+  {
+    Header: "Caste",
+    accessor: "caste",
+    Cell: ({ value }: { value?: string }) => value || "N/A",
+  },
+  {
+    Header: "Gender",
+    accessor: "vsGenderName",
+    Cell: ({ value }: { value?: string }) => value || "N/A",
+  },
+  {
+    Header: "Mobile",
+    accessor: "vsMobile",
+    Cell: ({ value }: { value: string }) => value || "N/A",
+  },
+  {
+    Header: "Qualification",
+    accessor: "vsQualification",
+    Cell: ({ value }: { value?: string }) => value || "N/A",
+  },
+  {
+    Header: "Unique Key*",
+    accessor: "vsCandidateKey",
+    Cell: ({ value }: { value?: string }) => value || "N/A",
+  },
   // {
   //   Header: "Action",
   //   accessor: "Action",

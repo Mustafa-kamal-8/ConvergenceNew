@@ -1,99 +1,84 @@
 import React from "react";
-import { useTable, usePagination } from "react-table";
+import { Column } from "react-table";
 
 interface CentralizedTableProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any[];
+  columns: Column<any>[];
+  data?: any[];
   pageSize?: number;
+  currentPage?: number;
+  totalCount?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 }
 
 const CentralizedTable: React.FC<CentralizedTableProps> = ({
   columns = [],
   data = [],
-  pageSize = 10,
+  pageSize = 25,
+  currentPage = 1,
+  totalCount = 0,
+  onPageChange,
+  onPageSizeChange,
 }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    nextPage,
-    previousPage,
-    gotoPage,
-    pageOptions,
-    setPageSize,
-    state: { pageIndex, pageSize: currentPageSize },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageSize },
-    },
-    usePagination
-  );
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-      <div className="p-4"><p className="font-bold"></p></div>
+      <div className="p-4">
+        <p className="font-bold"></p>
+      </div>
       <div className="bg-white overflow-auto border rounded-lg max-h-80 custom-scrollbar">
-        {/* Table */ }
-        <table
-          { ...getTableProps() }
-          className="text-xs text-left text-gray-950 border-collapse w-full"
-        >
+        <table className="text-xs text-left text-gray-950 border-collapse w-full">
           <thead className="bg-gray-300 uppercase text-xs sticky top-0 z-10">
-            { headerGroups.map((headerGroup) => (
-              <tr { ...headerGroup.getHeaderGroupProps() }>
-                { headerGroup.headers.map((column) => (
-                  <th
-                    { ...column.getHeaderProps() }
-                    className="px-4 py-2 border border-gray-300 text-center"
-                  >
-                    { column.render("Header") }
-                  </th>
-                )) }
-              </tr>
-            )) }
+            <tr>
+              <th className="px-4 py-2 border border-gray-300 text-center">SL No</th>
+              {columns.map((column) => (
+                <th
+                  key={column.accessor as string}
+                  className="px-4 py-2 border border-gray-300 text-center"
+                >
+                  {typeof column.Header === "string" || typeof column.Header === "number"
+                    ? column.Header
+                    : React.isValidElement(column.Header)
+                      ? column.Header
+                      : typeof column.Header === "function"
+                        ? React.createElement(column.Header)
+                        : null}
+                </th>
+              ))}
+            </tr>
           </thead>
-          <tbody { ...getTableBodyProps() } className="divide-y divide-gray-200">
-            { data?.length === 0 ? (
+          <tbody className="divide-y divide-gray-200">
+            {data.length === 0 ? (
               <tr>
-                <td colSpan={ columns.length } className="text-center py-4 text-sm">
+                <td colSpan={columns.length + 1} className="text-center py-4 text-sm">
                   No data found
                 </td>
               </tr>
             ) : (
-              page?.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr
-                    { ...row.getRowProps() }
-                    className="hover:bg-gray-50 transition duration-150"
-                  >
-                    { row.cells.map((cell) => (
-                      <td
-                        { ...cell.getCellProps() }
-                        className="px-6 py-3 text-center whitespace-nowrap border border-gray-300"
-                      >
-                        { cell.render("Cell") }
-                      </td>
-                    )) }
-                  </tr>
-                );
-              })
-            ) }
+              data.map((row, rowIndex) => (
+                <tr key={rowIndex} className="hover:bg-gray-50 transition duration-150">
+                  <td className="px-6 py-3 text-center whitespace-nowrap border border-gray-300">
+                    {(currentPage - 1) * pageSize + rowIndex + 1}
+                  </td>
+                  {columns.map((column) => (
+                    <td
+                      key={column.accessor as string}
+                      className="px-6 py-3 text-center whitespace-nowrap border border-gray-300"
+                    >
+                      {row[column.accessor as string]?.toString().trim()
+                        ? row[column.accessor as string]
+                        : "N/A"}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
           </tbody>
-
         </table>
-
-
       </div>
-      {/* Pagination */ }
+
+      {/* Pagination Controls */}
       <div className="flex flex-col md:flex-row items-center justify-between mt-2 px-4 py-2 rounded-lg border-t">
         <div className="flex items-center mb-2 md:mb-0 space-x-2">
           <label htmlFor="rowsPerPage" className="text-xs font-medium">
@@ -101,60 +86,60 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
           </label>
           <select
             id="rowsPerPage"
-            value={ currentPageSize }
-            onChange={ (e) => setPageSize(Number(e.target.value)) }
+            value={pageSize}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
             className="block w-20 px-2 py-1 text-xs border rounded bg-white focus:ring focus:ring-blue-200 focus:outline-none"
           >
-            { [5, 10, 15, 20, 25, 30].map((size) => (
-              <option key={ size } value={ size }>
-                { size }
+            {[5, 10, 15, 20, 25, 30].map((size) => (
+              <option key={size} value={size}>
+                {size}
               </option>
-            )) }
+            ))}
           </select>
         </div>
 
         <div className="flex items-center space-x-4">
           <button
-            onClick={ () => gotoPage(0) }
-            disabled={ !canPreviousPage }
-            className={ `px-3 py-1 rounded ${canPreviousPage
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }` }
+            onClick={() => onPageChange?.(1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
           >
             &laquo; First
           </button>
           <button
-            onClick={ () => previousPage() }
-            disabled={ !canPreviousPage }
-            className={ `px-3 py-1 rounded ${canPreviousPage
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }` }
+            onClick={() => onPageChange?.(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
           >
             Previous
           </button>
           <span className="text-xs font-medium">
-            Page <span className="text-blue-500">{ pageIndex + 1 }</span> of{ " " }
-            <span className="text-blue-500">{ pageOptions.length }</span>
+            Page <span className="text-blue-500">{currentPage}</span> of
+            <span className="text-blue-500"> {totalPages}</span>
           </span>
           <button
-            onClick={ () => nextPage() }
-            disabled={ !canNextPage }
-            className={ `px-3 py-1 rounded ${canNextPage
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }` }
+            onClick={() => onPageChange?.(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded ${currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
           >
             Next
           </button>
           <button
-            onClick={ () => gotoPage(pageOptions.length - 1) }
-            disabled={ !canNextPage }
-            className={ `px-3 py-1 rounded ${canNextPage
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }` }
+            onClick={() => onPageChange?.(totalPages)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded ${currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
           >
             Last &raquo;
           </button>

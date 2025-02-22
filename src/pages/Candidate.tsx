@@ -31,7 +31,10 @@ const Candidate: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
-  const [totalCount, setTotalCount] = useState([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+const [pageSize, setPageSize] = useState(25);
   const [duplicateData, setDuplicateData] = useState([]);
 
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
@@ -69,8 +72,8 @@ const Candidate: React.FC = () => {
 
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery),
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize],
+    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize),
   });
 
   useEffect(() => {
@@ -357,7 +360,17 @@ const Candidate: React.FC = () => {
         </div>
 
         {/* Table Component */}
-        <CentralizedTable columns={columns} data={filteredData} pageSize={20} />
+        <CentralizedTable 
+  columns={columns} 
+  data={filteredData} 
+  pageSize={pageSize} 
+  currentPage={currentPage} 
+  totalCount= {totalCount}
+
+  onPageChange={setCurrentPage} 
+  onPageSizeChange={setPageSize}
+/>
+
       </div>
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
