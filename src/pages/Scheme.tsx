@@ -21,17 +21,23 @@ import useDebounce from "../services/state/useDebounce";
 import { schemeDuplicateColumns } from "../utils/tableColumns";
 import * as XLSX from "xlsx";
 import { useErrorStore } from "../services/useErrorStore";
+import { Column } from "react-table";
 
 const Scheme: React.FC = () => {
   const navigate = useNavigate();
 
-  const columns = useMemo(() => schemeColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => schemeColumns(navigate) as Column<any>[], [navigate]);
+
+ 
+  
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [duplicateData, setDuplicateData] = useState([]);
+   const [pageSize, setPageSize] = useState(25);
+    const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
@@ -66,10 +72,12 @@ const Scheme: React.FC = () => {
     .map((key) => key as string);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
-  const duplicateTablecolumns = useMemo(
-    () => schemeDuplicateColumns(navigate, duplicateQuery),
+
+  const duplicateTablecolumns = useMemo<Column<any>[]>(
+    () => schemeDuplicateColumns(navigate, duplicateQuery) as Column<any>[],
     [navigate, duplicateQuery]
   );
+
 
   const {
     data: fetchedData,
@@ -81,9 +89,11 @@ const Scheme: React.FC = () => {
       searchKey,
       debouncedSearchValue,
       ...duplicateQuery,
+      currentPage, 
+      pageSize
     ],
     queryFn: () =>
-      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery),
+      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize),
   });
 
   useEffect(() => {
@@ -127,7 +137,7 @@ const Scheme: React.FC = () => {
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
         let value: any = item[key]; // Ensure value is of type any
-    
+
         // Format 'Sanction Date' field
         if (key === "dtSanctionDate" && value) {
           const date = new Date(value);
@@ -135,12 +145,11 @@ const Scheme: React.FC = () => {
             ? value
             : date.toLocaleDateString("en-GB"); // Formats as DD/MM/YYYY
         }
-    
+
         acc[headersMap[key as keyof typeof headersMap]] = value;
         return acc;
       }, {}); // Define an empty object as the initial value
     });
-    
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
@@ -312,12 +321,22 @@ const Scheme: React.FC = () => {
         </div>
 
         {/* Table Component */}
-        <CentralizedTable columns={columns} data={filteredData} pageSize={20} />
+        <CentralizedTable  columns={columns}
+          data={filteredData}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          totalCount={totalCount}
+
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}/>
       </div>
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-       NOTE: Data in the 'Cross-Department Duplicate Schemes' table is filtered based on essential identity parameters, including Scheme Name, Fund Name. Users may also apply an additional filter using the Scheme Type and Fund Type to narrow down results further.
+        NOTE: Data in the 'Cross-Department Duplicate Schemes' table is filtered
+        based on essential identity parameters, including Scheme Name, Fund
+        Name. Users may also apply an additional filter using the Scheme Type
+        and Fund Type to narrow down results further.
       </div>
 
       <div className="pt-10">
@@ -356,7 +375,7 @@ const Scheme: React.FC = () => {
               />
               Scheme Type
             </label>
-           
+
             <label>
               <input
                 type="checkbox"

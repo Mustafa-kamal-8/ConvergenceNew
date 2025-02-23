@@ -887,11 +887,7 @@ interface DepartmentListData {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const departmentListColumns: Column<DepartmentListData>[] = [
-  {
-    Header: "Sl. No.",
-    accessor: (_, index) => index + 1,
-    id: "sl_no",
-  },
+ 
   {
     Header: "Department Name",
     accessor: "departmentName",
@@ -917,28 +913,37 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     accessor: "adminName",
     Cell: ({ value }) => value ?? "N/A",
   },
+ 
   {
     Header: "Status",
     accessor: "bEnable",
-    Cell: ({ value }) => (
-      <span style={{ color: value === 0 ? "red" : "green" }}>
-        {value === 0 ? "Inactive" : value === 1 ? "Active" : "N/A"}
-      </span>
-    ),
-  },
-  {
-    Header: "Action",
-    accessor: "Action",
     Cell: ({ row }) => {
-      const { bEnable, pklDepartmentId } = row.original;
+      if (!row || !row) {
+        return <span style={{ color: "red" }}>No Data</span>;
+      }
+  
+      console.log("Row Original Data:", row);
+  
       return (
-        <StatusToggleButton
-          initialStatus={bEnable}
-          pklTargetId={pklDepartmentId}
-        />
+        <div className="flex flex-col items-center">
+          <span style={{ color: row.bEnable === 0 ? "red" : "green" }}>
+            {row.bEnable === 0 ? "Inactive" : "Active"}
+          </span>
+          <StatusToggleButton
+            initialStatus={row.bEnable}
+            pklTargetId={row.pklDepartmentId}
+          />
+        </div>
       );
     },
-  },
+  }
+  
+  
+  
+  
+  
+  
+  
 ];
 
 interface InvoiceData {
@@ -1002,49 +1007,52 @@ export interface CandidateData {
 export const candidateColumns = (
   navigate: (path: string) => void
 ): Column<CandidateData>[] => [
- 
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",
-    Cell: ({ value }: { value: string }) => (
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => (
       <span className="capitalize">{value || "N/A"}</span>
     ),
   },
   {
     Header: "Date Of Birth",
     accessor: "vsDOB",
-    Cell: ({ value }: { value: string }) =>
-      value ? moment(value).format("DD-MM-YYYY") : "N/A",
+    Cell: ({ value }: { value: string | undefined }) =>
+      value ? moment.utc(value).format("DD-MM-YYYY") : "N/A",
   },
+  
+  
+  
+  
   {
     Header: "Caste",
     accessor: "caste",
-    Cell: ({ value }: { value?: string }) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   {
     Header: "Gender",
     accessor: "vsGenderName",
-    Cell: ({ value }: { value?: string }) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   {
     Header: "Mobile",
     accessor: "vsMobile",
-    Cell: ({ value }: { value: string }) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   {
     Header: "Qualification",
     accessor: "vsQualification",
-    Cell: ({ value }: { value?: string }) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   {
     Header: "Unique Key*",
     accessor: "vsCandidateKey",
-    Cell: ({ value }: { value?: string }) => value || "N/A",
+    Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   // {
   //   Header: "Action",
   //   accessor: "Action",
-  //   Cell: ({ row }) => (
+  //   Cell: ({ row }: CellProps<CandidateData, unknown>) => (
   //     <button
   //       onClick={() => navigate(`/candidate/${row.original.candidateId}`)}
   //       className="text-blue-500 hover:underline"

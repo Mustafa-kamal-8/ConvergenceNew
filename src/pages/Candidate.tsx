@@ -34,7 +34,7 @@ const Candidate: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
 
   const [currentPage, setCurrentPage] = useState(1);
-const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(25);
   const [duplicateData, setDuplicateData] = useState([]);
 
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
@@ -238,32 +238,32 @@ const [pageSize, setPageSize] = useState(25);
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Candidates</p>
         {bulkName === "candidate" && (
-  <>
-    {successMessage && (
-      <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-        <div className="flex items-center">
-          <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
-          <p>{successMessage}</p>
-        </div>
-        <button onClick={clearSuccessMessage} className="absolute right-4 top-2">
-          <X className="w-5 h-5 text-green-700 cursor-pointer" />
-        </button>
-      </div>
-    )}
+          <>
+            {successMessage && (
+              <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                <div className="flex items-center">
+                  <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                  <p>{successMessage}</p>
+                </div>
+                <button onClick={clearSuccessMessage} className="absolute right-4 top-2">
+                  <X className="w-5 h-5 text-green-700 cursor-pointer" />
+                </button>
+              </div>
+            )}
 
-    {errorMessage && (
-      <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-        <div className="flex items-center">
-          <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
-          <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
-        </div>
-        <button onClick={clearErrorMessage} className="absolute right-4 top-2">
-          <X className="w-5 h-5 text-red-700 cursor-pointer" />
-        </button>
-      </div>
-    )}
-  </>
-)}
+            {errorMessage && (
+              <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                <div className="flex items-center">
+                  <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                  <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
+                </div>
+                <button onClick={clearErrorMessage} className="absolute right-4 top-2">
+                  <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                </button>
+              </div>
+            )}
+          </>
+        )}
 
 
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
@@ -360,16 +360,16 @@ const [pageSize, setPageSize] = useState(25);
         </div>
 
         {/* Table Component */}
-        <CentralizedTable 
-  columns={columns} 
-  data={filteredData} 
-  pageSize={pageSize} 
-  currentPage={currentPage} 
-  totalCount= {totalCount}
+        <CentralizedTable
+          columns={columns}
+          data={filteredData}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          totalCount={totalCount}
 
-  onPageChange={setCurrentPage} 
-  onPageSizeChange={setPageSize}
-/>
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+        />
 
       </div>
 

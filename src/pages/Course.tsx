@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
@@ -14,6 +14,7 @@ import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 import { courseDuplicateColumns } from "../utils/tableColumns";
+import { Column } from "react-table";
 const Course: React.FC = () => {
 
 
@@ -25,6 +26,9 @@ const Course: React.FC = () => {
   const debouncedSearchValue = useDebounce(searchValue, 1000);
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+
+   const columns = useMemo<Column<any>[]>(() => courseColumns(navigate) as Column<any>[], [navigate]);
+    const duplicateColumns = useMemo<Column<any>[]>(() => courseDuplicateColumns(navigate) as Column<any>[], [navigate]);
 
   const { data: fetchedData, isSuccess, isLoading } = useQuery({
     queryKey: ["courseData", "course", searchKey, debouncedSearchValue],
@@ -138,14 +142,14 @@ const Course: React.FC = () => {
         <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
 
-      <CentralizedTable columns={courseColumns(navigate)} data={filteredData} pageSize={5} />
+      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
         Duplicate records are checked using 'Course Name' and 'Course Code' across multiple logins. These fields are the minimum required to identify duplicates.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Courses</p>
-        <CentralizedTable columns={courseDuplicateColumns(navigate)} data={duplicateData} pageSize={5} />
+        <CentralizedTable columns={duplicateColumns} data={duplicateData} pageSize={5} />
       </div>
     </>
   );

@@ -12,11 +12,14 @@ import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 import { centerDuplicateColumns } from "../utils/tableColumns";
+import { Column } from "react-table";
 
 const TrainingCenter: React.FC = () => {
   const navigate = useNavigate();
-  const columns = useMemo(() => centerColumns(navigate), [navigate]);
-  const duplicateColumns = useMemo(() => centerDuplicateColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => centerColumns(navigate) as Column<any>[], [navigate]);
+
+  const duplicateColumns = useMemo<Column<any>[]>( () => centerDuplicateColumns(navigate) as Column<any>[],  [navigate] );
+  
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");

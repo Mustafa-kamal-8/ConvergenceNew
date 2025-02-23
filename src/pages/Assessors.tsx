@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTableData } from "../services/state/api/tableDataApi";
 import useDebounce from "../services/state/useDebounce";
 import Loader from "../components/ui/Loader";
+import { Column } from "react-table";
 
 
 
@@ -23,9 +24,10 @@ const Assessors: React.FC = () => {
   
     
   
- const columns = useMemo(() => assessorsColumns(navigate), [navigate]);
+   const columns = useMemo<Column<any>[]>(() => assessorsColumns(navigate) as Column<any>[], [navigate]);
+
+   const duplicateColumns = useMemo<Column<any>[]>(() => assessorsDuplicateColumns(navigate) as Column<any>[], [navigate]);
    
- const duplicateColumns = useMemo(() => assessorsDuplicateColumns(navigate), [navigate]);
 
  const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

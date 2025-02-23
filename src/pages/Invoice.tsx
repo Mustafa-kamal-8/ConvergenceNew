@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import CentralizedTable from "../components/CentralizedTable";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import SearchInputBox from "../components/ui/SearchInputBox";
+import { Column } from "react-table";
 
 
 
@@ -22,7 +23,8 @@ import SearchInputBox from "../components/ui/SearchInputBox";
 
   
 
-  const columns = useMemo(() => invoiceColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => invoiceColumns(navigate) as Column<any>[], [navigate]);
+
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import CentralizedTable from "../components/CentralizedTable";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
@@ -11,6 +11,7 @@ import { targetColumns } from "../utils/tableColumns";
 import useDebounce from "../services/state/useDebounce";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
+import { Column } from "react-table";
 
 const Target: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const Target: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
+
+  
+    const columns = useMemo<Column<any>[]>(() => targetColumns(navigate) as Column<any>[], [navigate]);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -118,7 +122,7 @@ const Target: React.FC = () => {
       </div>
 
       <CentralizedTable
-        columns={targetColumns(navigate)}
+        columns={columns}
         data={filteredData}
         pageSize={5}
       />

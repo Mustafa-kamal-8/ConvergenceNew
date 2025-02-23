@@ -15,14 +15,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getTableData } from "../services/state/api/tableDataApi";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
+import { Column } from "react-table";
 
 const TrainingPartner: React.FC = () => {
   const navigate = useNavigate();
-  const columns = useMemo(() => getTrainingColumns(navigate), [navigate]);
-  const CrossDuplicateTrainingColumns = useMemo(
-    () => DuplicateTrainingColumns(navigate, true),
+  const columns = useMemo<Column<any>[]>(() => getTrainingColumns(navigate) as Column<any>[], [navigate]);
+
+  const CrossDuplicateTrainingColumns = useMemo<Column<any>[]>(
+    () => DuplicateTrainingColumns(navigate, true) as Column<any>[],
     [navigate]
   );
+  
   const [filteredData, setFilteredData] = useState([]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

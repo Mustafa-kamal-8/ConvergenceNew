@@ -84,7 +84,7 @@ const LoginCreationModal = () => {
                   <Dropdown
                     {...field}
                     options={masterData?.data?.result?.department}
-                    isOtherOption
+                    // isOtherOption
                     getOptionLabel={(option) => option?.label}
                     getOptionValue={(option) => option?.value}
                     onSelect={(selectedOption) => {

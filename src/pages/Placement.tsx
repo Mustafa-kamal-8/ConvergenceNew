@@ -12,6 +12,7 @@ import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import CentralizedTable from "../components/CentralizedTable";
 import useDebounce from "../services/state/useDebounce";
+import { Column } from "react-table";
 
 
 
@@ -20,8 +21,9 @@ const Placement: React.FC = () => {
 
   
 
-  const columns = useMemo(() => placementColumns(navigate), [navigate]);
-  const duplicateColumns = useMemo(() => placementDuplicateColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => placementColumns(navigate) as Column<any>[], [navigate]);
+  const duplicateColumns = useMemo<Column<any>[]>(() => placementDuplicateColumns(navigate) as Column<any>[], [navigate]);
+  
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");

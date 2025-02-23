@@ -13,6 +13,7 @@ import Loader from "../components/ui/Loader";
 import { getTableData } from "../services/state/api/tableDataApi";
 import { useQuery } from "@tanstack/react-query";
 import SearchDropdown from "../components/ui/SearchDropdown";
+import { Column } from "react-table";
 
 
 
@@ -22,8 +23,10 @@ const Trainer: React.FC = () => {
 
 
 
-  const columns = useMemo(() => trainerColumns(navigate), [navigate]);
-  const duplicateColumns = useMemo(() => trainerDuplicateColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => trainerColumns(navigate) as Column<any>[], [navigate]);
+
+const duplicateColumns = useMemo<Column<any>[]>(  () => trainerDuplicateColumns(navigate) as Column<any>[], [navigate]);
+
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

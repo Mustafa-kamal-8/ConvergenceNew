@@ -174,7 +174,7 @@ const SchemeModalContent: React.FC = () => {
                 <Dropdown
                   {...field}
                   options={schemeNameOptions}
-                  isOtherOption
+                  // isOtherOption
                   getOptionLabel={(option) => option?.label}
                   getOptionValue={(option) => option?.label}
                   onSelect={(selectedOption) => {

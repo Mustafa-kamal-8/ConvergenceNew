@@ -13,6 +13,7 @@ import SearchInputBox from "../components/ui/SearchInputBox";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import useDebounce from "../services/state/useDebounce";
 import CentralizedTable from "../components/CentralizedTable";
+import { Column } from "react-table";
 
 
 
@@ -21,7 +22,8 @@ import CentralizedTable from "../components/CentralizedTable";
 
   
 
-  const columns = useMemo(() => assessmentColumns(navigate), [navigate]);
+  const columns = useMemo<Column<any>[]>(() => assessmentColumns(navigate) as Column<any>[], [navigate]);
+
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");

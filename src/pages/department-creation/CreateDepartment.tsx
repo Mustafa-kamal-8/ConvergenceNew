@@ -6,8 +6,9 @@ import { getCreatedDepartments } from "../../services/state/api/departmentCreati
 import ModalOpenButton from "../../components/ui/ModelOpenButton";
 import { Add } from "@mui/icons-material";
 import { Autocomplete, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Department } from "../../types/departmentCreation";
+import { Column } from "react-table";
 
 
 const CreateDepartment = () => {
@@ -19,6 +20,10 @@ const CreateDepartment = () => {
     refetchOnWindowFocus: false,
     refetchInterval: false,
   });
+
+  const departmentColumns = useMemo<Column<any>[]>(() => departmentListColumns as Column<any>[], []);
+
+
 
   useEffect(() => {
     refetch();
@@ -59,7 +64,7 @@ const CreateDepartment = () => {
       </div>
       <div className="w-full">
         <CentralizedTable
-          columns={departmentListColumns}
+          columns={departmentColumns}
           data={data?.departmentData}
           pageSize={5}
         />

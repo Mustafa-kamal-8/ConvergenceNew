@@ -62,19 +62,27 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
                     {(currentPage - 1) * pageSize + rowIndex + 1}
                   </td>
                   {columns.map((column) => (
-                    <td
-                      key={column.accessor as string}
-                      className="px-6 py-3 text-center whitespace-nowrap border border-gray-300"
-                    >
-                      {row[column.accessor as string]?.toString().trim()
-                        ? row[column.accessor as string]
-                        : "N/A"}
-                    </td>
+                  <td
+                  key={column.accessor as string}
+                  className="px-6 py-3 text-center whitespace-nowrap border border-gray-300"
+                >
+                  {column.accessor
+                    ? ("Cell" in column && typeof column.Cell === "function"
+                        ? (column.Cell as any)({
+                            value: row[column.accessor as string],
+                            row, // ✅ Pass the full row object
+                          })
+                        : row[column.accessor as string] || "N/A")
+                    : "N/A"}
+                </td>
+                
                   ))}
                 </tr>
               ))
             )}
           </tbody>
+
+
         </table>
       </div>
 
@@ -103,8 +111,8 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
             onClick={() => onPageChange?.(1)}
             disabled={currentPage === 1}
             className={`px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
           >
             &laquo; First
@@ -113,8 +121,8 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
             onClick={() => onPageChange?.(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
           >
             Previous
@@ -127,8 +135,8 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
             onClick={() => onPageChange?.(currentPage + 1)}
             disabled={currentPage === totalPages}
             className={`px-3 py-1 rounded ${currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
           >
             Next
@@ -137,8 +145,8 @@ const CentralizedTable: React.FC<CentralizedTableProps> = ({
             onClick={() => onPageChange?.(totalPages)}
             disabled={currentPage === totalPages}
             className={`px-3 py-1 rounded ${currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
           >
             Last &raquo;
