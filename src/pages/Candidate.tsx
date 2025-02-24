@@ -36,6 +36,9 @@ const Candidate: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [duplicateData, setDuplicateData] = useState([]);
+  const [duplicatePageSize, setDuplicatePageSize] = useState(25);
+   const [duplicateCurrentPage, setDuplicateCurrentPage] = useState(1);
+ const [totalDuplicateCount, setSuplicateTotalCount] = useState(0);
 
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsCandidateName: boolean;
@@ -72,8 +75,8 @@ const Candidate: React.FC = () => {
 
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize),
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize,,duplicateCurrentPage,duplicatePageSize],
+    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize,duplicateCurrentPage,duplicatePageSize),
   });
 
   useEffect(() => {
@@ -87,11 +90,14 @@ const Candidate: React.FC = () => {
 
       if (fetchedData?.data?.duplicate_candidate && fetchedData.data.duplicate_candidate.length > 0) {
         setDuplicateData(fetchedData.data.duplicate_candidate);
+        setSuplicateTotalCount(fetchedData.data.duplicate_total_count);
       } else {
         setDuplicateData([]);
       }
     }
   }, [fetchedData, isSuccess]);
+
+ 
 
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
@@ -349,7 +355,7 @@ const Candidate: React.FC = () => {
       <div className="pt-10">
 
         <div className="flex justify-between items-center mb-4">
-          <p className="text-2xl font-bold">Unique Entries</p>
+          <p className="text-2xl font-bold">Department Entries</p>
           <button
             className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
             onClick={exportToExcel}
@@ -452,7 +458,12 @@ const Candidate: React.FC = () => {
         <CentralizedTable
           columns={duplicateTablecolumns}
           data={duplicateData}
-          pageSize={20}
+          pageSize={duplicatePageSize}
+          currentPage={duplicateCurrentPage}
+          totalCount={totalDuplicateCount}
+
+          onPageChange={setDuplicateCurrentPage}
+          onPageSizeChange={setDuplicatePageSize}
         />
       </div>
     </>

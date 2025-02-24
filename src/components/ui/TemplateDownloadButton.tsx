@@ -2,6 +2,8 @@
 import React from "react";
 import candidateTemplate from "../../assets/Candidate_Template-Instruction.xlsx?url"; // Use ?url to get the file path
 import schemeTemplate from "../../assets/Scheme_Template-Instruction.xlsx?url";
+import targetTemplate from "../../assets/Target_Template-Instruction.xlsx?url";
+import tcTemplate from "../../assets/TC_Template-Instruction.xlsx?url";
 
 type TemplateDownloadButtonProps = {
   templateType: number;
@@ -17,14 +19,14 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({
   // Correct file paths using `import.meta.url`
   const templateFiles: { [key: number]: string } = {
     0: schemeTemplate,
-    1: "/assets/template1.xls",
+    1: targetTemplate,
     2: "/assets/template2.xls",
     3: "/assets/template3.xls",
-    4: "/assets/template4.xls",
+    4: tcTemplate,
     5: "/assets/template5.xls",
     6: "/assets/template6.xls",
     7: "/assets/template7.xls",
-    8: candidateTemplate, // Use imported file path
+    8: candidateTemplate, 
     9: "/assets/template9.xls",
     10: "/assets/template10.xls",
     11: "/assets/template11.xls",

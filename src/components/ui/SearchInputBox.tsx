@@ -1,20 +1,21 @@
-// src/components/ui/SearchInputBox.tsx
-import React from 'react';
+import React from "react";
 
 type SearchInputBoxProps = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  type?: string; // Accepts input type dynamically
 };
 
 const SearchInputBox: React.FC<SearchInputBoxProps> = ({
   value,
   onChange,
-  placeholder = 'Search...',
+  placeholder = "Search...",
+  type = "text", // Default type is text
 }) => {
   return (
     <input
-      type="text"
+      type={type}
       value={value}
       onChange={onChange}
       placeholder={placeholder}

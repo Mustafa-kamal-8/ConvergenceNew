@@ -86,7 +86,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       formData.append("type", bulkName);
       formData.append("fklDepartmentId", userDetails?.departmentId);
 
-      const { data: resData } = await axiosInstance.post(
+      var { data: resData } = await axiosInstance.post(
         `/file-upload/upload`,
         formData,
         {}
@@ -127,7 +127,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
         onUploadError?.(errorMessage);
       } else {
         // Success case: No errors, all data processed successfully
-        const totalInserted = resData.data.length; // Count all inserted rows
+        const totalInserted = resData.data[0].insertedRow; // Count all inserted rows
         const successMessage = `All Data processed successfully. Total inserted: ${totalInserted}`;
 
         setErrorMessage({ errorMessage: "", successMessage }); // Clear error message on success
@@ -140,7 +140,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("An error occurred while uploading. Please try again later.");
+      toast.error(resData.message);
     } finally {
       setUploading(false);
     }

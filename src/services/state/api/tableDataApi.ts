@@ -9,8 +9,11 @@ export const getTableData = async (
   searchKey?: string,
   searchValue?: string,
   duplicateQuery?: string[],
+
   currentPage: number = 1,
-  pageSize: number = 25
+  pageSize: number = 25,
+  duplicateCurrentPage : number = 1,
+  duplicatePageSize: number = 25
 ) => {
   // Properly get state here
   const { userDetails } = useAuthStore.getState();
@@ -23,8 +26,10 @@ export const getTableData = async (
   const requestData: any = {
     fklDepartmentId: userDetails.departmentId, // Access departmentId
     queryType,
-    skip: currentPage - 1, // Adjusted skip logic
-    take: pageSize, // Backend expects `take`
+    skip: currentPage - 1, 
+    take: pageSize, 
+    duplicate_skip: duplicateCurrentPage - 1,
+    duplicate_take: duplicatePageSize
   };
 
   if (duplicateQuery && duplicateQuery.length > 0) {

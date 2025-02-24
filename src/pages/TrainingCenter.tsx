@@ -3,7 +3,7 @@ import CentralizedTable from "../components/CentralizedTable";
 import { centerColumns } from "../utils/tableColumns";
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import { DownloadCloud, Plus, UploadCloud } from "lucide-react";
+import { AlertCircle, CheckCircle, DownloadCloud, Plus, UploadCloud, X } from "lucide-react";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -13,19 +13,26 @@ import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 import { centerDuplicateColumns } from "../utils/tableColumns";
 import { Column } from "react-table";
+import * as XLSX from "xlsx";
+import { useErrorStore } from "../services/useErrorStore";
 
 const TrainingCenter: React.FC = () => {
   const navigate = useNavigate();
   const columns = useMemo<Column<any>[]>(() => centerColumns(navigate) as Column<any>[], [navigate]);
 
-  const duplicateColumns = useMemo<Column<any>[]>( () => centerDuplicateColumns(navigate) as Column<any>[],  [navigate] );
-  
+  const duplicateColumns = useMemo<Column<any>[]>(() => centerDuplicateColumns(navigate) as Column<any>[], [navigate]);
+
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+   const errorMessage = useErrorStore((state) => state.errorMessage);
+    const successMessage = useErrorStore((state) => state.successMessage);
+    const { bulkName } = useErrorStore();
+    const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+    const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -55,6 +62,51 @@ const TrainingCenter: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      vsTcName: "Training Center Name",
+      vsSpocEmail: "SPOC Email",
+      iSpocContactNum: "SPOC Contact No",
+      vsState: "State",
+      vsDistrict: "District",
+      vsBlock: "Block",
+      vsAddress: "Address",
+      vsSpocName: "SPOC Name",
+      iPartnerCode: "Partner Code",
+      vsLongitude: "Longitude",
+      vsLatitude: "Latitude",
+      vsDepartmentName: "Department Name"
+    };
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+        if (key === "dtSanctionDate" && value) {
+          const date = new Date(value);
+          value = isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString("en-GB");
+        }
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "TrainingCenterData.xlsx");
+  };
+
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
@@ -72,19 +124,60 @@ const TrainingCenter: React.FC = () => {
     <>
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
+        {bulkName === "TC" && (
+          <>
+            <div>
+              {successMessage && (
+                <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                    <p>{successMessage}</p>
+                  </div>
+                  <button
+                    onClick={clearSuccessMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-green-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div>
+              {errorMessage && (
+                <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                    <p
+                      style={{ color: "red" }}
+                      dangerouslySetInnerHTML={{
+                        __html: errorMessage.replace(/\n/g, "<br />"),
+                      }}
+                    ></p>
+                  </div>
+                  <button
+                    onClick={clearErrorMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
-                { label: "Scheme Name", value: "vsSchemeName" },
-                { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },
-                { label: "Fund Name", value: "vsFundName" },
-                {
-                  label: "Sanction Date (yyyy/mm/dd)",
-                  value: "dtSanctionDate",
-                },
+                { label: "TC Name", value: "vsTcName" },
+                { label: "Partner Code", value: "iPartnerCode" },
+
+                // { label: "TP ID", value: "fklTpId" },
+                // { label: "District", value: "vsDistrict" },
+                // { label: "Assembly Constituency", value: "fklAssemblyConstituencyId" },
+                // { label: "Loksabha Constituency", value: "fklLoksabhaConstituencyId" },
+
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
@@ -102,7 +195,7 @@ const TrainingCenter: React.FC = () => {
                     setSearchValue("");
                     setSearchKey("");
                     setSearchKeyLabel("");
-                    setFilteredData(fetchedData?.data || []);
+                    setFilteredData(fetchedData?.data?.data || []);
                   }}
                 >
                   Clear
@@ -133,8 +226,21 @@ const TrainingCenter: React.FC = () => {
         <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <div>
-        <p className="text-2xl font-bold mb-4">List Of Training Centeres</p>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Department Entries</p>
+          <button
+            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={exportToExcel}
+          >
+            <DownloadCloud size={18} />
+            Download Report
+          </button>
+        </div>
         <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      </div>
+      <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
+        <span className="text-red-500 text-2xl mr-2">⚠️</span>
+        Note: The data in the "Cross-Department Duplicate Training Centers" table is filtered based on a 100-meter radius of the insert a location and the associated training partners.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">Cross-Department Duplicate Training Centeres</p>

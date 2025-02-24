@@ -5,6 +5,8 @@ import Logo from "../../assets/ASDMLOGO.png";
 import useAuthStore from "../../utils/cookies";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import bg from "../../assets/bg-2.jpg"
+
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -126,7 +128,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="bg-theme-primary"></div>
+        <img className="w-full h-full object-cover object-center" src={bg} alt="" />
       </div>
     </div>
   );

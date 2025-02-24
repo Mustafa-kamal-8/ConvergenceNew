@@ -28,17 +28,21 @@ const Scheme: React.FC = () => {
 
   const columns = useMemo<Column<any>[]>(() => schemeColumns(navigate) as Column<any>[], [navigate]);
 
- 
-  
+
+
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
   const [duplicateData, setDuplicateData] = useState([]);
-   const [pageSize, setPageSize] = useState(25);
-    const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [duplicatePageSize, setDuplicatePageSize] = useState(25);
+  const [duplicateCurrentPage, setDuplicateCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalDuplicateCount, setSuplicateTotalCount] = useState(0);
+
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
   const { bulkName } = useErrorStore();
@@ -89,11 +93,13 @@ const Scheme: React.FC = () => {
       searchKey,
       debouncedSearchValue,
       ...duplicateQuery,
-      currentPage, 
-      pageSize
+      currentPage,
+      pageSize,
+      duplicatePageSize,
+      duplicateCurrentPage
     ],
     queryFn: () =>
-      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize),
+      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize, duplicateCurrentPage, duplicatePageSize),
   });
 
   useEffect(() => {
@@ -110,6 +116,7 @@ const Scheme: React.FC = () => {
         fetchedData.data.duplicate_schemes.length > 0
       ) {
         setDuplicateData(fetchedData.data.duplicate_schemes);
+        setSuplicateTotalCount(fetchedData.total_count);
       } else {
         setDuplicateData([]);
       }
@@ -136,19 +143,19 @@ const Scheme: React.FC = () => {
 
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
-        let value: any = item[key]; // Ensure value is of type any
+        let value: any = item[key]; 
 
-        // Format 'Sanction Date' field
+       
         if (key === "dtSanctionDate" && value) {
           const date = new Date(value);
           value = isNaN(date.getTime())
             ? value
-            : date.toLocaleDateString("en-GB"); // Formats as DD/MM/YYYY
+            : date.toLocaleDateString("en-GB"); 
         }
 
         acc[headersMap[key as keyof typeof headersMap]] = value;
         return acc;
-      }, {}); // Define an empty object as the initial value
+      }, {}); 
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -252,23 +259,32 @@ const Scheme: React.FC = () => {
                 { label: "All", value: "" },
                 { label: "Scheme Name", value: "vsSchemeName" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },
                 { label: "Fund Name", value: "vsFundName" },
-                {
-                  label: "Sanction Date (yyyy/mm/dd)",
-                  value: "dtSanctionDate",
-                },
+                { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" },
               ]}
               onSelect={handleDropdownSelect}
               selected={searchKey}
             />
+
             {searchKey && (
               <>
-                <SearchInputBox
-                  value={searchValue}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  placeholder={`Enter ${searchKeyLabel}`}
-                />
+                {searchKey === "dtSanctionDate" ? (
+                  // Date input field when "Sanction Date" is selected
+                  <SearchInputBox
+                    type="date"
+                    value={searchValue}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    placeholder={`Enter ${searchKeyLabel}`}
+                  />
+                ) : (
+                  // Text input for other selections
+                  <SearchInputBox
+                    value={searchValue}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    placeholder={`Enter ${searchKeyLabel}`}
+                  />
+                )}
+
                 <button
                   className="p-2 px-4 bg-red-500 text-white rounded hover:bg-red-800"
                   onClick={() => {
@@ -283,6 +299,7 @@ const Scheme: React.FC = () => {
               </>
             )}
           </div>
+
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={0}
@@ -310,7 +327,7 @@ const Scheme: React.FC = () => {
 
       <div className="pt-10">
         <div className="flex justify-between items-center mb-4">
-          <p className="text-2xl font-bold">Unique Entries</p>
+          <p className="text-2xl font-bold">Department Entries</p>
           <button
             className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
             onClick={exportToExcel}
@@ -321,14 +338,14 @@ const Scheme: React.FC = () => {
         </div>
 
         {/* Table Component */}
-        <CentralizedTable  columns={columns}
+        <CentralizedTable columns={columns}
           data={filteredData}
           pageSize={pageSize}
           currentPage={currentPage}
           totalCount={totalCount}
 
           onPageChange={setCurrentPage}
-          onPageSizeChange={setPageSize}/>
+          onPageSizeChange={setPageSize} />
       </div>
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
@@ -400,8 +417,14 @@ const Scheme: React.FC = () => {
         <CentralizedTable
           columns={duplicateTablecolumns}
           data={duplicateData}
-          pageSize={20}
+          pageSize={duplicatePageSize}
+          currentPage={duplicateCurrentPage}
+          totalCount={totalDuplicateCount}
+
+          onPageChange={setDuplicateCurrentPage}
+          onPageSizeChange={setDuplicatePageSize}
         />
+
       </div>
     </>
   );

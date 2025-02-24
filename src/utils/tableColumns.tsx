@@ -32,12 +32,9 @@ export const schemeColumns: (
   navigate: ReturnType<typeof useNavigate>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<SchemeData>[] = (_navigate) => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Scheme", accessor: "vsSchemeName" },
-  {
-    Header: "Targets",
-    accessor: "count",
-  },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Scheme Name", accessor: "vsSchemeName" },
+  
   { Header: "Scheme Type", accessor: "vsSchemeType" },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
   { Header: "Fund Name", accessor: "vsFundName" },
@@ -64,7 +61,7 @@ export const schemeDuplicateColumns: (
   navigate: ReturnType<typeof useNavigate>,
   duplicateQuery: string[] // Accept duplicateQuery here
 ) => Column<SchemeDuplicateData>[] = (_navigate, duplicateQuery) => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   
   {
     Header: "Scheme Name",
@@ -153,7 +150,7 @@ interface TargetData {
 export const targetColumns = (
   navigate: (path: string) => void
 ): Column<TargetData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Scheme Code", accessor: "vsSchemeCode" },
   { Header: "Target Order Number", accessor: "vsTargetNo" },
   { Header: "Target Type", accessor: "vsTargetType" },
@@ -194,7 +191,7 @@ interface CourseData {
 export const courseColumns = (
   navigate: (path: string) => void
 ): Column<CourseData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Sector Name", accessor: "vsSectorName" },
   { Header: "Job Role Name", accessor: "vsCourseName" },
   { Header: "QPNOS Code", accessor: "vsCourseCode" },
@@ -240,7 +237,7 @@ interface CourseDuplicateData {
 export const courseDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<CourseDuplicateData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
   { Header: "Job Role Name", accessor: "vsCourseName" },
   { Header: "QPNOS Code", accessor: "vsCourseCode" },
@@ -308,7 +305,7 @@ export const trainingColumns: (
   navigate: ReturnType<typeof useNavigate>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ) => Column<TrainingPartnerData>[] = (_navigate) => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
 
   { Header: "Partner Name", accessor: "vsTpName" },
   { Header: "PAN", accessor: "vsPan" },
@@ -409,11 +406,12 @@ interface TrainingCenterData {
 export const centerColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
-  { Header: "Name", accessor: "vsTcName" },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  { Header: "Training Center Name", accessor: "vsTcName" },
   // { Header: "TC Code", accessor: "vsTcCode" },
   { Header: "SPOC Name", accessor: "vsSpocName" },
-  { Header: "Partner Code", accessor: "iPartnerCode" },
+  { Header: "Partner Code", accessor: "iPartnerCode" }, 
+  { Header: "District", accessor: "vsDistrict" },
   // {
   //   Header: "Action",
   //   accessor: "Action",
@@ -440,14 +438,14 @@ interface TrainingCenterDuplicateData {
 export const centerDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<TrainingCenterDuplicateData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "TC Name", accessor: "vsTcName" },
   { Header: "Tp Name", accessor: "vsTpName" },
   { Header: "District", accessor: "vsDistrictName" },
   {
     Header: "Latitude/Longitude",
     accessor: "location",
-    Cell: ({ row }) => `${row.original.vsLatitude} , ${row.original.vsLongitude}`
+    Cell: ({ row }) => `${row.vsLatitude} , ${row.vsLongitude}`
   },
   
   { Header: "Partner Code", accessor: "iPartnerCode" },
@@ -501,7 +499,7 @@ interface BatchData {
 export const batchColumns = (
   navigate: (path: string) => void
 ): Column<BatchData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "TC Name", accessor: "tcName" },
   { Header: "Batch Number", accessor: "iBatchNumber" },
   { Header: "SDMS  ID", accessor: "SDMSid" },
@@ -535,7 +533,7 @@ interface AssessorsData {
 export const assessorsColumns = (
   navigate: (path: string) => void
 ): Column<AssessorsData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Assessor Name", accessor: "vsAssosserName" },
   { Header: "PAN", accessor: "vsPan" },
 
@@ -572,7 +570,7 @@ interface AssessorsDuplicateData {
 export const assessorsDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<AssessorsDuplicateData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Assessor Name", accessor: "AssessorName" },
   { Header: "PAN", accessor: "vsPAN" },
 
@@ -626,7 +624,7 @@ interface TrainerData {
 export const trainerColumns = (
   navigate: (path: string) => void
 ): Column<TrainerData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   // { Header: "Trainer ID", accessor: "trainerId" },
   { Header: "Trainer Name", accessor: "vsTrainerName" },
   { Header: "Mobile", accessor: "vsMobile" },
@@ -658,7 +656,7 @@ interface TrainerDuplicateData {
 export const trainerDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<TrainerDuplicateData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Trainer Name", accessor: "TrainerName" },
   { Header: "PAN", accessor: "vsPAN" },
   {
@@ -718,7 +716,7 @@ interface AssessmentData {
 export const assessmentColumns = (
   navigate: (path: string) => void
 ): Column<AssessmentData>[] => [
-  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "batchId" },
   { Header: "SDMS Batch ID", accessor: "SDMSBatchId" },
   // { Header: "Candidate ID", accessor: "candidateId" },
@@ -794,7 +792,7 @@ interface PlacementData {
 export const placementColumns = (
   navigate: (path: string) => void
 ): Column<PlacementData>[] => [
-  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Batch ID", accessor: "batchId" },
   { Header: "Candidate ID", accessor: "candidateId" },
   { Header: "Candidate Name", accessor: "vsCandidateName" },
@@ -829,7 +827,7 @@ interface PlacementDuplicateData {
 export const placementDuplicateColumns = (
   navigate: (path: string) => void
 ): Column<PlacementDuplicateData>[] => [
-  { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "SlNo.", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Candidate Name", accessor: "vsCandidateName" },
   { Header: "DOB", accessor: "vsDOB" },
   {
@@ -961,7 +959,7 @@ interface InvoiceData {
 export const invoiceColumns = (
   navigate: (path: string) => void
 ): Column<InvoiceData>[] => [
-  { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
+  // { Header: "sl no", accessor: (_row, rowIndex) => rowIndex + 1 },
   { Header: "Invoice Tranche", accessor: "vsInvoiceTranche" },
   {
     Header: "Date",
@@ -1082,7 +1080,7 @@ export const CrossCandidateColumns = (
   navigate: (path: string) => void,
   duplicateQuery: string[]
 ): Column<CandidateData>[] => [
-  { Header: "Sl No", accessor: (_row, rowIndex) => rowIndex + 1 },
+ 
   {
     Header: "Candidate Name",
     accessor: "vsCandidateName",

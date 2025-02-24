@@ -296,8 +296,8 @@ const SchemeModalContent: React.FC = () => {
             <p className="text-red-500">{errors.schemeFundingType.message}</p>
           )}
         </div>
-        <div>
-          <Label text="Scheme Funding Ratio  ( State : Central : CSR )" required />
+        <div className="">
+          <Label text="Scheme Funding Ratio( State : Central : CSR )" required />
           <Controller
             control={control}
             name="schemeFundingRatio"
