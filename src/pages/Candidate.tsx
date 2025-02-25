@@ -75,7 +75,7 @@ const Candidate: React.FC = () => {
 
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize,,duplicateCurrentPage,duplicatePageSize],
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize,duplicateCurrentPage,duplicatePageSize],
     queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize,duplicateCurrentPage,duplicatePageSize),
   });
 
@@ -275,7 +275,7 @@ const Candidate: React.FC = () => {
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
           <span className="text-red-500 text-2xl mr-2">⚠️</span>
           Only the last four digits of the candidate's Aadhar number should be
-          Insert.{<br></br>}The Candidate Unique ID is generated using the first 4 letters of the name, the last digit of the Aadhaar number, DOB (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
+          Insert.{<br></br>}The Candidate Unique ID is generated using the first 4 letters of the name, the last 4 digit of the Aadhaar number, DOB (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
 
 
 

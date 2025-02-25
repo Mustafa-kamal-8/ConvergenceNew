@@ -4,6 +4,7 @@ import candidateTemplate from "../../assets/Candidate_Template-Instruction.xlsx?
 import schemeTemplate from "../../assets/Scheme_Template-Instruction.xlsx?url";
 import targetTemplate from "../../assets/Target_Template-Instruction.xlsx?url";
 import tcTemplate from "../../assets/TC_Template-Instruction.xlsx?url";
+import tpTemplate from "../../assets/TP_Template-Instruction.xlsx?url"
 
 type TemplateDownloadButtonProps = {
   templateType: number;
@@ -21,7 +22,7 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({
     0: schemeTemplate,
     1: targetTemplate,
     2: "/assets/template2.xls",
-    3: "/assets/template3.xls",
+    3: tpTemplate,
     4: tcTemplate,
     5: "/assets/template5.xls",
     6: "/assets/template6.xls",

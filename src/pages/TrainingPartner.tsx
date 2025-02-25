@@ -6,7 +6,7 @@ import {
 } from "../utils/tableColumns"; // Rename the import
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import { DownloadCloud, UploadCloud } from "lucide-react";
+import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,8 @@ import { getTableData } from "../services/state/api/tableDataApi";
 import SearchDropdown from "../components/ui/SearchDropdown";
 import Loader from "../components/ui/Loader";
 import { Column } from "react-table";
+import * as XLSX from "xlsx";
+import { useErrorStore } from "../services/useErrorStore";
 
 const TrainingPartner: React.FC = () => {
   const navigate = useNavigate();
@@ -25,15 +27,39 @@ const TrainingPartner: React.FC = () => {
     () => DuplicateTrainingColumns(navigate, true) as Column<any>[],
     [navigate]
   );
-  
+
   const [filteredData, setFilteredData] = useState([]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
-   const [duplicateData, setDuplicateData] = useState([]);
-    const [totalCount, setTotalCount] = useState(0);
+  const [duplicateData, setDuplicateData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+   const errorMessage = useErrorStore((state) => state.errorMessage);
+      const successMessage = useErrorStore((state) => state.successMessage);
+      const { bulkName } = useErrorStore();
+      const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+      const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
+  
+
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
+
+  const [selectedDuplicates, setSelectedDuplicates] = useState<{
+    vsPan: boolean;
+
+  }>({
+    vsPan: true,
+
+  });
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+
+    setSelectedDuplicates((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
 
   const {
     data: fetchedData,
@@ -44,24 +70,94 @@ const TrainingPartner: React.FC = () => {
     queryFn: () => getTableData("TP", searchKey, debouncedSearchValue),
   });
 
-   useEffect(() => {
-      if (isSuccess) {
-        if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
-          setFilteredData(fetchedData.data.data);
-          setTotalCount(fetchedData.data.total_count);
-        } else {
-          setFilteredData([]);
-        }
-  
-        if (fetchedData?.data?.duplicate_tp && fetchedData.data?.duplicate_tp.length > 0) {
-          setDuplicateData(fetchedData.data?.duplicate_tp);
-        } else {
-          setDuplicateData([]);
-        }
+  useEffect(() => {
+    if (isSuccess) {
+      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count);
+      } else {
+        setFilteredData([]);
       }
-    }, [fetchedData, isSuccess]);
 
-    console.log("duplicate data are",duplicateData);
+      if (fetchedData?.data?.duplicate_tp && fetchedData.data?.duplicate_tp.length > 0) {
+        setDuplicateData(fetchedData.data?.duplicate_tp);
+      } else {
+        setDuplicateData([]);
+      }
+    }
+  }, [fetchedData, isSuccess]);
+
+  console.log("duplicate data are", duplicateData);
+
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsTpName: "Candidate Name",
+
+      vsSpocName: "SPOC Name",
+      vsSpocEmail: "SPOC Email",
+      iSpocContactNum: "SPOC Contact",
+      vsAddress: "Address",
+      vsSmartId: "Smart ID",
+      vsPan: "PAN"
+    };
+
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        const headerKey = key as keyof typeof headersMap;
+        const itemKey = key as keyof typeof item;
+        acc[headersMap[headerKey]] = item[itemKey] ?? "N/A"; // If value is missing, replace it with "N/A"
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "TrainingPartnerData.xlsx");
+  };
+
+
+
+  const exportToExcelDuplicate = () => {
+    if (!fetchedData.data?.duplicate_tp || fetchedData.data?.duplicate_tp.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+
+    const headersMap = {
+      vsTpName: "TP Name",
+      vsPan: "PAN",
+
+      departmentNames: "Department Name",
+
+
+
+
+    };
+
+
+    const formattedData = fetchedData?.data?.duplicate_tp.map((item: { [x: string]: unknown; }) => {
+      return Object.keys(headersMap).reduce((acc, key) => {
+        acc[headersMap[key as keyof typeof headersMap]] = item[key];
+        return acc;
+      }, {} as Record<string, unknown>);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schemes");
+
+    XLSX.writeFile(workbook, "TrainingPartnerDuplicateData.xlsx");
+  };
 
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
@@ -81,6 +177,47 @@ const TrainingPartner: React.FC = () => {
     <>
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Training Partners</p>
+        {bulkName === "TP" && (
+          <>
+            <div>
+              {successMessage && (
+                <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                    <p>{successMessage}</p>
+                  </div>
+                  <button
+                    onClick={clearSuccessMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-green-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div>
+              {errorMessage && (
+                <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                    <p
+                      style={{ color: "red" }}
+                      dangerouslySetInnerHTML={{
+                        __html: errorMessage.replace(/\n/g, "<br />"),
+                      }}
+                    ></p>
+                  </div>
+                  <button
+                    onClick={clearErrorMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
           <div className="flex items-center space-x-4">
             <SearchDropdown
@@ -143,10 +280,19 @@ const TrainingPartner: React.FC = () => {
         <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
       </div>
       <div className="pt-5">
-        <p className="text-2xl font-bold mb-4">Unique Training Partners</p>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Training Partner Entries</p>
+          <button
+            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={exportToExcel}
+          >
+            <DownloadCloud size={18} />
+            Download Report
+          </button>
+        </div>
+
         <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
       </div>
-
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
         Duplicate records are identified based on matching 'Training Paretner Name' and 'PAN No' across multiple logins, highlighting common entries found in different departments.
@@ -156,6 +302,32 @@ const TrainingPartner: React.FC = () => {
         <p className="text-2xl font-bold mb-4">
           Cross-Department Duplicate Training Partners
         </p>
+        <div className="mb-4 flex justify-between">
+          <div>
+            <label className="mr-6">
+              <input
+                type="checkbox"
+                name="vsPan"
+                checked={selectedDuplicates.vsPan}
+                onChange={handleCheckboxChange}
+                className="transform scale-150 mr-2"
+
+              />
+              PAN
+            </label>
+
+
+          </div>
+          <div>
+            <button
+              className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+              onClick={exportToExcelDuplicate}
+            >
+              <DownloadCloud size={18} />
+              Download Report
+            </button>
+          </div>
+        </div>
         <CentralizedTable
           columns={CrossDuplicateTrainingColumns}
           data={duplicateData}
