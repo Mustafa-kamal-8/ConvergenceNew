@@ -371,7 +371,7 @@ const TrainingPartnerModal: React.FC = () => {
         {selectedVillageCity === "Village" && (
           <>
             <div className="col-span-1">
-              <Label text="Block" required />
+              <Label text="Block" />
               <Controller
                 name="vsBlock"
                 control={control}
@@ -396,7 +396,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="Village" required />
+              <Label text="Village"  />
               <Controller
                 name="vsVillage"
                 control={control}
@@ -418,7 +418,7 @@ const TrainingPartnerModal: React.FC = () => {
         {selectedVillageCity === "City" && (
           <>
             <div className="col-span-1">
-              <Label text="ULB" required />
+              <Label text="ULB"  />
               <Controller
                 name="vsULB"
                 control={control}
@@ -443,7 +443,7 @@ const TrainingPartnerModal: React.FC = () => {
             </div>
 
             <div className="col-span-2">
-              <Label text="City" required />
+              <Label text="City"  />
               <Controller
                 name="vsCity"
                 control={control}

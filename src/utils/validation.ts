@@ -157,41 +157,13 @@ export const trainingPartnerSchema = Joi.object({
   vsSmartId: Joi.optional() ,
   isVillageCity: Joi.optional(),
 
-  vsCity: Joi.string().when("isVillageCity", {
-    is: "City",
-    then: Joi.required().label("City").messages({
-      "string.empty": "City is required.",
-      "any.required": "City is required.",
-    }),
-    otherwise: Joi.optional(),
-  }),
+  vsCity: Joi.optional(),
 
-  vsULB: Joi.number().when("isVillageCity", {
-    is: "City",
-    then: Joi.required().label("Village").messages({
-      "string.empty": "ULB is required.",
-      "any.required": "ULB is required.",
-    }),
-    otherwise: Joi.optional(),
-  }),
+  vsULB:Joi.optional(),
 
-  vsBlock: Joi.number().when("isVillageCity", {
-    is: "Village",
-    then: Joi.required().label("Block").messages({
-      "string.empty": "Block is required.",
-      "any.required": "Block is required.",
-    }),
-    otherwise: Joi.optional(),
-  }),
+  vsBlock: Joi.optional(),
 
-  vsVillage: Joi.string().when("isVillageCity", {
-    is: "Village",
-    then: Joi.required().label("Village").messages({
-      "string.empty": "Village is required.",
-      "any.required": "Village is required.",
-    }),
-    otherwise: Joi.optional(),
-  }),
+  vsVillage: Joi.optional(),
 });
 
 export const trainingCenterSchema = Joi.object({
