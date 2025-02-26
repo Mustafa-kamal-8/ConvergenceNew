@@ -320,6 +320,7 @@ export const trainingColumns: (
 
 export const DuplicateTrainingColumns = (
   navigate: (path: string) => void,
+  duplicateQuery: string[],
   isCrossDepartmentDuplicate: boolean = false
 ): Column<TrainingPartnerData>[] => {
   const columns: Column<TrainingPartnerData>[] = [
@@ -329,7 +330,17 @@ export const DuplicateTrainingColumns = (
     //   accessor: "count",
     // },
     { Header: "Partner Name", accessor: "vsTpName" },
-    { Header: "PAN", accessor: "vsPan" },
+    {
+      Header: "PAN",
+      accessor: "vsPan",
+      Cell: ({ value }) => (
+        <span
+          className={`capitalize ${duplicateQuery.includes("vsPan") ? "bg-yellow-200 font-bold p-1 rounded" : ""}`}
+        >
+          {value}
+        </span>
+      ),
+    },
     {
       Header: "Department Name",
       accessor: "departmentNames",
@@ -354,43 +365,43 @@ export const DuplicateTrainingColumns = (
     
    
   ];
-  if (!isCrossDepartmentDuplicate) {
-    columns.push(
-      {
-        Header: "Action",
-        accessor: "Action",
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Cell: ({ row }) => {
-          const [open, setOpen] = useState(false);
+  // if (!isCrossDepartmentDuplicate) {
+  //   columns.push(
+  //     {
+  //       Header: "Action",
+  //       accessor: "Action",
+  //       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //       Cell: ({ row }) => {
+  //         const [open, setOpen] = useState(false);
 
-        const handleDelete = () => {
-          setOpen(false);
-        };
+  //       const handleDelete = () => {
+  //         setOpen(false);
+  //       };
 
-        return (
-          <>
-            <button className="text-red-500" onClick={() => setOpen(true)}>
-              <Trash2 className="w-5 h-5" />
-            </button>
+  //       return (
+  //         <>
+  //           <button className="text-red-500" onClick={() => setOpen(true)}>
+  //             <Trash2 className="w-5 h-5" />
+  //           </button>
 
-            {/* MUI Confirm Dialog */}
-            <Dialog open={open} onClose={() => setOpen(false)}>
-              <DialogTitle>Confirm Deletion</DialogTitle>
-              <DialogContent>Are you sure to delete the TP?</DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpen(false)} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={handleDelete} color="error">
-                  Yes, Delete
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </>
-        );
-      },
-    });
-  }
+  //           {/* MUI Confirm Dialog */}
+  //           <Dialog open={open} onClose={() => setOpen(false)}>
+  //             <DialogTitle>Confirm Deletion</DialogTitle>
+  //             <DialogContent>Are you sure to delete the TP?</DialogContent>
+  //             <DialogActions>
+  //               <Button onClick={() => setOpen(false)} color="primary">
+  //                 Cancel
+  //               </Button>
+  //               <Button onClick={handleDelete} color="error">
+  //                 Yes, Delete
+  //               </Button>
+  //             </DialogActions>
+  //           </Dialog>
+  //         </>
+  //       );
+  //     },
+  //   });
+  // }
   return columns;
 };
 

@@ -75,8 +75,8 @@ const Candidate: React.FC = () => {
 
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, ...duplicateQuery, currentPage, pageSize,duplicateCurrentPage,duplicatePageSize],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize,duplicateCurrentPage,duplicatePageSize),
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, currentPage, pageSize, ...duplicateQuery,duplicateCurrentPage,duplicatePageSize],
+    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, currentPage, pageSize,duplicateQuery,duplicateCurrentPage,duplicatePageSize),
   });
 
   useEffect(() => {
@@ -349,7 +349,7 @@ const Candidate: React.FC = () => {
           </div>
         </div>
         <div className="py-2 text-lg text-green-600">
-          Total Count: {totalCount}
+          Showing {totalCount} Results 
         </div>
       </div>
       <div className="pt-10">

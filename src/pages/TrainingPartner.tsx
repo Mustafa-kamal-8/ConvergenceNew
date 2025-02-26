@@ -6,7 +6,13 @@ import {
 } from "../utils/tableColumns"; // Rename the import
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 import SearchInputBox from "../components/ui/SearchInputBox";
-import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  DownloadCloud,
+  UploadCloud,
+  X,
+} from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +27,8 @@ import { useErrorStore } from "../services/useErrorStore";
 
 const TrainingPartner: React.FC = () => {
   const navigate = useNavigate();
-  const columns = useMemo<Column<any>[]>(() => getTrainingColumns(navigate) as Column<any>[], [navigate]);
-
-  const CrossDuplicateTrainingColumns = useMemo<Column<any>[]>(
-    () => DuplicateTrainingColumns(navigate, true) as Column<any>[],
+  const columns = useMemo<Column<any>[]>(
+    () => getTrainingColumns(navigate) as Column<any>[],
     [navigate]
   );
 
@@ -34,23 +38,31 @@ const TrainingPartner: React.FC = () => {
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-   const errorMessage = useErrorStore((state) => state.errorMessage);
-      const successMessage = useErrorStore((state) => state.successMessage);
-      const { bulkName } = useErrorStore();
-      const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
-      const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
-  
+  const errorMessage = useErrorStore((state) => state.errorMessage);
+  const successMessage = useErrorStore((state) => state.successMessage);
+  const { bulkName } = useErrorStore();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
+  const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+  const clearSuccessMessage = useErrorStore(
+    (state) => state.clearSuccessMessage
+  );
+  const [selectedDuplicates, setSelectedDuplicates] = useState<{
+    vsPan: boolean;
+  }>({
+    vsPan: true,
+  });
 
+  const duplicateQuery = Object.keys(selectedDuplicates)
+    .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
+    .map((key) => key as string);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
-  const [selectedDuplicates, setSelectedDuplicates] = useState<{
-    vsPan: boolean;
-
-  }>({
-    vsPan: true,
-
-  });
+  const CrossDuplicateTrainingColumns = useMemo<Column<any>[]>(
+    () => DuplicateTrainingColumns(navigate, duplicateQuery) as Column<any>[],
+    [navigate, duplicateQuery]
+  );
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -66,8 +78,9 @@ const TrainingPartner: React.FC = () => {
     isLoading,
     isSuccess,
   } = useQuery({
-    queryKey: ["tpData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("TP", searchKey, debouncedSearchValue),
+    queryKey: ["tpData", searchKey, debouncedSearchValue,  , currentPage, pageSize,...duplicateQuery],
+    queryFn: () =>
+      getTableData("TP", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery),
   });
 
   useEffect(() => {
@@ -79,7 +92,10 @@ const TrainingPartner: React.FC = () => {
         setFilteredData([]);
       }
 
-      if (fetchedData?.data?.duplicate_tp && fetchedData.data?.duplicate_tp.length > 0) {
+      if (
+        fetchedData?.data?.duplicate_tp &&
+        fetchedData.data?.duplicate_tp.length > 0
+      ) {
         setDuplicateData(fetchedData.data?.duplicate_tp);
       } else {
         setDuplicateData([]);
@@ -95,18 +111,16 @@ const TrainingPartner: React.FC = () => {
       return;
     }
 
-
     const headersMap = {
       vsTpName: "Candidate Name",
-
       vsSpocName: "SPOC Name",
       vsSpocEmail: "SPOC Email",
       iSpocContactNum: "SPOC Contact",
       vsAddress: "Address",
       vsSmartId: "Smart ID",
-      vsPan: "PAN"
+      vsPan: "PAN",
+      vsDepartmentName : "Department Name"
     };
-
 
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce((acc, key) => {
@@ -124,33 +138,30 @@ const TrainingPartner: React.FC = () => {
     XLSX.writeFile(workbook, "TrainingPartnerData.xlsx");
   };
 
-
-
   const exportToExcelDuplicate = () => {
-    if (!fetchedData.data?.duplicate_tp || fetchedData.data?.duplicate_tp.length === 0) {
+    if (
+      !fetchedData.data?.duplicate_tp ||
+      fetchedData.data?.duplicate_tp.length === 0
+    ) {
       alert("No data available to export");
       return;
     }
-
 
     const headersMap = {
       vsTpName: "TP Name",
       vsPan: "PAN",
 
       departmentNames: "Department Name",
-
-
-
-
     };
 
-
-    const formattedData = fetchedData?.data?.duplicate_tp.map((item: { [x: string]: unknown; }) => {
-      return Object.keys(headersMap).reduce((acc, key) => {
-        acc[headersMap[key as keyof typeof headersMap]] = item[key];
-        return acc;
-      }, {} as Record<string, unknown>);
-    });
+    const formattedData = fetchedData?.data?.duplicate_tp.map(
+      (item: { [x: string]: unknown }) => {
+        return Object.keys(headersMap).reduce((acc, key) => {
+          acc[headersMap[key as keyof typeof headersMap]] = item[key];
+          return acc;
+        }, {} as Record<string, unknown>);
+      }
+    );
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
@@ -277,7 +288,9 @@ const TrainingPartner: React.FC = () => {
             />
           </div>
         </div>
-        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
+        <div className="py-2 text-lg text-green-600">
+          Total Count: {totalCount}
+        </div>
       </div>
       <div className="pt-5">
         <div className="flex justify-between items-center mb-4">
@@ -291,11 +304,18 @@ const TrainingPartner: React.FC = () => {
           </button>
         </div>
 
-        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+        <CentralizedTable columns={columns} data={filteredData}  pageSize={pageSize}
+          currentPage={currentPage}
+          totalCount={totalCount}
+
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize} />
       </div>
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        Duplicate records are identified based on matching 'Training Paretner Name' and 'PAN No' across multiple logins, highlighting common entries found in different departments.
+        Duplicate records are identified based on matching 'Training Paretner
+        Name' and 'PAN No' across multiple logins, highlighting common entries
+        found in different departments.
       </div>
 
       <div className="pt-5">
@@ -310,13 +330,11 @@ const TrainingPartner: React.FC = () => {
                 name="vsPan"
                 checked={selectedDuplicates.vsPan}
                 onChange={handleCheckboxChange}
+                disabled
                 className="transform scale-150 mr-2"
-
               />
               PAN
             </label>
-
-
           </div>
           <div>
             <button
@@ -331,7 +349,7 @@ const TrainingPartner: React.FC = () => {
         <CentralizedTable
           columns={CrossDuplicateTrainingColumns}
           data={duplicateData}
-          pageSize={5}
+          pageSize={25}
         />
       </div>
     </>

@@ -28,6 +28,8 @@ const TrainingCenter: React.FC = () => {
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [duplicateData, setDuplicateData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+      const [pageSize, setPageSize] = useState(25);
    const errorMessage = useErrorStore((state) => state.errorMessage);
     const successMessage = useErrorStore((state) => state.successMessage);
     const { bulkName } = useErrorStore();
@@ -41,8 +43,8 @@ const TrainingCenter: React.FC = () => {
     isSuccess,
     isLoading,
   } = useQuery({
-    queryKey: ["tcData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("TC", searchKey, debouncedSearchValue),
+    queryKey: ["tcData", searchKey, debouncedSearchValue , , currentPage, pageSize],
+    queryFn: () => getTableData("TC", searchKey, debouncedSearchValue ,  currentPage, pageSize),
   });
 
   useEffect(() => {
@@ -236,7 +238,12 @@ const TrainingCenter: React.FC = () => {
             Download Report
           </button>
         </div>
-        <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+        <CentralizedTable columns={columns} data={filteredData} pageSize={pageSize}
+          currentPage={currentPage}
+          totalCount={totalCount}
+
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize} />
       </div>
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>

@@ -9,7 +9,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import { assessmentValidationSchema } from "../../../utils/validation";
 import { AssessmentFormData } from "../../../utils/formTypes";
-import {  getCandidateByBatch, getMasterData} from "../../../services/state/api/masterApi";
+import { getCandidateByBatch, getMasterData } from "../../../services/state/api/masterApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Dropdown from "../Dropdown";
 import { submitAssesmentForm } from "../../../services/state/api/FormApi";
@@ -19,8 +19,8 @@ const AssessmentModal: React.FC = () => {
 
   const { closeModal } = useModalStore();
 
-  
- 
+
+
   const {
     control,
     handleSubmit,
@@ -33,7 +33,7 @@ const AssessmentModal: React.FC = () => {
   });
 
   const queryClient = useQueryClient();
-   const [batchId, setBatchId] = useState<number | null>(null);
+  const [batchId, setBatchId] = useState<number | null>(null);
 
   // const { data: masterData } = useQuery({
   //   queryKey: ["masterData", "tp"],
@@ -64,14 +64,14 @@ const AssessmentModal: React.FC = () => {
   //   ) || [];
 
 
-   const { data: batchhData } = useQuery({
-      queryKey: ["masterData", "batchCandidate"],
-      queryFn: () => getMasterData("batchCandidate"),
-    });
-  
+  const { data: batchhData } = useQuery({
+    queryKey: ["masterData", "batchCandidate"],
+    queryFn: () => getMasterData("batchCandidate"),
+  });
 
 
-    const batchOptions =
+
+  const batchOptions =
     batchhData?.data?.result?.batchCandidate?.map(
       (batch: { id: number; iBatchNumber: number }) => ({
         label: String(batch.iBatchNumber),
@@ -79,33 +79,33 @@ const AssessmentModal: React.FC = () => {
       })
     ) || [];
 
-    const { data: accessorData } = useQuery({
-      queryKey: ["masterData", "assessorName"],
-      queryFn: () => getMasterData("assessorName"),
-    });
- 
+  const { data: accessorData } = useQuery({
+    queryKey: ["masterData", "assessorName"],
+    queryFn: () => getMasterData("assessorName"),
+  });
 
-    const { data: candidateData } = useQuery({
-        queryKey: ["masterData", "candidateByBatch", batchId],
-        queryFn: () => getCandidateByBatch(batchId, "candidateByBatch"),
-        enabled: !!batchId,
-      });
-    
-      const candidateOptions =
-        candidateData?.data?.result?.candidateByBatchId?.map(
-          (tc: { id: number; name: string }) => ({
-            label: tc.name,
-            value: tc.id,
-          })
-        ) || [];
- 
-   const accessorOptions =
-   accessorData?.data?.result?.assessor?.map(
-       (batch: { pklConvAssessorId: number; vsAssosserName: string }) => ({
-         label: batch.vsAssosserName,
-         value: batch.pklConvAssessorId,
-       })
-     ) || [];
+
+  const { data: candidateData } = useQuery({
+    queryKey: ["masterData", "candidateByBatch", batchId],
+    queryFn: () => getCandidateByBatch(batchId, "candidateByBatch"),
+    enabled: !!batchId,
+  });
+
+  const candidateOptions =
+    candidateData?.data?.result?.candidateByBatchId?.map(
+      (tc: { id: number; name: string }) => ({
+        label: tc.name,
+        value: tc.id,
+      })
+    ) || [];
+
+  const accessorOptions =
+    accessorData?.data?.result?.assessor?.map(
+      (batch: { pklConvAssessorId: number; vsAssosserName: string }) => ({
+        label: batch.vsAssosserName,
+        value: batch.pklConvAssessorId,
+      })
+    ) || [];
 
 
 
@@ -124,14 +124,20 @@ const AssessmentModal: React.FC = () => {
   //     })
   //   ) || [];
 
-    const resultType = [
-      { value: "", label: "-- Select Result Type --", disabled: true },
-      { value: "Yes", label: "Yes" },
-      { value: "No", label: "No" },
-    ];
-    
-    const vsResultValue = watch("vsResult");
-    const dtAssessmentDate = watch("dtAssessmentDate");
+  const resultType = [
+    { value: "", label: "-- Select Result Type --", disabled: true },
+    { value: 1, label: "Yes" },
+    { value: 0, label: "No" },
+  ];
+
+  const result = [
+    { value: "", label: "-- Select Result --", disabled: true },
+    { value: "Pass", label: "Pass" },
+    { value: "Fail", label: "Fail" },
+  ];
+
+  const vsResultValue = watch("bAssessed");
+  const dtAssessmentDate = watch("dtAssessmentDate");
 
   const mutation = useMutation({
     mutationFn: submitAssesmentForm,
@@ -275,7 +281,7 @@ const AssessmentModal: React.FC = () => {
         </div> */}
 
         {/* Candidate ID */}
-        <div className="col-span-1">
+        <div className="col-span-2">
           <Label text="Candidate Name" required />
           <Controller
             name="candidateId"
@@ -291,7 +297,7 @@ const AssessmentModal: React.FC = () => {
                   setValue("candidateId", selectedOption.value);
                 }}
                 className={errors.candidateId ? "border-red-500" : ""}
-                placeholder="-- Select Candidate Name --"
+                placeholder="--Select Candidate Name--"
               />
             )}
           />
@@ -301,7 +307,7 @@ const AssessmentModal: React.FC = () => {
         </div>
 
         {/* Assessed ID */}
-        <div className="col-span-1">
+        <div className="col-span-2">
           <Label text="Accessor Name" required />
           <Controller
             name="accessorId"
@@ -314,7 +320,7 @@ const AssessmentModal: React.FC = () => {
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                
+
                   setValue("accessorId", selectedOption.value);
                 }}
                 className={errors.batchId ? "border-red-500" : ""}
@@ -328,7 +334,7 @@ const AssessmentModal: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-          <Label text="Assessment Date" required/>
+          <Label text="Assessment Date" required />
           <Controller
             name="dtAssessmentDate"
             control={control}
@@ -394,9 +400,9 @@ const AssessmentModal: React.FC = () => {
 
         {/* Result Type */}
         <div className="col-span-1">
-          <Label text=" Is Result Declared" required />
+          <Label text="Is Result Declared" />
           <Controller
-            name="vsResult"
+            name="bAssessed"
             control={control}
             render={({ field }) => (
               <Select
@@ -407,109 +413,129 @@ const AssessmentModal: React.FC = () => {
               />
             )}
           />
-          {errors.vsResult && <p className="text-red-500">{errors.vsResult.message}</p>}
+          {errors.bAssessed && <p className="text-red-500">{errors.bAssessed.message}</p>}
         </div>
 
         {/* Result Date */}
-        {vsResultValue === "Yes" && (
-  <div className="col-span-1">
-    <Label text="Result Date" required />
-    <Controller
-      name="dtResultDate"
-      control={control}
-      rules={{
-        required: dtAssessmentDate ? "Result Date is required." : false,
-        validate: (value) => {
-          if (dtAssessmentDate && value && value <= dtAssessmentDate) {
-            return "Result Date must be after Assessment Date.";
-          }
-          return true;
-        },
-      }}
-      render={({ field }) => (
-        <Input
-          {...field}
-          type="date"
-          className={`w-full ${errors.dtResultDate ? "border-red-500" : ""}`}
-          min={dtAssessmentDate || ""} // Restrict past date selection
-          disabled={!dtAssessmentDate} // Disable if Assessment Date is not selected
-        />
-      )}
-    />
-    {errors.dtResultDate && <p className="text-red-500">{errors.dtResultDate.message}</p>}
-  </div>
-)}
-    {vsResultValue === "Yes" && (
-         <div className="col-span-1">
-          <Label text="total Marks" />
-          <Controller
-            name="vsTotalMarks"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={`w-full ${errors.vsTotalMarks ? "border-red-500" : ""}`}
-              />
-            )}
-          />
-          {errors.vsTotalMarks && <p className="text-red-500">{errors.vsTotalMarks.message}</p>}
-        </div> 
-    )}
+        {Number(vsResultValue)===1 && (
+          <div className="col-span-1">
+            <Label text="Result Date"  />
+            <Controller
+              name="dtResultDate"
+              control={control}
+              rules={{
+                required: dtAssessmentDate ? "Result Date is required." : false,
+                validate: (value) => {
+                  if (dtAssessmentDate && value && value <= dtAssessmentDate) {
+                    return "Result Date must be after Assessment Date.";
+                  }
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="date"
+                  className={`w-full ${errors.dtResultDate ? "border-red-500" : ""}`}
+                  min={dtAssessmentDate || ""} // Restrict past date selection
+                  disabled={!dtAssessmentDate} // Disable if Assessment Date is not selected
+                />
+              )}
+            />
+            {errors.dtResultDate && <p className="text-red-500">{errors.dtResultDate.message}</p>}
+          </div>
+        )}
+        {Number(vsResultValue) === 1 && (
+          <div className="col-span-1">
+            <Label text="total Marks" />
+            <Controller
+              name="vsTotalMarks"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  className={`w-full ${errors.vsTotalMarks ? "border-red-500" : ""}`}
+                />
+              )}
+            />
+            {errors.vsTotalMarks && <p className="text-red-500">{errors.vsTotalMarks.message}</p>}
+          </div>
+        )}
 
-{vsResultValue === "Yes" && (
-         <div className="col-span-1">
-          <Label text="Obtain Marks" />
-          <Controller
-            name="vsObtainedMarks"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={`w-full ${errors.vsObtainedMarks ? "border-red-500" : ""}`}
-              />
-            )}
-          />
-          {errors.vsObtainedMarks && <p className="text-red-500">{errors.vsObtainedMarks.message}</p>}
-        </div>
-)}
+        {Number(vsResultValue) === 1 && (
+          <div className="col-span-1">
+            <Label text="Obtain Marks" />
+            <Controller
+              name="vsObtainedMarks"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  className={`w-full ${errors.vsObtainedMarks ? "border-red-500" : ""}`}
+                />
+              )}
+            />
+            {errors.vsObtainedMarks && <p className="text-red-500">{errors.vsObtainedMarks.message}</p>}
+          </div>
+        )}
 
-{vsResultValue === "Yes" && (
-        <div className="col-span-1">
-          <Label text="Marksheet URL" />
-          <Controller
-            name="vsMarksheetUrl"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={`w-full ${errors.vsMarksheetUrl ? "border-red-500" : ""}`}
-              />
-            )}
-          />
-          {errors.vsMarksheetUrl && <p className="text-red-500">{errors.vsMarksheetUrl.message}</p>}
-        </div>
-)}
+{Number(vsResultValue) === 1 && (
+           <div className="col-span-1">
+           <Label text="Result" />
+           <Controller
+             name="vsResult"
+             control={control}
+             render={({ field }) => (
+               <Select
+                 {...field}
+                 options={result}
+                 placeholder="-- Select --"
+                 className="w-full"
+               />
+             )}
+           />
+           {errors.vsResult && <p className="text-red-500">{errors.vsResult.message}</p>}
+         </div>
+ 
+        )}
 
-{vsResultValue === "Yes" && (
-        <div className="col-span-1">
-          <Label text="Certificate URL" />
-          <Controller
-            name="vsCertificateUrl"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                className={`w-full ${errors.vsCertificateUrl ? "border-red-500" : ""}`}
-              />
-            )}
-          />
-          {errors.vsCertificateUrl && <p className="text-red-500">{errors.vsCertificateUrl.message}</p>}
-        </div>
-)} 
+        {Number(vsResultValue) === 1 && (
+          <div className="col-span-1">
+            <Label text="Marksheet URL" />
+            <Controller
+              name="vsMarksheetUrl"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  className={`w-full ${errors.vsMarksheetUrl ? "border-red-500" : ""}`}
+                />
+              )}
+            />
+            {errors.vsMarksheetUrl && <p className="text-red-500">{errors.vsMarksheetUrl.message}</p>}
+          </div>
+        )}
+
+        {Number(vsResultValue) === 1 && (
+          <div className="col-span-1">
+            <Label text="Certificate URL" />
+            <Controller
+              name="vsCertificateUrl"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  className={`w-full ${errors.vsCertificateUrl ? "border-red-500" : ""}`}
+                />
+              )}
+            />
+            {errors.vsCertificateUrl && <p className="text-red-500">{errors.vsCertificateUrl.message}</p>}
+          </div>
+        )}
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button

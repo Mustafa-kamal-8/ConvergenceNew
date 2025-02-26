@@ -5,6 +5,8 @@ import schemeTemplate from "../../assets/Scheme_Template-Instruction.xlsx?url";
 import targetTemplate from "../../assets/Target_Template-Instruction.xlsx?url";
 import tcTemplate from "../../assets/TC_Template-Instruction.xlsx?url";
 import tpTemplate from "../../assets/TP_Template-Instruction.xlsx?url";
+import assessmentTemplate from "../../assets/Assessment_Template-Instruction.xlsx?url";
+import placementTemplate from "../../assets/Placement_Template-Instruction.xlsx?url";
 
 type TemplateDownloadButtonProps = {
   templateType: number;
@@ -28,8 +30,8 @@ const TemplateDownloadButton: React.FC<TemplateDownloadButtonProps> = ({
     6: "/assets/template6.xls",
     7: "/assets/template7.xls",
     8: candidateTemplate, 
-    9: "/assets/template9.xls",
-    10: "/assets/template10.xls",
+    9: assessmentTemplate,
+    10: placementTemplate,
     11: "/assets/template11.xls",
   };
 

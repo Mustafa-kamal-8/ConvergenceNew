@@ -1,6 +1,6 @@
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 
-import {  DownloadCloud, UploadCloud } from "lucide-react";
+import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
 import Loader from "../components/ui/Loader";
@@ -14,13 +14,14 @@ import SearchDropdown from "../components/ui/SearchDropdown";
 import useDebounce from "../services/state/useDebounce";
 import CentralizedTable from "../components/CentralizedTable";
 import { Column } from "react-table";
+import { useErrorStore } from "../services/useErrorStore";
+import * as XLSX from "xlsx";
 
 
-
- const Assesment: React.FC = () => {
+const Assesment: React.FC = () => {
   const navigate = useNavigate();
 
-  
+
 
   const columns = useMemo<Column<any>[]>(() => assessmentColumns(navigate) as Column<any>[], [navigate]);
 
@@ -29,7 +30,14 @@ import { Column } from "react-table";
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
   const [filteredData, setFilteredData] = useState([]);
-  const [totalCount , setTotalCount] = useState([])
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const errorMessage = useErrorStore((state) => state.errorMessage);
+  const successMessage = useErrorStore((state) => state.successMessage);
+  const { bulkName } = useErrorStore();
+  const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
+  const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
 
   const debouncedSearchValue = useDebounce(searchValue, 1000);
 
@@ -37,11 +45,11 @@ import { Column } from "react-table";
     data: fetchedData,
     isLoading,
     isSuccess,
-   
+
   } = useQuery({
-    queryKey: ["assessmentData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("assesment", searchKey, debouncedSearchValue),
-   
+    queryKey: ["assessmentData", searchKey, debouncedSearchValue, currentPage, pageSize],
+    queryFn: () => getTableData("assesment", searchKey, debouncedSearchValue, currentPage, pageSize),
+
   });
 
   useEffect(() => {
@@ -55,16 +63,61 @@ import { Column } from "react-table";
     }
   }, [fetchedData, isSuccess]);
 
+
+  const exportToExcel = () => {
+    if (!filteredData || filteredData.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    const headersMap = {
+      vsAccessorName: "Accessor Name",
+      vsResult: "Result",
+      dtResultDate: "Result Date",
+      vsTotalMarks: "TTotal Marks",
+      vsObtainedMarks: "Obtained Marks",
+      dtCreatedAt: "Created At",
+      QPNOS: "QPNOS",
+      SDMSid: "SDMS Id",
+      dtStartDate: "Start Date",
+      dtEndDate: "End Date",
+      vsMarksheetUrl: "Marksheet URL",
+      vsCertificateUrl: "Certificate URL",
+      vsDepartmentName: "Department Name"
+    };
+
+    const formattedData = filteredData.map((item) => {
+      return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
+        let value: any = item[key];
+
+
+
+
+        acc[headersMap[key as keyof typeof headersMap]] = value;
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Assessment");
+
+    XLSX.writeFile(workbook, "AssessmentData.xlsx");
+  };
+
+
+
+
   const handleDropdownSelect = (option: { label: string; value: string }) => {
     setSearchKey(option.value);
     setSearchKeyLabel(option.label);
-    setSearchValue(""); 
+    setSearchValue("");
   };
-  
+
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-   
+
   };
 
   if (isLoading) {
@@ -74,17 +127,58 @@ import { Column } from "react-table";
 
   return (
     <>
-     
+
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Assessment</p>
+        {bulkName === "assessment" && (
+          <>
+            <div>
+              {successMessage && (
+                <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                    <p>{successMessage}</p>
+                  </div>
+                  <button
+                    onClick={clearSuccessMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-green-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div>
+              {errorMessage && (
+                <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
+                  <div className="flex items-center">
+                    <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                    <p
+                      style={{ color: "red" }}
+                      dangerouslySetInnerHTML={{
+                        __html: errorMessage.replace(/\n/g, "<br />"),
+                      }}
+                    ></p>
+                  </div>
+                  <button
+                    onClick={clearErrorMessage}
+                    className="absolute right-4 top-2"
+                  >
+                    <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
-        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             <SearchDropdown
               options={[
                 { label: "All", value: "" },
                 { label: "Scheme Name", value: "vsSchemeName" },
                 { label: "Scheme Code", value: "vsSchemeCode" },
-                { label: "Scheme Type", value: "vsSchemeType" },  
+                { label: "Scheme Type", value: "vsSchemeType" },
                 { label: "Fund Name", value: "vsFundName" },
                 { label: "Sanction Date (yyyy/mm/dd)", value: "dtSanctionDate" }
               ]}
@@ -112,7 +206,7 @@ import { Column } from "react-table";
               </>
             )}
           </div>
-           
+
           <div className="flex gap-1">
             <TemplateDownloadButton
               templateType={9}
@@ -125,20 +219,38 @@ import { Column } from "react-table";
               modalTitle="Bulk Upload"
               bulkName="assessment"
               Icon={UploadCloud}
-             
+
             />
             <ModalOpenButton
               modalType={8}
               modalTitle="Add Assessment"
               bulkName="Assessment"
               Icon={Add}
-           
+
             />
           </div>
         </div>
-        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
+        <div className="py-2 text-lg text-green-600">Showing : {totalCount} Results</div>
       </div>
-      <CentralizedTable columns={columns} data={filteredData} pageSize={5} />
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Department Entries</p>
+          <button
+            className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={exportToExcel}
+          >
+            <DownloadCloud size={18} />
+            Download Report
+          </button>
+        </div>
+        <CentralizedTable columns={columns} data={filteredData} pageSize={pageSize}
+          currentPage={currentPage}
+          totalCount={totalCount}
+
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize} />
+
+      </div>
     </>
   );
 };

@@ -24,9 +24,11 @@ const Target: React.FC = () => {
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
   const { bulkName } = useErrorStore();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
-
+  const [totalCount, setTotalCount] = useState(0);
 
   const columns = useMemo<Column<any>[]>(() => targetColumns(navigate) as Column<any>[], [navigate]);
 
@@ -37,14 +39,15 @@ const Target: React.FC = () => {
     isSuccess,
     isLoading,
   } = useQuery({
-    queryKey: ["targetData", searchKey, debouncedSearchValue],
-    queryFn: () => getTableData("target", searchKey, debouncedSearchValue),
+    queryKey: ["targetData", searchKey, debouncedSearchValue, currentPage, pageSize],
+    queryFn: () => getTableData("target", searchKey, debouncedSearchValue, currentPage, pageSize),
   });
 
 
   useEffect(() => {
     if (isSuccess) {
       setFilteredData(fetchedData?.data?.data?.length ? fetchedData.data.data : []);
+      setTotalCount(fetchedData.data.total_count);
     }
   }, [fetchedData, isSuccess]);
 
@@ -201,6 +204,7 @@ const Target: React.FC = () => {
             />
           </div>
         </div>
+        <div className="py-2 text-lg text-green-600">Total Count: {totalCount}</div>
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
           <button
@@ -216,7 +220,12 @@ const Target: React.FC = () => {
       <CentralizedTable
         columns={columns}
         data={filteredData}
-        pageSize={5}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        totalCount={totalCount}
+
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
       />
     </>
   );

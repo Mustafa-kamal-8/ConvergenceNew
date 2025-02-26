@@ -384,6 +384,8 @@ export const assessmentValidationSchema = Joi.object({
     "string.empty": "Batch ID is required.",
   }),
 
+  bAssessed: Joi.number(),
+
   candidateId: Joi.number().required().messages({
     "string.base": `"candidateId" should be a type of 'text'`,
     "any.required": `"candidateId" is a required field`,
@@ -413,10 +415,7 @@ export const assessmentValidationSchema = Joi.object({
   //     "string.email": "Email must be a valid email address.",
   //     "any.required": "Email is required.",
   //   }),
-  vsResult: Joi.string().required().messages({
-    "string.base": `"Result Type" should be a type of 'text'`,
-    "any.required": `"Result Type" is a required field`,
-  }),
+  vsResult: Joi.string(),
   // dtResultDate: Joi.date().required().messages({
   //   "string.base": `"dtResultDate" should be a type of 'text'`,
   //   "any.required": `"dtResultDate" is a required field`,
@@ -460,10 +459,15 @@ export const placementValidationSchema = Joi.object({
     "string.base": `"Is Cnadidate Placed" should be a type of 'text'`,
     "any.required": `"Is Cnadidate Placed"" is a required field`,
   }),
-  vsPlacementType: Joi.string().required().messages({
-    "string.base": `"Placement Type" should be a type of 'text'`,
-    "any.required": `"Placement Type" is a required field`,
-  }),
+  vsPlacementType: Joi.string()
+    .when("bIsCandidatePlaced", {
+      is: 1, // If bIsCandidatePlaced is 1, then this field is required
+      then: Joi.string().required().messages({
+        "string.base": `"Placement Type" should be a type of 'text'`,
+        "any.required": `"Placement Type" is required when candidate is placed`,
+      }),
+      otherwise: Joi.string().allow("").optional(), // Not required if bIsCandidatePlaced is 0
+    }),
   vsEmployeerName: Joi.optional(),
   
   // vsEmployeerName: Joi.string().required().messages({

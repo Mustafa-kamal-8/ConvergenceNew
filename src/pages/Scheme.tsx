@@ -92,14 +92,15 @@ const Scheme: React.FC = () => {
       "schemeData",
       searchKey,
       debouncedSearchValue,
-      ...duplicateQuery,
+     
       currentPage,
       pageSize,
+      ...duplicateQuery,
       duplicatePageSize,
       duplicateCurrentPage
     ],
     queryFn: () =>
-      getTableData("scheme", searchKey, debouncedSearchValue, duplicateQuery, currentPage, pageSize, duplicateCurrentPage, duplicatePageSize),
+      getTableData("scheme", searchKey, debouncedSearchValue,  currentPage, pageSize,duplicateQuery, duplicateCurrentPage, duplicatePageSize),
   });
 
   useEffect(() => {

@@ -108,7 +108,7 @@ export interface BatchFormData {
 
 export type AssessmentFormData = {
   batchId: number;
-
+  bAssessed :  number;
    candidateId: number;
 
   dtAssessmentDate: string;

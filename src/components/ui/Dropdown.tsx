@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
 type DropdownOption = {
@@ -81,14 +82,14 @@ const filteredOptions = options.filter((option) => {
     <div className="relative w-full" ref={dropdownRef}>
       {/* Dropdown Select Box (Shows Selected Value) */}
       <div
-        className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white cursor-pointer flex justify-between items-center ${className}`}
-        onClick={() => setIsOpen(!isOpen)}
-        onKeyDown={handleKeyDown}
-        tabIndex={0} // Makes it focusable for keyboard users
-      >
-        <span>{selectedOption ? getOptionLabel(selectedOption) : placeholder}</span>
-        <span className="ml-2">▼</span>
-      </div>
+  className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white cursor-pointer flex justify-between items-center ${className}`}
+  onClick={() => setIsOpen(!isOpen)}
+  onKeyDown={handleKeyDown}
+  tabIndex={0} // Makes it focusable for keyboard users
+>
+  <span>{selectedOption ? getOptionLabel(selectedOption) : placeholder}</span>
+  <ChevronDown className="w-4 h-4 ml-1" />
+</div>
 
       {isOpen && (
         <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-50">

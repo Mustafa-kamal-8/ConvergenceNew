@@ -8,12 +8,14 @@ export const getTableData = async (
   queryType: string,
   searchKey?: string,
   searchValue?: string,
-  duplicateQuery?: string[],
+  
 
   currentPage: number = 1,
   pageSize: number = 25,
+  duplicateQuery?: string[],
   duplicateCurrentPage : number = 1,
   duplicatePageSize: number = 25
+ 
 ) => {
   // Properly get state here
   const { userDetails } = useAuthStore.getState();
