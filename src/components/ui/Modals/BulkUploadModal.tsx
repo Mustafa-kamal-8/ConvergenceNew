@@ -8,11 +8,14 @@ import useAuthStore from "../../../utils/cookies";
 import axiosInstance from "../../../services/state/api-setup/axiosInstance";
 import { useErrorStore } from "../../../services/useErrorStore";
 import useModalStore from "../../../services/state/useModelStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BulkUploadModalProps {
   bulkName: string;
   onUploadError?: (errorMessage: string) => void;
 }
+
+const queryClient = useQueryClient()
 
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   bulkName,
@@ -94,6 +97,8 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       if (resData.success === true) {
         // toast.success(resData.message);
         handleClearFile();
+        queryClient.invalidateQueries({ queryKey: ["candidateData"] });
+        queryClient.invalidateQueries({ queryKey: ["schemeData"] });
       }
       useErrorStore.getState().setBulkName(bulkName);
 
@@ -118,7 +123,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
         const totalInserted = resData.data.filter(
           (item: any) => item.insertedRow
         ).length;
-        const successMessage = `Total data inserted: ${totalInserted}`;
+        const successMessage = totalInserted > 0 ? `Total data inserted: ${totalInserted}` : "";
 
         // Store in Zustand as an object
         setErrorMessage({ errorMessage, successMessage });

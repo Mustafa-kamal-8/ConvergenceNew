@@ -8,7 +8,7 @@ import { BatchFormData } from "../../../utils/formTypes";
 import { batchSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
 import { toast } from "react-toastify";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMasterData, gettrainerByTc } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
@@ -21,7 +21,7 @@ const BatchModel: React.FC = () => {
 
   const [TcID, setTcId] = useState<number | null>(null);
 
-
+  const queryClient = useQueryClient();
   
   const { control, handleSubmit,watch, setValue, formState: { errors } } = useForm<BatchFormData>({
     resolver: joiResolver(batchSchema),
@@ -142,6 +142,7 @@ const BatchModel: React.FC = () => {
       if (data?.success) {
         closeModal();
         toast.success(data.message || "Scheme submitted successfully!");
+        queryClient.invalidateQueries({ queryKey: ["batchData"] });
       } else {
         toast.error(data.error || "An error occurred while submitting the scheme.");
       }
