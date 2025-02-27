@@ -29,7 +29,6 @@ const PlacementModal: React.FC = () => {
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<PlacementFormData>({
     resolver: joiResolver(placementValidationSchema),
@@ -143,7 +142,7 @@ const queryClient = useQueryClient();
       })
     ) || [];
 
-    const bIsCandidatePlacedValue = watch("bIsCandidatePlaced"); 
+    // const bIsCandidatePlacedValue = watch("bIsCandidatePlaced"); 
 
 
   const mutation = useMutation({
@@ -288,7 +287,7 @@ const queryClient = useQueryClient();
         </div>
 
         {/* Is Candidate Placed? */}
-        <div>
+        {/* <div>
           <Label text="Is Candidate Placed?" required />
           <Controller
             name="bIsCandidatePlaced"
@@ -321,11 +320,11 @@ const queryClient = useQueryClient();
           {errors.bIsCandidatePlaced && (
             <p className="text-red-500">{errors.bIsCandidatePlaced.message}</p>
           )}
-        </div>
+        </div> */}
 
 
         {/* Placement Type */}
-        {bIsCandidatePlacedValue === 1 && (
+       
         <div className="col-span-1">
           <Label text="Placement Type" required />
           <Controller
@@ -351,9 +350,9 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsPlacementType.message}</p>
           )}
         </div>
-        )}
+        
         {/* Employer Name */}
-        {bIsCandidatePlacedValue === 1 && (
+      
         <div>
           <Label text="Employer Name" />
           <Controller
@@ -373,9 +372,9 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsEmployeerName.message}</p>
           )} */}
         </div>
-        )}
+      
         {/* Employer Contact Number */}
-        {bIsCandidatePlacedValue === 1 && (
+       
         <div>
           <Label text="Employer Contact Number" />
           <Controller
@@ -397,9 +396,9 @@ const queryClient = useQueryClient();
             </p>
           )} */}
         </div>
-        )}
+     
         {/* Placement State */}
-        {bIsCandidatePlacedValue === 1 && (
+      
         <div className="col-span-1">
           <Label text="Placement State" />
           <Controller
@@ -425,10 +424,10 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsPlacementState.message}</p>
           )} */}
         </div>
-        )}
+      
 
         {/* Placement District */}
-        {bIsCandidatePlacedValue === 1 && (
+      
         <div className="col-span-1">
           <Label text="Placement District" />
           <Controller
@@ -453,10 +452,10 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsPlacementDistrict.message}</p>
           )} */}
         </div>
-        )}
+       
 
         {/* Monthly Salary */}
-      {bIsCandidatePlacedValue === 1 && (
+     
         <div>
           <Label text="Monthly Salary" />
           <Controller
@@ -476,7 +475,7 @@ const queryClient = useQueryClient();
             <p className="text-red-500">{errors.vsMonthlySalary.message}</p>
           )} */}
         </div>
-        )}
+     
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end bg-gray-100 p-4 rounded-xl">
           <Button

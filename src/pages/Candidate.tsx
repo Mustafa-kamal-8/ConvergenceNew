@@ -109,7 +109,7 @@ const Candidate: React.FC = () => {
     const headersMap = {
       vsCandidateName: "Candidate Name",
       vsDOB: "Date Of Birth",
-      vsUUID: "UUID(Aadhar last 4 DIGIT)",
+      UUID: "UUID(Aadhar last 4 DIGIT)",
       vsMobile: "Mobile",
       vsDepartmentName: "Department Name",
       // vsFatherName: "FATHER 2",

@@ -1054,8 +1054,8 @@ export const candidateColumns = (
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   {
-    Header: "Unique Key*",
-    accessor: "vsCandidateKey",
+    Header: "UUID",
+    accessor: "UUID	",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   // {

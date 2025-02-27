@@ -137,7 +137,7 @@ export interface PlacementFormData {
   // fklTpId: number;
   // fklTcId: number;
   candidateId: number;
-  bIsCandidatePlaced: number;
+  // bIsCandidatePlaced: number;
   vsPlacementType: string;
   vsEmployeerName: string;
   vsEmployeerContactNumber: number;

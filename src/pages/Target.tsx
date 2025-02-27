@@ -43,11 +43,16 @@ const Target: React.FC = () => {
     queryFn: () => getTableData("target", searchKey, debouncedSearchValue, currentPage, pageSize),
   });
 
-
-  useEffect(() => {
+ useEffect(() => {
     if (isSuccess) {
-      setFilteredData(fetchedData?.data?.data?.length ? fetchedData.data.data : []);
-      setTotalCount(fetchedData.data.total_count);
+      if (fetchedData?.data?.data && fetchedData.data.data.length > 0) {
+        setFilteredData(fetchedData.data.data);
+        setTotalCount(fetchedData.data.total_count);
+      } else {
+        setFilteredData([]);
+      }
+
+    
     }
   }, [fetchedData, isSuccess]);
 

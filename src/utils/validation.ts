@@ -455,10 +455,10 @@ export const placementValidationSchema = Joi.object({
     "string.base": `"Candidate ID" should be a type of 'text'`,
     "any.required": `"Candidate ID" is a required field`,
   }),
-  bIsCandidatePlaced: Joi.number().required().messages({
-    "string.base": `"Is Cnadidate Placed" should be a type of 'text'`,
-    "any.required": `"Is Cnadidate Placed"" is a required field`,
-  }),
+  // bIsCandidatePlaced: Joi.number().required().messages({
+  //   "string.base": `"Is Cnadidate Placed" should be a type of 'text'`,
+  //   "any.required": `"Is Cnadidate Placed"" is a required field`,
+  // }),
   vsPlacementType: Joi.string()
     .when("bIsCandidatePlaced", {
       is: 1, // If bIsCandidatePlaced is 1, then this field is required

@@ -15,7 +15,7 @@ interface BulkUploadModalProps {
   onUploadError?: (errorMessage: string) => void;
 }
 
-const queryClient = useQueryClient()
+
 
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   bulkName,
@@ -31,6 +31,8 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
     setFile(null);
     console.log("File cleared");
   };
+
+  const queryClient = useQueryClient()
 
   const handleUpload = async () => {
     if (!file) {
@@ -99,6 +101,17 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
         handleClearFile();
         queryClient.invalidateQueries({ queryKey: ["candidateData"] });
         queryClient.invalidateQueries({ queryKey: ["schemeData"] });
+        queryClient.invalidateQueries({ queryKey: ["assessmentData"] });
+        queryClient.invalidateQueries({ queryKey: ["batchData"] });
+        queryClient.invalidateQueries({ queryKey: ["assessorData"] });
+        queryClient.invalidateQueries({ queryKey: ["courseData"] });
+        queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
+        queryClient.invalidateQueries({ queryKey: ["getCreatedDepartments"] });
+        queryClient.invalidateQueries({ queryKey: ["placementData"] });
+        queryClient.invalidateQueries({ queryKey: ["targetData"] });
+        queryClient.invalidateQueries({ queryKey: ["trainerData"] });
+        queryClient.invalidateQueries({ queryKey: ["tcData"] });
+        queryClient.invalidateQueries({ queryKey: ["tpData"] });
       }
       useErrorStore.getState().setBulkName(bulkName);
 

@@ -119,7 +119,7 @@ const TrainingPartnerModal: React.FC = () => {
         toast.success(
           data.message || "Training Partner submitted successfully!"
         );
-        queryClient.invalidateQueries({ queryKey: ["tcData"] });
+        queryClient.invalidateQueries({ queryKey: ["tpData"] });
       } else {
         toast.error(
           data.message || "An error occurred while submitting the scheme."
