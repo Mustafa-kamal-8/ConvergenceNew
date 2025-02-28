@@ -9,27 +9,30 @@ import { batchSchema } from "../../../utils/validation";
 import Button from "../../ui/SubmitButton";
 import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMasterData, gettrainerByTc } from "../../../services/state/api/masterApi";
+import { getMasterData, getTargetById, gettrainerByTc } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitBatchForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 import { isBefore, parseISO } from "date-fns";
+
 
 const BatchModel: React.FC = () => {
 
   const { closeModal } = useModalStore()
 
   const [TcID, setTcId] = useState<number | null>(null);
+  const [fklTargetId, setTargetId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
-  
-  const { control, handleSubmit,watch, setValue, formState: { errors } } = useForm<BatchFormData>({
+
+  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<BatchFormData>({
     resolver: joiResolver(batchSchema),
   });
 
   const dtStartDate = watch("dtStartDate"); // Watching changes of dtStartDate
 
   const [minEndDate, setMinEndDate] = useState(""); // State to store min date for dtEndDate
+
 
   // Watch for changes in dtStartDate and dynamically set the min date for dtEndDate
   useEffect(() => {
@@ -75,6 +78,27 @@ const BatchModel: React.FC = () => {
     ) || [];
 
 
+
+  const { data: targetData } = useQuery({
+    queryKey: ["targetData", "target"],
+    queryFn: () => getMasterData("target"),
+  });
+
+  useEffect(() => {
+    if (targetData) {
+      console.log("Fetched master data:", masterData);
+    }
+  }, [targetData]);
+
+  const targetOptions =
+    targetData?.data?.result?.BATCH?.map(
+      (tp: { id: number; name: string }) => ({
+        label: tp.name,
+        value: tp.id,
+      })
+    ) || [];
+
+
   //  const { data: tcData } = useQuery({
   //       queryKey: ["masterData", "tc", fklTpId],
   //       queryFn: () => getTcByTp(fklTpId, "tc"),
@@ -114,6 +138,40 @@ const BatchModel: React.FC = () => {
       })
     ) || [];
 
+
+  const { data: targetResponse } = useQuery({
+    queryKey: ["targetResponseData", "targetById", fklTargetId],
+    queryFn: () => getTargetById(fklTargetId, "targetById"),
+    enabled: !!fklTargetId,
+  });
+
+  useEffect(() => {
+    if (targetResponse) {
+      console.log("Fetched master data:", targetResponse);
+    }
+  }, [targetResponse]);
+
+  const availableTarget = targetResponse?.data?.result?.BATCH?.[0]?.availableTarget || 0;
+  const totalTarget = targetResponse?.data?.result?.BATCH?.[0]?.totalTarget || 0;
+
+  const [remainTarget, setRemainTarget] = useState(availableTarget);
+
+  const handleBatchTargetChange = (value: string) => {
+    const enteredValue = Number(value);
+    setRemainTarget(availableTarget - enteredValue);
+  };
+
+
+  // const targetResponse =
+  // targetResponse?.data?.result?.BATCH?.map(
+  //   (tp: { pklConvTrainerId: number; vsTrainerName: string }) => ({
+  //     label: tp.vsTrainerName,
+  //     value: tp.pklConvTrainerId,
+  //   })
+  // ) || [];
+
+
+
   // const { data: sectorData } = useQuery({
   //   queryKey: ["masterData", "sector"], 
   //   queryFn: () => getMasterData("sector"), 
@@ -139,17 +197,21 @@ const BatchModel: React.FC = () => {
   const mutation = useMutation({
     mutationFn: submitBatchForm,
     onSuccess: (data) => {
+
       if (data?.success) {
+        toast.success(data.message || "Batch submitted successfully!");
         closeModal();
-        toast.success(data.message || "Scheme submitted successfully!");
         queryClient.invalidateQueries({ queryKey: ["batchData"] });
       } else {
-        toast.error(data.error || "An error occurred while submitting the scheme.");
+        toast.error(
+          data.message || "An error occurred while submitting the Trainer."
+        );
       }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.error || "An unknown error occurred.";
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
       toast.error(errorMessage);
     },
   });
@@ -242,6 +304,83 @@ const BatchModel: React.FC = () => {
           )}
         </div>
 
+        <div className="col-span-1">
+          <Label text="Target" required />
+          <Controller
+            name="fklTargetId"
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                {...field}
+                options={targetOptions} // Pass full objects with label and value
+                getOptionLabel={(option) => option.label} // Display the `label`
+                getOptionValue={(option) => option.value} // Use the `value` (stateID)
+                onSelect={(selectedOption) => {
+                  field.onChange(selectedOption.value); // Update form with selected stateID
+                  setTargetId(selectedOption.value); // Update the stateID in local state
+                  setValue("fklTargetId", selectedOption.value); // Sync form value
+                }}
+                className={errors.fklTargetId ? "border-red-500" : ""}
+                placeholder="-- Select Target --"
+              />
+            )}
+          />
+          {errors.fklTargetId && (
+            <p className="text-red-500">{errors.fklTargetId.message}</p>
+          )}
+
+          <div className="mt-1 mb-2 flex gap-2 items-center justify-between">
+            <p className="text-gray-500 text-xs">Target </p>
+            <div className="">
+              <p className="text-gray-500 font-semibold text-xs">
+                {fklTargetId ? (
+                  <span className="text-gray-500 font-medium">
+                    {availableTarget} / {totalTarget}
+                  </span>
+                ) : (
+                  <span className="text-gray-500 font-medium">0 / 0</span>
+                )}
+
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <Label text="Batch Target" required />
+          <Controller
+  name="iBatchTarget"
+  control={control}
+  render={({ field }) => (
+    <Input
+      {...field}
+      type="number"
+      className={errors.iBatchTarget ? "border-red-500" : ""}
+      onChange={(e) => {
+        field.onChange(e); // Update form state
+        handleBatchTargetChange(e.target.value); // Update remaining target
+      }}
+    />
+  )}
+/>
+          {errors.iBatchTarget && <p className="text-red-500">{errors.iBatchTarget.message}</p>}
+          <div className="mt-1 mb-2 flex gap-2 items-center justify-between">
+            <p className="text-gray-500 text-xs">Remaining </p>
+            <div className="">
+              <p className="text-gray-500 font-semibold text-xs">
+                {fklTargetId ? (
+                  <span className="text-gray-500 font-medium">
+                    {remainTarget} / {availableTarget}
+                  </span>
+                ) : (
+                  <span className="text-gray-500 font-medium">0 / 0</span>
+                )}
+
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div>
           <Label text="Batch Number" required />
           <Controller
@@ -264,54 +403,54 @@ const BatchModel: React.FC = () => {
         </div>
 
         <div className="col-span-1">
-        <Label text="Batch Start Date" required />
-        <Controller
-          name="dtStartDate"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="date"
-              value={field.value || ""}
-              className={errors.dtStartDate ? "border-red-500" : ""}
-            />
+          <Label text="Batch Start Date" required />
+          <Controller
+            name="dtStartDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                value={field.value || ""}
+                className={errors.dtStartDate ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.dtStartDate && (
+            <p className="text-red-500">{errors.dtStartDate.message}</p>
           )}
-        />
-        {errors.dtStartDate && (
-          <p className="text-red-500">{errors.dtStartDate.message}</p>
-        )}
-      </div>
+        </div>
 
-      {/* Batch End Date */}
-      <div className="col-span-1">
-        <Label text="Batch End Date" required />
-        <Controller
-          name="dtEndDate"
-          control={control}
-          rules={{
-            validate: (value) => {
-              if (!dtStartDate) return "Select 'Batch Start Date' first";
-              if (isBefore(parseISO(value), parseISO(dtStartDate))) {
-                return "Batch End Date must be after Batch Start Date";
-              }
-              return true;
-            },
-          }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="date"
-              value={field.value || ""}
-              min={minEndDate || ""} // Set min to Batch Start Date
-              disabled={!dtStartDate} // Disable Batch End Date if no Batch Start Date is selected
-              className={errors.dtEndDate ? "border-red-500" : ""}
-            />
+        {/* Batch End Date */}
+        <div className="col-span-1">
+          <Label text="Batch End Date" required />
+          <Controller
+            name="dtEndDate"
+            control={control}
+            rules={{
+              validate: (value) => {
+                if (!dtStartDate) return "Select 'Batch Start Date' first";
+                if (isBefore(parseISO(value), parseISO(dtStartDate))) {
+                  return "Batch End Date must be after Batch Start Date";
+                }
+                return true;
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                value={field.value || ""}
+                min={minEndDate || ""} // Set min to Batch Start Date
+                disabled={!dtStartDate} // Disable Batch End Date if no Batch Start Date is selected
+                className={errors.dtEndDate ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.dtEndDate && (
+            <p className="text-red-500">{errors.dtEndDate.message}</p>
           )}
-        />
-        {errors.dtEndDate && (
-          <p className="text-red-500">{errors.dtEndDate.message}</p>
-        )}
-      </div>
+        </div>
         {/* {/* <div className="col-span-1">
           <Label text="Training Partner" />
           <Controller

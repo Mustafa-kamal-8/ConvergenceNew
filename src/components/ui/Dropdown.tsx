@@ -7,7 +7,7 @@ type DropdownOption = {
 };
 
 type DropdownProps = {
-  options?: DropdownOption[]; // Made optional to prevent undefined error
+  options?: DropdownOption[]; // Optional to prevent undefined error
   getOptionLabel?: (option: DropdownOption) => string;
   getOptionValue?: (option: DropdownOption) => number | string;
   onSelect: (selectedValue: DropdownOption) => void;
@@ -16,7 +16,7 @@ type DropdownProps = {
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
-  options = [], // Default to empty array to prevent errors
+  options = [],
   getOptionLabel = (option) => option.label,
   getOptionValue = (option) => option.value,
   onSelect,
@@ -27,20 +27,22 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [dropdownDirection, setDropdownDirection] = useState<"down" | "up">("down");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
   // Filter options based on search input
- // Ensure getOptionLabel always returns a string
-const filteredOptions = options.filter((option) => {
-  const label = getOptionLabel(option);
-  return typeof label === "string" ? label.toLowerCase().includes(searchText.toLowerCase()) : false;
-});
-
-
+  const filteredOptions = options.filter((option) =>
+    String(getOptionLabel(option) || "").toLowerCase().includes(searchText.toLowerCase())
+  );
+  
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -78,21 +80,42 @@ const filteredOptions = options.filter((option) => {
     setSearchText("");
   };
 
+  // Adjust dropdown position dynamically
+  useEffect(() => {
+    if (isOpen && dropdownRef.current && dropdownMenuRef.current) {
+      const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const dropdownMenuHeight = dropdownMenuRef.current.offsetHeight;
+      const windowHeight = window.innerHeight;
+
+      if (dropdownRect.bottom + dropdownMenuHeight > windowHeight) {
+        setDropdownDirection("up");
+      } else {
+        setDropdownDirection("down");
+      }
+    }
+  }, [isOpen]);
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Dropdown Select Box (Shows Selected Value) */}
+      {/* Dropdown Select Box */}
       <div
-  className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white cursor-pointer flex justify-between items-center ${className}`}
-  onClick={() => setIsOpen(!isOpen)}
-  onKeyDown={handleKeyDown}
-  tabIndex={0} // Makes it focusable for keyboard users
->
-  <span>{selectedOption ? getOptionLabel(selectedOption) : placeholder}</span>
-  <ChevronDown className="w-4 h-4 ml-1" />
-</div>
+        className={`w-full px-4 py-2.5 border border-gray-300 rounded-md bg-white cursor-pointer flex justify-between items-center ${className}`}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0} // Makes it focusable for keyboard users
+      >
+        <span>{selectedOption ? getOptionLabel(selectedOption) : placeholder}</span>
+        <ChevronDown className="w-4 h-4 ml-1" />
+      </div>
 
       {isOpen && (
-        <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-50">
+        <div
+          ref={dropdownMenuRef}
+          className={`absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 ${
+            dropdownDirection === "up" ? "bottom-full mb-1" : "top-full mt-1"
+          }`}
+          style={{ maxHeight: "200px", overflowY: "auto" }} // Fixed height with scroll
+        >
           {/* Search Input */}
           <input
             type="text"

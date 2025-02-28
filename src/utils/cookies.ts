@@ -8,6 +8,7 @@ interface UserDetails {
   departmentId: string;
   adminLoginId: string;
   isDept: string;
+  vsDepartmentName	: string
 }
 
 // Define the Zustand store interface

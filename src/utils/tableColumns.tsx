@@ -908,20 +908,20 @@ export const departmentListColumns: Column<DepartmentListData>[] = [
     Cell: ({ value }) => value ?? "N/A",
   },
   {
-    Header: "Password",
-    accessor: "password",
+    Header: "Created By",
+    accessor: "createdBY",
     Cell: ({ value }) => value ?? "N/A",
   },
   {
-    Header: "Created Time",
+    Header: "Created At",
     accessor: "createdDate",
     Cell: ({ value }) => moment(value).format("YYYY-MM-DD") ?? "N/A",
   },
-  {
-    Header: "Created By",
-    accessor: "adminName",
-    Cell: ({ value }) => value ?? "N/A",
-  },
+  // {
+  //   Header: "Created By",
+  //   accessor: "adminName",
+  //   Cell: ({ value }) => value ?? "N/A",
+  // },
  
   {
     Header: "Status",

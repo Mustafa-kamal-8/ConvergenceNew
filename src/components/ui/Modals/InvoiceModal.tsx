@@ -9,18 +9,18 @@ import Input from "../Input";
 import Button from "../../ui/SubmitButton";
 import "../../../custom.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getBatch, getMasterData} from "../../../services/state/api/masterApi";
+import { getBatch, getMasterData } from "../../../services/state/api/masterApi";
 import Dropdown from "../Dropdown";
 import { submitInvoiceForm } from "../../../services/state/api/FormApi";
 import useModalStore from "../../../services/state/useModelStore";
 import { format, isAfter } from "date-fns";
 const InvoiceModal: React.FC = () => {
 
-  
-    const [fklTcId, setTcId] = useState<number | null>(null); 
- 
-const {closeModal} = useModalStore()
-const queryClient = useQueryClient();
+
+  const [fklTcId, setTcId] = useState<number | null>(null);
+
+  const { closeModal } = useModalStore()
+  const queryClient = useQueryClient();
 
   const {
     control,
@@ -45,69 +45,70 @@ const queryClient = useQueryClient();
       })
     ) || [];
 
-    
-    
-    
-      const { data: tcData } = useQuery({
-        queryKey: ["masterData", "AllDeptTc"], 
-        queryFn: () => getMasterData("AllDeptTc"), 
-      });
+
+
+
+  const { data: tcData } = useQuery({
+    queryKey: ["masterData", "AllDeptTc"],
+    queryFn: () => getMasterData("AllDeptTc"),
+  });
+
+  useEffect(() => {
+    if (masterData) {
+      console.log("Fetched master data:", masterData);
+    }
+  }, [masterData]);
+
+  const tcOptions =
+    tcData?.data?.result?.tc?.map(
+      (tp: { pklTcId: number; vsTcName: string }) => ({
+        label: tp.vsTcName,
+        value: tp.pklTcId,
+      })
+    ) || [];
+
+
+  const { data: batchData } = useQuery({
+    queryKey: ["getBatch", "TcBatch", fklTcId],
+    queryFn: () => getBatch("TcBatch", fklTcId),
+    enabled: !!fklTcId,
+  });
+
+  const batchOptions =
+    batchData?.data?.result?.batch?.map(
+      (batch: { pklBatchId: number; iBatchNumber: number }) => ({
+        label: batch.iBatchNumber,
+        value: batch.pklBatchId,
+      })
+    ) || [];
+
+  const mutation = useMutation({
+    mutationFn: submitInvoiceForm,
+    onSuccess: (data) => {
       
-       useEffect(() => {
-         if (masterData) {
-          console.log("Fetched master data:", masterData);
-         }
-       }, [masterData]);
-    
-       const tcOptions =
-       tcData?.data?.result?.tc?.map(
-        (tp: { pklTcId: number; vsTcName: string }) => ({
-          label: tp.vsTcName,
-          value: tp.pklTcId,
-        })
-      ) || [];
-
-
-              const { data: batchData } = useQuery({
-                queryKey: ["getBatch", "TcBatch",  fklTcId],
-                queryFn: () => getBatch("TcBatch", fklTcId),
-                enabled: !!fklTcId ,
-              });
-            
-              const batchOptions =
-                batchData?.data?.result?.batch?.map(
-                  (batch: { pklBatchId: number; iBatchNumber: number }) => ({
-                    label: batch.iBatchNumber,
-                    value: batch.pklBatchId,
-                  })
-                ) || [];
-
-    const mutation = useMutation({
-      mutationFn: submitInvoiceForm,
-      onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data.message || "Assesment submitted successfully!");
         closeModal();
-        if (data?.success) {
-          toast.success(data.message || "Assesment submitted successfully!");
-          queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
-        } else {
-          toast.error(
-            data.message || "An error occurred while submitting the Trainer."
-          );
-        }
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onError: (error: any) => {
-        const errorMessage =
-          error?.response?.data?.message || "An unknown error occurred.";
-        toast.error(errorMessage);
-      },
-    });
-  
-    const onSubmit: SubmitHandler<InvoiceFormData> = (
-      data: InvoiceFormData
-    ) => {
-      mutation.mutate(data);
-    };
+        queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
+      } else {
+        toast.error(
+          data.message || "An error occurred while submitting the Trainer."
+        );
+      }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "An unknown error occurred.";
+      toast.error(errorMessage);
+    },
+  });
+
+  const onSubmit: SubmitHandler<InvoiceFormData> = (
+    data: InvoiceFormData
+  ) => {
+    mutation.mutate(data);
+  };
 
   return (
     <div className="px-4 py-4 md:px-6 lg:px-12 overflow-auto max-h-[450px] max-w-full">
@@ -115,9 +116,9 @@ const queryClient = useQueryClient();
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 py-4"
       >
-       
 
-       <div className="col-span-1">
+
+        <div className="col-span-1">
           <Label text="Training Center" required />
           <Controller
             name="fklTcId"
@@ -125,13 +126,13 @@ const queryClient = useQueryClient();
             render={({ field }) => (
               <Dropdown
                 {...field}
-                options={tcOptions} 
-                getOptionLabel={(option) => option.label} 
+                options={tcOptions}
+                getOptionLabel={(option) => option.label}
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
-                  field.onChange(selectedOption.value); 
+                  field.onChange(selectedOption.value);
                   setTcId(selectedOption.value);
-                  setValue("fklTcId", selectedOption.value); 
+                  setValue("fklTcId", selectedOption.value);
                 }}
                 className={errors.fklTcId ? "border-red-500" : ""}
                 placeholder="-- Select Training Center --"
@@ -156,7 +157,7 @@ const queryClient = useQueryClient();
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                
+
                   setValue("fklBatchId", selectedOption.value);
                 }}
                 className={errors.fklBatchId ? "border-red-500" : ""}
@@ -172,7 +173,7 @@ const queryClient = useQueryClient();
 
         {/* Invoice Type */}
         <div className="col-span-1">
-          <Label text="Invoice Type" required/>
+          <Label text="Invoice Type" required />
           <Controller
             name="fklInvoiceType"
             control={control}
@@ -184,7 +185,7 @@ const queryClient = useQueryClient();
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                 
+
                   setValue("fklInvoiceType", selectedOption.value);
                 }}
                 className={errors.fklInvoiceType ? "border-red-500" : ""}
@@ -282,7 +283,7 @@ const queryClient = useQueryClient();
 
         {/* Rate */}
         <div className="col-span-1">
-          <Label text="Rate"  />
+          <Label text="Rate" />
           <Controller
             name="fRate"
             control={control}

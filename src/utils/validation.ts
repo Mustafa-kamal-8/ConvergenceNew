@@ -368,6 +368,12 @@ export const batchSchema = Joi.object({
   fklCourseId: Joi.number().required().label("Course ID").messages({
     "string.empty": "Course ID is required.",
   }),
+  fklTargetId: Joi.number().required().label("Target ID").messages({
+    "string.empty": "Target ID is required.",
+  }),
+  iBatchTarget: Joi.number().required().label("Batch Target").messages({
+    "string.empty": "Batch Target is required.",
+  }),
   // fklTpId: Joi.number().required().label("Training Partner ID").messages({
   //   "string.empty": "Training Partner ID is required.",
   // }),

@@ -152,18 +152,24 @@ const queryClient = useQueryClient();
 
  const submitMutation = useMutation({
     mutationFn: (data: TrainingCenterFormData) => submitTraningCenterForm({ ...data }), 
-    onSuccess: (response) => {
-     
-      const successMessage = response?.message || "Target submitted successfully!";
-      closeModal();
-      toast.success(successMessage);
-      queryClient.invalidateQueries({ queryKey: ["tcData"] });
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || "An error occurred!";
-      toast.error(errorMessage);
-    },
-  });
+    onSuccess: (data) => {
+         if (data?.success) {
+           closeModal();
+           toast.success(data.message || "Training Center submitted successfully!");
+           queryClient.invalidateQueries({ queryKey: ["tcData"] });
+         } else {
+           toast.error(
+             data.message || "An error occurred while submitting the Training Center."
+           );
+         }
+       },
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       onError: (error: any) => {
+         const errorMessage =
+           error?.response?.data?.message || "An unknown error occurred.";
+         toast.error(errorMessage);
+       },
+     });
   
   
   

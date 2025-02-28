@@ -60,6 +60,7 @@ const CreateDepartment = () => {
           modalTitle="Add Login Creation"
           bulkName="LoginCreation"
           Icon={Add}
+          disabled={true} 
         />
       </div>
       <div className="w-full">

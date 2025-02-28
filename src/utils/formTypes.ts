@@ -100,6 +100,8 @@ export interface BatchFormData {
   dtEndDate: string;
   // fklSectorId: number;
   // QPNOS: string;
+  fklTargetId : number;
+  iBatchTarget: number;
   fklCourseId: number;
   fklTpId: number;
   fklTcId: number;

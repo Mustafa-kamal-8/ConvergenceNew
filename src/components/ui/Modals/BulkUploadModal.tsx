@@ -133,28 +133,29 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
         const errorMessage = `Errors occurred:\n${errorDetails}`;
 
         // Count inserted rows
-        const totalInserted = resData.data.filter(
-          (item: any) => item.insertedRow
-        ).length;
+        const totalInserted = resData.data.reduce(
+          (sum: number, item: any) => sum + (item.insertedRow || 0), 
+          0
+        );
         const successMessage = totalInserted > 0 ? `Total data inserted: ${totalInserted}` : "";
 
-        // Store in Zustand as an object
+       
         setErrorMessage({ errorMessage, successMessage });
 
-        // Call error callback if provided
+       
         onUploadError?.(errorMessage);
       } else {
-        // Success case: No errors, all data processed successfully
-        const totalInserted = resData.data[0].insertedRow; // Count all inserted rows
+        
+        const totalInserted = resData.data[0].insertedRow; 
         const successMessage = `All Data processed successfully. Total inserted: ${totalInserted}`;
 
-        setErrorMessage({ errorMessage: "", successMessage }); // Clear error message on success
+        setErrorMessage({ errorMessage: "", successMessage }); 
       }
 
-      // Call closeModal() after processing response
+      
       closeModal();
 
-      // Call closeModal() after processing response
+    
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

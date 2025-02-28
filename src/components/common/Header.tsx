@@ -53,15 +53,17 @@ const Header = ({
           </button> */}
           {userDetails ? (
             <div className="relative">
-              <div
-                className="flex items-center gap-2 border px-4 py-1 rounded-lg shadow-sm bg-gray-50 cursor-pointer"
-                onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown visibility
-              >
-                <span className="text-sm font-medium text-gray-700 capitalize
-                ">
-                  {userDetails.username}
-                </span>
-              </div>
+            <div className="relative flex items-center gap-3 border px-4 py-1 rounded-lg shadow-sm bg-gray-50 cursor-pointer"
+     onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown visibility
+>
+  <span className="text-sm  text-gray-700 capitalize font-bold">
+    {userDetails.vsDepartmentName}
+  </span>
+  <span className="text-sm font-medium text-gray-700 capitalize">
+    {userDetails.username}
+  </span>
+</div>
+
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg border rounded-lg">
                   <button

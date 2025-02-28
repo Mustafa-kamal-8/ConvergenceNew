@@ -36,11 +36,11 @@ const Login = () => {
       });
   
       if (response.data.success) {
-        const { token, departmentId, adminLoginId, adminName, isDept } =
+        const { token, departmentId, adminLoginId, adminName,vsDepartmentName	, isDept } =
           response.data.data;
   
         // Store in Zustand and cookies
-        setAuth(token, { username: adminName, departmentId, adminLoginId, isDept });
+        setAuth(token, { username: adminName, departmentId,vsDepartmentName	, adminLoginId, isDept });
   
         toast.success(response.data.message || 'Login Successful!');
         if (type === 'create') {

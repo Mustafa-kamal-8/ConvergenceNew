@@ -60,6 +60,23 @@ export const gettrainerByTc = async (TcID: number|null, queryType: string) => {
   return response.data;
 };
 
+export const getTargetById = async (fklTargetId: number|null, queryType: string) => {
+  const { userDetails } = useAuthStore.getState();
+
+  if (!userDetails) {
+    throw new Error("User details are not available in the store.");
+  }
+
+  const response = await axiosInstance.post("/master/get", {
+    fklDepartmentId: userDetails.departmentId,
+    fklTargetId, 
+    queryType
+  });
+
+  return response.data;
+};
+
+
 export const getCourseByTc = async (fklTcId: number|null, queryType: string) => {
   const { userDetails } = useAuthStore.getState();
 
