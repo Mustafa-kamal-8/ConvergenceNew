@@ -111,9 +111,10 @@ const queryClient = useQueryClient();
 
   const candidateOptions =
     candidateData?.data?.result?.candidateByBatchId?.map(
-      (tc: { id: number; name: string }) => ({
+      (tc: { id: number; name: string ; status: number  }) => ({
         label: tc.name,
         value: tc.id,
+        disabled: tc.status === 1,
       })
     ) || [];
 
@@ -272,6 +273,7 @@ const queryClient = useQueryClient();
                 options={candidateOptions}
                 getOptionLabel={(option) => option.label}
                 getOptionValue={(option) => option.value}
+                isOptionDisabled={(option) => option.disabled ?? false}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
                   setValue("candidateId", selectedOption.value);
@@ -474,6 +476,25 @@ const queryClient = useQueryClient();
           {/* {errors.vsMonthlySalary && (
             <p className="text-red-500">{errors.vsMonthlySalary.message}</p>
           )} */}
+        </div>
+
+        <div className="col-span-1">
+          <Label text="Appointment Date" />
+          <Controller
+            name="dtAppointmentDate"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="date"
+                value={field.value || ""}
+                className={errors.dtAppointmentDate ? "border-red-500" : ""}
+              />
+            )}
+          />
+          {errors.dtAppointmentDate && (
+            <p className="text-red-500">{errors.dtAppointmentDate.message}</p>
+          )}
         </div>
      
         {/* Submit Button */}

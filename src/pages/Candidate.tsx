@@ -25,8 +25,12 @@ const Candidate: React.FC = () => {
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
   const { bulkName } = useErrorStore();
+//   const totalRows = useErrorStore((state) => state.totalRows);
+// const insertedRows = useErrorStore((state) => state.insertedRows);
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
   const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
+  const {  statusColor} = useErrorStore();
+
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchKeyLabel, setSearchKeyLabel] = useState<string>("");
@@ -37,8 +41,8 @@ const Candidate: React.FC = () => {
   const [pageSize, setPageSize] = useState(25);
   const [duplicateData, setDuplicateData] = useState([]);
   const [duplicatePageSize, setDuplicatePageSize] = useState(25);
-   const [duplicateCurrentPage, setDuplicateCurrentPage] = useState(1);
- const [totalDuplicateCount, setSuplicateTotalCount] = useState(0);
+  const [duplicateCurrentPage, setDuplicateCurrentPage] = useState(1);
+  const [totalDuplicateCount, setSuplicateTotalCount] = useState(0);
 
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsCandidateName: boolean;
@@ -53,6 +57,8 @@ const Candidate: React.FC = () => {
     vsMobile: false,
     vsGender: true,
   });
+
+  const [duplicateType, setDuplicateType] = useState<string>("ownDept"); 
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -75,8 +81,8 @@ const Candidate: React.FC = () => {
 
 
   const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, currentPage, pageSize, ...duplicateQuery,duplicateCurrentPage,duplicatePageSize],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, currentPage, pageSize,duplicateQuery,duplicateCurrentPage,duplicatePageSize),
+    queryKey: ["candidateData", searchKey, debouncedSearchValue, currentPage, pageSize, ...duplicateQuery, duplicateCurrentPage, duplicatePageSize ,duplicateType],
+    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery, duplicateCurrentPage, duplicatePageSize,duplicateType),
   });
 
   useEffect(() => {
@@ -97,7 +103,7 @@ const Candidate: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
- 
+
 
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
@@ -129,7 +135,7 @@ const Candidate: React.FC = () => {
       endDate: "Batch End Date",
       courseName: "Course Name",
       courseCode: "Course Code",
-       TC: "TC",
+      TC: "TC",
       // tcPartnerCode: "TP Code",
       // tcSpocName: "TC SPOC Name",
       // tcSpocContactNo: "TC SPOC Contact No",
@@ -160,7 +166,7 @@ const Candidate: React.FC = () => {
       // tpULB: "TP ULB",
       // tpSmartId: "TP Smart ID",
       sector: "Sector",
-       candidatePlaced: "Candidate PLaced",
+      candidatePlaced: "Candidate PLaced",
       employeerName: "Employee Name",
       // EmployeerContactNumber: "Employer Contact Number",
       placementType: "Placement Type",
@@ -244,32 +250,52 @@ const Candidate: React.FC = () => {
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Candidates</p>
         {bulkName === "candidate" && (
-          <>
-            {successMessage && (
-              <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
-                  <p>{successMessage}</p>
-                </div>
-                <button onClick={clearSuccessMessage} className="absolute right-4 top-2">
-                  <X className="w-5 h-5 text-green-700 cursor-pointer" />
-                </button>
-              </div>
-            )}
+  <>
+    {successMessage  && (
+    <div
+      className={`m-2 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative
+      ${statusColor === "g" ? "bg-green-100 text-green-600" : ""}
+      ${statusColor === "y" ? "bg-blue-100 text-blue-600" : ""}
+      ${statusColor === "r" ? "bg-red-100 text-red-600" : ""}`}
+    >
+      <div className="flex items-center">
+        {statusColor === "g" && <CheckCircle className="w-5 h-5 text-green-700 mr-2" />}
+        {statusColor === "y" && <AlertCircle className="w-5 h-5 text-blue-900 mr-2" />}
+        {statusColor === "r" && <AlertCircle className="w-5 h-5 text-red-700 mr-2" />}
+        
+        <p
+          style={{ color: statusColor }}
+          dangerouslySetInnerHTML={{ __html: successMessage ? successMessage.replace(/\n/g, "<br />") : successMessage }}
+        ></p>
+      </div>
+      <button
+        onClick={clearSuccessMessage}
+        className="absolute right-4 top-2"
+      >
+        <X
+          className={`w-5 h-5 cursor-pointer 
+          ${statusColor === "g" ? "text-green-700" : ""}
+          ${statusColor === "y" ? "text-yellow-700" : ""}
+          ${statusColor === "r" ? "text-red-700" : ""}`}
+        />
+      </button>
+    </div>
+  )}
 
-            {errorMessage && (
-              <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-                <div className="flex items-center">
-                  <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
-                  <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
-                </div>
-                <button onClick={clearErrorMessage} className="absolute right-4 top-2">
-                  <X className="w-5 h-5 text-red-700 cursor-pointer" />
-                </button>
-              </div>
-            )}
-          </>
-        )}
+    {errorMessage && (
+      <div className="bg-red-100  text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full  relative">
+        <div className="flex items-center">
+          <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+          <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
+        </div>
+        <button onClick={clearErrorMessage} className="absolute right-4 top-2">
+          <X className="w-5 h-5 text-red-700 cursor-pointer" />
+        </button>
+      </div>
+    )}
+
+  </>
+)}
 
 
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
@@ -349,7 +375,7 @@ const Candidate: React.FC = () => {
           </div>
         </div>
         <div className="py-2 text-lg text-green-600">
-          Total Count: {totalCount} 
+          Total Count: {totalCount}
         </div>
       </div>
       <div className="pt-10">
@@ -445,6 +471,18 @@ const Candidate: React.FC = () => {
             </label>
 
           </div>
+          <div className="mb-4">
+       
+        <SearchDropdown
+          options={[
+            { label: "Own Department", value: "ownDept" },
+            { label: "Cross Department", value: "crossDept" },
+          ]}
+          onSelect={(option) => setDuplicateType(option.value)}
+          selected={duplicateType}
+         
+        />
+      </div>
           <div>
             <button
               className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 type DropdownOption = {
   label: string;
   value: number;
+  disabled?: boolean;
 };
 
 type DropdownProps = {
@@ -13,6 +14,7 @@ type DropdownProps = {
   onSelect: (selectedValue: DropdownOption) => void;
   className?: string;
   placeholder?: string;
+  isOptionDisabled?: (option: DropdownOption) => boolean;
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -21,6 +23,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   getOptionValue = (option) => option.value,
   onSelect,
   className,
+  isOptionDisabled,
   placeholder = "Select an option",
 }) => {
   const [searchText, setSearchText] = useState("");
@@ -129,23 +132,28 @@ const Dropdown: React.FC<DropdownProps> = ({
 
           {/* Dropdown Options */}
           <ul className="max-h-40 overflow-y-auto">
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option, index) => (
-                <li
-                  key={getOptionValue(option)}
-                  className={`px-4 py-2 cursor-pointer ${
-                    index === highlightedIndex ? "bg-blue-100" : "hover:bg-gray-200"
-                  }`}
-                  onClick={() => handleSelect(option)}
-                  onMouseEnter={() => setHighlightedIndex(index)}
-                >
-                  {getOptionLabel(option)}
-                </li>
-              ))
-            ) : (
-              <li className="px-4 py-2 text-gray-500">No results found</li>
-            )}
-          </ul>
+  {filteredOptions.length > 0 ? (
+    filteredOptions.map((option, index) => (
+      <li
+        key={getOptionValue(option)}
+        className={`px-4 py-2 cursor-pointer ${
+          index === highlightedIndex ? "bg-blue-100" : "hover:bg-gray-200"
+        } ${isOptionDisabled && isOptionDisabled(option) ? "text-gray-400 cursor-not-allowed" : ""}`} // Apply disabled styles
+        onClick={() => {
+          if (!isOptionDisabled || !isOptionDisabled(option)) {
+            handleSelect(option);
+          }
+        }}
+        onMouseEnter={() => setHighlightedIndex(index)}
+      >
+        {getOptionLabel(option)}
+      </li>
+    ))
+  ) : (
+    <li className="px-4 py-2 text-gray-500">No results found</li>
+  )}
+</ul>
+
         </div>
       )}
     </div>

@@ -79,7 +79,7 @@ export interface AssessorFormData {
   vsAssessmentAgency: string;
   dtValidUpTo: string;
   vsPAN: string;
-  QPNOS: string | number;
+  fklCourseId: string | number;
 }
 
 export interface TrainerFormData {
@@ -146,6 +146,7 @@ export interface PlacementFormData {
   vsPlacementState: number;
   vsPlacementDistrict: number;
   vsMonthlySalary: number;
+  dtAppointmentDate:string;
 }
 
 export interface InvoiceFormData {

@@ -14,7 +14,8 @@ export const getTableData = async (
   pageSize: number = 25,
   duplicateQuery?: string[],
   duplicateCurrentPage : number = 1,
-  duplicatePageSize: number = 25
+  duplicatePageSize: number = 25,
+  duplicateType: string = "ownDept" 
  
 ) => {
   // Properly get state here
@@ -31,7 +32,8 @@ export const getTableData = async (
     skip: currentPage - 1, 
     take: pageSize, 
     duplicate_skip: duplicateCurrentPage - 1,
-    duplicate_take: duplicatePageSize
+    duplicate_take: duplicatePageSize,
+    duplicateType
   };
 
   if (duplicateQuery && duplicateQuery.length > 0) {

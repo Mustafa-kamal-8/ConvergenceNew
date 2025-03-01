@@ -280,8 +280,8 @@ export const assessorSchema = Joi.object({
   vsPAN: Joi.string().required().label("PAN").messages({
     "string.empty": "PAN is required.",
   }),
-  QPNOS: Joi.string().required().label("PAN").messages({
-    "string.empty": "PAN is required.",
+  fklCourseId: Joi.number().required().label("QPNOS").messages({
+    "string.empty": "QPNOS is required.",
   }),
   vsEmail: Joi.string()
     .email({ tlds: { allow: false } })
@@ -457,6 +457,8 @@ export const placementValidationSchema = Joi.object({
     "string.base": `"Batch ID" should be a type of 'text'`,
     "any.required": `"Batch ID" is a required field`,
   }),
+  dtAppointmentDate: Joi.string().optional(),
+
   candidateId: Joi.number().required().messages({
     "string.base": `"Candidate ID" should be a type of 'text'`,
     "any.required": `"Candidate ID" is a required field`,

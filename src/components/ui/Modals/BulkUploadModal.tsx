@@ -19,12 +19,12 @@ interface BulkUploadModalProps {
 
 const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   bulkName,
-  onUploadError,
+
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const { setErrorMessage } = useErrorStore.getState();
+  useErrorStore.getState();
   const { closeModal } = useModalStore();
 
   const handleClearFile = () => {
@@ -39,6 +39,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       toast.error("Please select a file before uploading.");
       return;
     }
+
     const { userDetails } = useAuthStore.getState();
     if (!userDetails || !userDetails?.departmentId) {
       toast.error("User details or department ID is missing.");
@@ -46,124 +47,114 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       return;
     }
 
-    console.log("File data before upload:", file);
-    console.log("File name:", file.name);
-    console.log("File size:", file.size);
-    console.log("File type:", file.type);
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = e.target?.result;
-      if (data instanceof ArrayBuffer) {
-        if (
-          file.type ===
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-          file.type === "application/vnd.ms-excel"
-        ) {
-          const workbook = XLSX.read(data, { type: "binary" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
-          console.log("Parsed Excel data:", jsonData);
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const updatedData = jsonData.map((row: any) => {
-            return {
-              ...row,
-            };
-          });
-
-          console.log("Updated parsed Excel data:", updatedData);
-        }
-      } else {
-        console.error("File could not be read as ArrayBuffer.");
-      }
-    };
-    if (file) {
-      reader.readAsArrayBuffer(file);
-    }
-
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", bulkName);
-      formData.append("fklDepartmentId", userDetails?.departmentId);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const data = e.target?.result;
+        if (data instanceof ArrayBuffer) {
+          if (
+            file.type ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+            file.type === "application/vnd.ms-excel"
+          ) {
+            const workbook = XLSX.read(data, { type: "binary" });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-      var { data: resData } = await axiosInstance.post(
-        `/file-upload/upload`,
-        formData,
-        {}
-      );
-      if (resData.success === true) {
-        // toast.success(resData.message);
-        handleClearFile();
-        queryClient.invalidateQueries({ queryKey: ["candidateData"] });
-        queryClient.invalidateQueries({ queryKey: ["schemeData"] });
-        queryClient.invalidateQueries({ queryKey: ["assessmentData"] });
-        queryClient.invalidateQueries({ queryKey: ["batchData"] });
-        queryClient.invalidateQueries({ queryKey: ["assessorData"] });
-        queryClient.invalidateQueries({ queryKey: ["courseData"] });
-        queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
-        queryClient.invalidateQueries({ queryKey: ["getCreatedDepartments"] });
-        queryClient.invalidateQueries({ queryKey: ["placementData"] });
-        queryClient.invalidateQueries({ queryKey: ["targetData"] });
-        queryClient.invalidateQueries({ queryKey: ["trainerData"] });
-        queryClient.invalidateQueries({ queryKey: ["tcData"] });
-        queryClient.invalidateQueries({ queryKey: ["tpData"] });
-      }
-      useErrorStore.getState().setBulkName(bulkName);
+            console.log("Parsed Excel data:", jsonData);
 
-      // Extract error messages if any errors exist in the data array
-      if (resData.data?.some((item: any) => item.error?.length > 0)) {
-        // Extract error details
-        const errorDetails = resData.data
-          .filter((item: any) => item.error)
-          .flatMap((item: any) =>
-            item.error.map((err: any) => ({
-              row: err.rowNumber,
-              message: `Row ${err.rowNumber}: ${err.error}`,
-            }))
-          )
-          .sort((a: { row: number; }, b: { row: number; }) => a.row - b.row) // Sort by row number
-          .map((item: { message: any; }) => item.message) // Extract messages
-          .join("\n");
+            // Set total rows in Zustand
+            useErrorStore.getState().setTotalRows(jsonData.length);
 
-        const errorMessage = `Errors occurred:\n${errorDetails}`;
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("type", bulkName);
+            formData.append("fklDepartmentId", userDetails?.departmentId);
 
-        // Count inserted rows
-        const totalInserted = resData.data.reduce(
-          (sum: number, item: any) => sum + (item.insertedRow || 0), 
-          0
-        );
-        const successMessage = totalInserted > 0 ? `Total data inserted: ${totalInserted}` : "";
+            const { data: resData } = await axiosInstance.post(
+              `/file-upload/upload`,
+              formData,
+              {}
+            );
 
-       
-        setErrorMessage({ errorMessage, successMessage });
+            if (resData.success) {
+              handleClearFile();
 
-       
-        onUploadError?.(errorMessage);
-      } else {
-        
-        const totalInserted = resData.data[0].insertedRow; 
-        const successMessage = `All Data processed successfully. Total inserted: ${totalInserted}`;
+              queryClient.invalidateQueries({ queryKey: ["candidateData"] });
+              queryClient.invalidateQueries({ queryKey: ["schemeData"] });
+              queryClient.invalidateQueries({ queryKey: ["assessmentData"] });
+              queryClient.invalidateQueries({ queryKey: ["batchData"] });
+              queryClient.invalidateQueries({ queryKey: ["assessorData"] });
+              queryClient.invalidateQueries({ queryKey: ["courseData"] });
+              queryClient.invalidateQueries({ queryKey: ["invoicewData"] });
+              queryClient.invalidateQueries({ queryKey: ["getCreatedDepartments"] });
+              queryClient.invalidateQueries({ queryKey: ["placementData"] });
+              queryClient.invalidateQueries({ queryKey: ["targetData"] });
+              queryClient.invalidateQueries({ queryKey: ["trainerData"] });
+              queryClient.invalidateQueries({ queryKey: ["tcData"] });
+              queryClient.invalidateQueries({ queryKey: ["tpData"] });
+            }
 
-        setErrorMessage({ errorMessage: "", successMessage }); 
-      }
+            useErrorStore.getState().setBulkName(bulkName);
 
-      
-      closeModal();
+            // Extract errors and inserted data
+            const errorRows = resData.data?.filter((item: any) => item.error?.length > 0).length || 0;
+            const totalInserted = resData.data.reduce(
+              (sum: number, item: any) => sum + (item.insertedRow || 0),
+              0
+            );
 
-    
+            useErrorStore.getState().setInsertedRows(totalInserted);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            let statusColor: "g" | "y" | "r" = "g";
+            if (totalInserted === 0) {
+              statusColor = "r"; // All failed
+            } else if (errorRows > 0) {
+              statusColor = "y"; // Partial success
+            }
+
+            useErrorStore.getState().setStatusColor(statusColor);
+
+            // Create error message
+            const errorDetails = resData.data
+              .filter((item: any) => item.error)
+              .flatMap((item: any) =>
+
+                item.error.map((err: any) => ({
+                  row: err.rowNumber,
+                  message: `Row ${err.rowNumber}: ${err.error}`,
+                }))
+              )
+              .sort((a: { row: number; }, b: { row: number; }) => a.row - b.row)
+              .map((item: { message: any; }) => item.message)
+              .join("\n");
+
+            const errorMessage = errorRows > 0 ? `<strong>Errors occurred:</strong>\n${errorDetails}` : "";
+            const successMessage =
+              totalInserted > 0
+                ? `<strong>Total inserted:</strong> ${totalInserted} out of ${jsonData.length}`
+                : "";
+
+            useErrorStore.getState().setErrorMessage({ errorMessage, successMessage });
+
+
+            closeModal();
+          }
+        } else {
+          console.error("File could not be read as ArrayBuffer.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
     } catch (error) {
-      toast.error(resData.message);
+      toast.error("Upload failed.");
     } finally {
       setUploading(false);
     }
   };
+
 
   return (
     <div className="p-6 max-w-md mx-auto bg-white rounded-md shadow-lg space-y-4 sm:max-w-lg lg:max-w-xl xl:max-w-2xl">

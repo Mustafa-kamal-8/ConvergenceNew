@@ -52,17 +52,18 @@ const AssessorsModal: React.FC = () => {
   });
 
   const { data: QPNOS } = useQuery({
-    queryKey: ["QPNOSData", "QPNOS"],
-    queryFn: () => getMasterData("QPNOS"),
+    queryKey: ["QPNOSData", "courseCodeNew"],
+    queryFn: () => getMasterData("courseCodeNew"),
   });
 
   const QPNOSOptions =
     QPNOS?.data?.result?.QPNOS?.map(
       (QPNOS: {
         QPNOS: string;
+        ID: number;
       }) => ({
         label: QPNOS.QPNOS,
-        value: QPNOS.QPNOS,
+        value: QPNOS.ID,
       })
     ) || [];
 
@@ -175,7 +176,7 @@ const AssessorsModal: React.FC = () => {
         <div className="col-span-1">
           <Label text="QPNOS Code" required />
           <Controller
-            name="QPNOS"
+            name="fklCourseId"
             control={control}
             render={({ field }) => (
               <Dropdown
@@ -185,15 +186,15 @@ const AssessorsModal: React.FC = () => {
                 getOptionValue={(option) => option.value}
                 onSelect={(selectedOption) => {
                   field.onChange(selectedOption.value);
-                  setValue("QPNOS", selectedOption.value);
+                  setValue("fklCourseId", selectedOption.value);
                 }}
-                className={errors.QPNOS ? "border-red-500" : ""}
+                className={errors.fklCourseId ? "border-red-500" : ""}
                 placeholder="-- Select QPNOS Code--"
               />
             )}
           />
-          {errors.QPNOS && (
-            <p className="text-red-500">{errors.QPNOS.message}</p>
+          {errors.fklCourseId && (
+            <p className="text-red-500">{errors.fklCourseId.message}</p>
           )}
         </div>
 
