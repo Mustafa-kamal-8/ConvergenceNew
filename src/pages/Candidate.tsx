@@ -445,11 +445,7 @@ const Candidate: React.FC = () => {
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        NOTE: Data in the 'Cross-Department Duplicate Candidates' table is
-        filtered based on essential identity parameters, including Candidate
-        Name, Date of Birth (DOB), UUID, and Gender. Users may also apply an
-        additional filter using the Mobile Number to narrow down results
-        further.
+        NOTE: Duplicate checks are performed using a generated unique ID, which is created only when an Aadhaar number is provided.	
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">
