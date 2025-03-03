@@ -1055,7 +1055,7 @@ export const candidateColumns = (
   },
   {
     Header: "UUID",
-    accessor: "UUID	",
+    accessor: "UUID",
     Cell: ({ value }: CellProps<CandidateData, string | undefined>) => value || "N/A",
   },
   // {
@@ -1132,15 +1132,15 @@ export const CrossCandidateColumns = (
       </span>
     ),
   },
-  {
-    Header: "Phone",
-    accessor: "vsMobile",
-    Cell: ({ value }: { value: string }) => (
-      <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
-        {value}
-      </span>
-    ),
-  },
+  // {
+  //   Header: "Phone",
+  //   accessor: "vsMobile",
+  //   Cell: ({ value }: { value: string }) => (
+  //     <span className={duplicateQuery.includes("vsMobile") ? "bg-yellow-200 font-bold p-1 rounded" : ""}>
+  //       {value}
+  //     </span>
+  //   ),
+  // },
   {
     Header: "Department Name",
     accessor: "vsDepartmentName",

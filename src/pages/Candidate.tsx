@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import ModalOpenButton from "../components/ui/ModelOpenButton";
 
-import { AlertCircle, CheckCircle, DownloadCloud, UploadCloud, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  DownloadCloud,
+  UploadCloud,
+  X,
+} from "lucide-react";
 
 import { Add } from "@mui/icons-material";
 import TemplateDownloadButton from "../components/ui/TemplateDownloadButton";
@@ -25,11 +31,13 @@ const Candidate: React.FC = () => {
   const errorMessage = useErrorStore((state) => state.errorMessage);
   const successMessage = useErrorStore((state) => state.successMessage);
   const { bulkName } = useErrorStore();
-//   const totalRows = useErrorStore((state) => state.totalRows);
-// const insertedRows = useErrorStore((state) => state.insertedRows);
+  //   const totalRows = useErrorStore((state) => state.totalRows);
+  // const insertedRows = useErrorStore((state) => state.insertedRows);
   const clearErrorMessage = useErrorStore((state) => state.clearErrorMessage);
-  const clearSuccessMessage = useErrorStore((state) => state.clearSuccessMessage);
-  const {  statusColor} = useErrorStore();
+  const clearSuccessMessage = useErrorStore(
+    (state) => state.clearSuccessMessage
+  );
+  const { statusColor } = useErrorStore();
 
   const [searchKey, setSearchKey] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -58,7 +66,7 @@ const Candidate: React.FC = () => {
     vsGender: true,
   });
 
-  const [duplicateType, setDuplicateType] = useState<string>("ownDept"); 
+  const [duplicateType, setDuplicateType] = useState<string>("ownDept");
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -68,6 +76,8 @@ const Candidate: React.FC = () => {
       [name]: checked,
     }));
   };
+
+  console.log(handleCheckboxChange);
 
   const duplicateQuery = Object.keys(selectedDuplicates)
     .filter((key) => selectedDuplicates[key as keyof typeof selectedDuplicates])
@@ -79,10 +89,34 @@ const Candidate: React.FC = () => {
     [navigate, duplicateQuery]
   );
 
-
-  const { data: fetchedData, isLoading, isSuccess } = useQuery({
-    queryKey: ["candidateData", searchKey, debouncedSearchValue, currentPage, pageSize, ...duplicateQuery, duplicateCurrentPage, duplicatePageSize ,duplicateType],
-    queryFn: () => getTableData("candidate", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery, duplicateCurrentPage, duplicatePageSize,duplicateType),
+  const {
+    data: fetchedData,
+    isLoading,
+    isSuccess,
+  } = useQuery({
+    queryKey: [
+      "candidateData",
+      searchKey,
+      debouncedSearchValue,
+      currentPage,
+      pageSize,
+      ...duplicateQuery,
+      duplicateCurrentPage,
+      duplicatePageSize,
+      duplicateType,
+    ],
+    queryFn: () =>
+      getTableData(
+        "candidate",
+        searchKey,
+        debouncedSearchValue,
+        currentPage,
+        pageSize,
+        duplicateQuery,
+        duplicateCurrentPage,
+        duplicatePageSize,
+        duplicateType
+      ),
   });
 
   useEffect(() => {
@@ -94,7 +128,10 @@ const Candidate: React.FC = () => {
         setFilteredData([]);
       }
 
-      if (fetchedData?.data?.duplicate_candidate && fetchedData.data.duplicate_candidate.length > 0) {
+      if (
+        fetchedData?.data?.duplicate_candidate &&
+        fetchedData.data.duplicate_candidate.length > 0
+      ) {
         setDuplicateData(fetchedData.data.duplicate_candidate);
         setSuplicateTotalCount(fetchedData.data.duplicate_total_count);
       } else {
@@ -103,14 +140,11 @@ const Candidate: React.FC = () => {
     }
   }, [fetchedData, isSuccess]);
 
-
-
   const exportToExcel = () => {
     if (!filteredData || filteredData.length === 0) {
       alert("No data available to export");
       return;
     }
-
 
     const headersMap = {
       vsCandidateName: "Candidate Name",
@@ -171,10 +205,8 @@ const Candidate: React.FC = () => {
       // EmployeerContactNumber: "Employer Contact Number",
       placementType: "Placement Type",
       placementState: "Placement State",
-      placementDistrict: "Placement District"
-
+      placementDistrict: "Placement District",
     };
-
 
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce((acc, key) => {
@@ -192,35 +224,34 @@ const Candidate: React.FC = () => {
     XLSX.writeFile(workbook, "CandidateData.xlsx");
   };
 
-
   const exportToExcelDuplicate = () => {
-    if (!fetchedData?.data?.duplicate_candidate || fetchedData?.data?.duplicate_candidate.length === 0) {
+    if (
+      !fetchedData?.data?.duplicate_candidate ||
+      fetchedData?.data?.duplicate_candidate.length === 0
+    ) {
       alert("No data available to export");
       return;
     }
-
 
     const headersMap = {
       vsCandidateName: "Candidate Name",
       vsDOB: "Date Of Birth",
 
       vsUUID: "UUID",
-      vsMobile: "Mobile No",
+    
       vsDepartmentName: "Department Name",
 
       vsGenderName: "Gender",
-
-
-
     };
 
-
-    const formattedData = fetchedData?.data?.duplicate_candidate.map((item: { [x: string]: unknown; }) => {
-      return Object.keys(headersMap).reduce((acc, key) => {
-        acc[headersMap[key as keyof typeof headersMap]] = item[key];
-        return acc;
-      }, {} as Record<string, unknown>);
-    });
+    const formattedData = fetchedData?.data?.duplicate_candidate.map(
+      (item: { [x: string]: unknown }) => {
+        return Object.keys(headersMap).reduce((acc, key) => {
+          acc[headersMap[key as keyof typeof headersMap]] = item[key];
+          return acc;
+        }, {} as Record<string, unknown>);
+      }
+    );
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
@@ -239,8 +270,6 @@ const Candidate: React.FC = () => {
     setSearchValue(value);
   };
 
-
-
   if (isLoading) {
     return <Loader />;
   }
@@ -250,63 +279,76 @@ const Candidate: React.FC = () => {
       <div className="">
         <p className="text-2xl font-bold mb-4">List Of Candidates</p>
         {bulkName === "candidate" && (
-  <>
-    {successMessage  && (
-    <div
-      className={`m-2 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative
+          <>
+            {successMessage && (
+              <div
+                className={`m-2 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative
       ${statusColor === "g" ? "bg-green-100 text-green-600" : ""}
       ${statusColor === "y" ? "bg-blue-100 text-blue-600" : ""}
       ${statusColor === "r" ? "bg-red-100 text-red-600" : ""}`}
-    >
-      <div className="flex items-center">
-        {statusColor === "g" && <CheckCircle className="w-5 h-5 text-green-700 mr-2" />}
-        {statusColor === "y" && <AlertCircle className="w-5 h-5 text-blue-900 mr-2" />}
-        {statusColor === "r" && <AlertCircle className="w-5 h-5 text-red-700 mr-2" />}
-        
-        <p
-          style={{ color: statusColor }}
-          dangerouslySetInnerHTML={{ __html: successMessage ? successMessage.replace(/\n/g, "<br />") : successMessage }}
-        ></p>
-      </div>
-      <button
-        onClick={clearSuccessMessage}
-        className="absolute right-4 top-2"
-      >
-        <X
-          className={`w-5 h-5 cursor-pointer 
+              >
+                <div className="flex items-center">
+                  {statusColor === "g" && (
+                    <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
+                  )}
+                  {statusColor === "y" && (
+                    <AlertCircle className="w-5 h-5 text-blue-900 mr-2" />
+                  )}
+                  {statusColor === "r" && (
+                    <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                  )}
+
+                  <p
+                    style={{ color: statusColor }}
+                    dangerouslySetInnerHTML={{
+                      __html: successMessage
+                        ? successMessage.replace(/\n/g, "<br />")
+                        : successMessage,
+                    }}
+                  ></p>
+                </div>
+                <button
+                  onClick={clearSuccessMessage}
+                  className="absolute right-4 top-2"
+                >
+                  <X
+                    className={`w-5 h-5 cursor-pointer 
           ${statusColor === "g" ? "text-green-700" : ""}
           ${statusColor === "y" ? "text-yellow-700" : ""}
           ${statusColor === "r" ? "text-red-700" : ""}`}
-        />
-      </button>
-    </div>
-  )}
+                  />
+                </button>
+              </div>
+            )}
 
-    {errorMessage && (
-      <div className="bg-red-100  text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full  relative">
-        <div className="flex items-center">
-          <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
-          <p style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorMessage.replace(/\n/g, "<br />") }}></p>
-        </div>
-        <button onClick={clearErrorMessage} className="absolute right-4 top-2">
-          <X className="w-5 h-5 text-red-700 cursor-pointer" />
-        </button>
-      </div>
-    )}
-
-  </>
-)}
-
+            {errorMessage && (
+              <div className="bg-red-100  text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full  relative">
+                <div className="flex items-center">
+                  <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                  <p
+                    style={{ color: "red" }}
+                    dangerouslySetInnerHTML={{
+                      __html: errorMessage.replace(/\n/g, "<br />"),
+                    }}
+                  ></p>
+                </div>
+                <button
+                  onClick={clearErrorMessage}
+                  className="absolute right-4 top-2"
+                >
+                  <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                </button>
+              </div>
+            )}
+          </>
+        )}
 
         <div className="bg-yellow-100 m-7 text-red-700 text-sm  flex items-center justify-start p-4 rounded-sm w-full  mx-auto">
           <span className="text-red-500 text-2xl mr-2">⚠️</span>
           Only the last four digits of the candidate's Aadhar number should be
-          Insert.{<br></br>}The Candidate Unique ID is generated using the first 4 letters of the name, the last 4 digit of the Aadhaar number, DOB (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
-
-
-
-
-
+          Insert.{<br></br>}The Candidate Unique ID is generated using the first
+          4 letters of the name, the last 4 digit of the Aadhaar number, DOB
+          (YYYYMMDD), and gender (M/F) to ensure accuracy and uniqueness.
         </div>
 
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
@@ -364,7 +406,6 @@ const Candidate: React.FC = () => {
               modalTitle="Bulk Upload"
               bulkName="candidate"
               Icon={UploadCloud}
-
             />
             <ModalOpenButton
               modalType={5}
@@ -379,7 +420,6 @@ const Candidate: React.FC = () => {
         </div>
       </div>
       <div className="pt-10">
-
         <div className="flex justify-between items-center mb-4">
           <p className="text-2xl font-bold">Department Entries</p>
           <button
@@ -398,23 +438,25 @@ const Candidate: React.FC = () => {
           pageSize={pageSize}
           currentPage={currentPage}
           totalCount={totalCount}
-
           onPageChange={setCurrentPage}
           onPageSizeChange={setPageSize}
         />
-
       </div>
 
       <div className="bg-yellow-100 mt-8 text-red-700 text-sm  flex items-center justify-center p-4 rounded-sm w-full  mx-auto">
         <span className="text-red-500 text-2xl mr-2">⚠️</span>
-        NOTE:  Data in the 'Cross-Department Duplicate Candidates' table is filtered based on essential identity parameters, including Candidate Name, Date of Birth (DOB), UUID, and Gender. Users may also apply an additional filter using the Mobile Number to narrow down results further.
+        NOTE: Data in the 'Cross-Department Duplicate Candidates' table is
+        filtered based on essential identity parameters, including Candidate
+        Name, Date of Birth (DOB), UUID, and Gender. Users may also apply an
+        additional filter using the Mobile Number to narrow down results
+        further.
       </div>
       <div className="pt-10">
         <p className="text-2xl font-bold mb-4">
-          Cross-Department Duplicate Candidates
+          Check Duplicate Candidates
         </p>
         <div className="mb-4 flex justify-between">
-          <div>
+          {/* <div>
             <label className="mr-6">
               <input
                 type="checkbox"
@@ -469,20 +511,19 @@ const Candidate: React.FC = () => {
               />
               Mobile
             </label>
+          </div> */}
 
-          </div>
           <div className="mb-4">
-       
-        <SearchDropdown
-          options={[
-            { label: "Own Department", value: "ownDept" },
-            { label: "Cross Department", value: "crossDept" },
-          ]}
-          onSelect={(option) => setDuplicateType(option.value)}
-          selected={duplicateType}
-         
-        />
-      </div>
+            <SearchDropdown
+              options={[
+                { label: "Own Department", value: "ownDept" },
+                { label: "Cross Department", value: "crossDept" },
+              ]}
+              onSelect={(option) => setDuplicateType(option.value)}
+              selected={duplicateType}
+            />
+          </div>
+
           <div>
             <button
               className="p-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
@@ -499,7 +540,6 @@ const Candidate: React.FC = () => {
           pageSize={duplicatePageSize}
           currentPage={duplicateCurrentPage}
           totalCount={totalDuplicateCount}
-
           onPageChange={setDuplicateCurrentPage}
           onPageSizeChange={setDuplicatePageSize}
         />

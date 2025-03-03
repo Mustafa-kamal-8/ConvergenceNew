@@ -50,6 +50,7 @@ const Scheme: React.FC = () => {
   const clearSuccessMessage = useErrorStore(
     (state) => state.clearSuccessMessage
   );
+  const { statusColor } = useErrorStore();
   const [selectedDuplicates, setSelectedDuplicates] = useState<{
     vsSchemeName: boolean;
     vsFundName: boolean;
@@ -92,7 +93,7 @@ const Scheme: React.FC = () => {
       "schemeData",
       searchKey,
       debouncedSearchValue,
-     
+
       currentPage,
       pageSize,
       ...duplicateQuery,
@@ -100,7 +101,7 @@ const Scheme: React.FC = () => {
       duplicateCurrentPage
     ],
     queryFn: () =>
-      getTableData("scheme", searchKey, debouncedSearchValue,  currentPage, pageSize,duplicateQuery, duplicateCurrentPage, duplicatePageSize),
+      getTableData("scheme", searchKey, debouncedSearchValue, currentPage, pageSize, duplicateQuery, duplicateCurrentPage, duplicatePageSize),
   });
 
   useEffect(() => {
@@ -144,19 +145,19 @@ const Scheme: React.FC = () => {
 
     const formattedData = filteredData.map((item) => {
       return Object.keys(headersMap).reduce<Record<string, any>>((acc, key) => {
-        let value: any = item[key]; 
+        let value: any = item[key];
 
-       
+
         if (key === "dtSanctionDate" && value) {
           const date = new Date(value);
           value = isNaN(date.getTime())
             ? value
-            : date.toLocaleDateString("en-GB"); 
+            : date.toLocaleDateString("en-GB");
         }
 
         acc[headersMap[key as keyof typeof headersMap]] = value;
         return acc;
-      }, {}); 
+      }, {});
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -214,43 +215,66 @@ const Scheme: React.FC = () => {
         <p className="text-2xl font-bold mb-4">List Of Schemes</p>
         {bulkName === "scheme" && (
           <>
-            <div>
-              {successMessage && (
-                <div className="bg-green-100 m-7 text-green-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-                  <div className="flex items-center">
+            {successMessage && (
+              <div
+                className={`m-2 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative
+               ${statusColor === "g" ? "bg-green-100 text-green-600" : ""}
+               ${statusColor === "y" ? "bg-blue-100 text-blue-600" : ""}
+               ${statusColor === "r" ? "bg-red-100 text-red-600" : ""}`}
+              >
+                <div className="flex items-center">
+                  {statusColor === "g" && (
                     <CheckCircle className="w-5 h-5 text-green-700 mr-2" />
-                    <p>{successMessage}</p>
-                  </div>
-                  <button
-                    onClick={clearSuccessMessage}
-                    className="absolute right-4 top-2"
-                  >
-                    <X className="w-5 h-5 text-green-700 cursor-pointer" />
-                  </button>
-                </div>
-              )}
-            </div>
-            <div>
-              {errorMessage && (
-                <div className="bg-red-100 m-7 text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full mx-auto relative">
-                  <div className="flex items-center">
+                  )}
+                  {statusColor === "y" && (
+                    <AlertCircle className="w-5 h-5 text-blue-900 mr-2" />
+                  )}
+                  {statusColor === "r" && (
                     <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
-                    <p
-                      style={{ color: "red" }}
-                      dangerouslySetInnerHTML={{
-                        __html: errorMessage.replace(/\n/g, "<br />"),
-                      }}
-                    ></p>
-                  </div>
-                  <button
-                    onClick={clearErrorMessage}
-                    className="absolute right-4 top-2"
-                  >
-                    <X className="w-5 h-5 text-red-700 cursor-pointer" />
-                  </button>
+                  )}
+
+                  <p
+                    style={{ color: statusColor }}
+                    dangerouslySetInnerHTML={{
+                      __html: successMessage
+                        ? successMessage.replace(/\n/g, "<br />")
+                        : successMessage,
+                    }}
+                  ></p>
                 </div>
-              )}
-            </div>
+                <button
+                  onClick={clearSuccessMessage}
+                  className="absolute right-4 top-2"
+                >
+                  <X
+                    className={`w-5 h-5 cursor-pointer 
+                   ${statusColor === "g" ? "text-green-700" : ""}
+                   ${statusColor === "y" ? "text-yellow-700" : ""}
+                   ${statusColor === "r" ? "text-red-700" : ""}`}
+                  />
+                </button>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="bg-red-100  text-red-700 text-sm flex items-center justify-between p-4 rounded-sm w-full  relative">
+                <div className="flex items-center">
+                  <AlertCircle className="w-5 h-5 text-red-700 mr-2" />
+                  <p
+                    style={{ color: "red" }}
+                    dangerouslySetInnerHTML={{
+                      __html: errorMessage.replace(/\n/g, "<br />"),
+                    }}
+                  ></p>
+                </div>
+                <button
+                  onClick={clearErrorMessage}
+                  className="absolute right-4 top-2"
+                >
+                  <X className="w-5 h-5 text-red-700 cursor-pointer" />
+                </button>
+              </div>
+            )}
           </>
         )}
         <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
